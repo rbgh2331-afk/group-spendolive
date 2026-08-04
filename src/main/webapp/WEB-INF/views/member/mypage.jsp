@@ -629,6 +629,7 @@
         </article>
 
         <div id="withdraw-section" class="withdraw-row">
+            <%-- [회원탈퇴 불가 팝업] 기존 화면 안 경고문은 제거하고 회원탈퇴 버튼만 유지한다. --%>
             <button type="button" class="btn btn-danger-outline" onclick="openWithdrawModal()">회원탈퇴</button>
         </div>
 
@@ -640,12 +641,13 @@
         <button type="button" class="withdraw-close" onclick="closeWithdrawModal()" aria-label="회원탈퇴 창 닫기">×</button>
         <p class="eyebrow">ACCOUNT DELETE</p>
         <h2>회원탈퇴</h2>
-        <p class="mypage-muted">회원탈퇴를 하면 현재 계정으로 다시 로그인할 수 없습니다. 오픈뱅킹 연결 정보도 함께 해제됩니다.</p>
+        <p class="mypage-muted">회원탈퇴를 하면 현재 계정으로 다시 로그인할 수 없습니다.</p>
+        <%-- [회원탈퇴 개선] 실제 삭제·보존 정책과 일치하도록 탈퇴 안내 문구를 변경한다. --%>
         <ul class="withdraw-list">
-            <li>회원 상태가 탈퇴 상태로 변경됩니다.</li>
-            <li>로그인 세션이 즉시 종료됩니다.</li>
             <li>개인 지출 내역과 월별 예산, 등록된 계좌·카드 정보는 모두 삭제됩니다.</li>
-            <li>결제·정산·환불 등 서비스 거래 기록은 익명화하여 보존됩니다.</li>
+            <li>결제·정산·환불과 과거 방·채팅 기록은 회원 정보를 익명화하여 보존합니다.</li>
+            <li>탈퇴한 아이디와 이메일은 익명값으로 변경되며, 같은 정보로 새로 가입할 수 있습니다.</li>
+            <li>탈퇴가 완료되면 로그인 세션이 즉시 종료됩니다.</li>
         </ul>
         <form action="${contextPath}/spendolive/mypage/withdraw.do" method="post" id="withdrawForm">
             <label class="mypage-field">
@@ -660,6 +662,30 @@
         </form>
     </div>
 </div>
+
+<%-- [회원탈퇴 불가 팝업] 탈퇴 제한 조건이 있으면 마이페이지 재진입 시 자동으로 안내 팝업을 표시한다. --%>
+<c:if test="${withdrawBlocked}">
+    <div class="withdraw-modal show" id="withdrawBlockedModal" role="dialog" aria-modal="true" aria-hidden="false" aria-labelledby="withdrawBlockedTitle">
+        <div class="withdraw-modal-box withdraw-blocked-modal-box">
+            <button type="button" class="withdraw-close" onclick="closeWithdrawBlockedModal()" aria-label="회원탈퇴 불가 안내 창 닫기">×</button>
+            <p class="eyebrow">ACCOUNT DELETE</p>
+            <h2 id="withdrawBlockedTitle">회원탈퇴를 진행할 수 없습니다.</h2>
+            <p class="mypage-muted">현재 계정에 먼저 처리해야 할 항목이 남아 있습니다.</p>
+
+            <%-- [회원탈퇴 불가 팝업] 개수가 0보다 큰 항목만 팝업에 표시한다. --%>
+            <ul class="withdraw-list withdraw-blocked-list">
+                <c:if test="${ownedRoomCount > 0}"><li>운영 중인 방이 ${ownedRoomCount}개 있습니다.</li></c:if>
+                <c:if test="${joinedRoomCount > 0}"><li>참여 중인 방이 ${joinedRoomCount}개 있습니다.</li></c:if>
+                <c:if test="${pendingRefundCount > 0}"><li>처리 중인 환불 요청이 ${pendingRefundCount}건 있습니다.</li></c:if>
+            </ul>
+
+            <p class="withdraw-blocked-guide">각 항목을 모두 처리한 후 다시 시도해주세요.</p>
+            <div class="withdraw-actions">
+                <button type="button" class="btn btn-primary" onclick="closeWithdrawBlockedModal()">확인</button>
+            </div>
+        </div>
+    </div>
+</c:if>
 
 <script src="${contextPath}/resources/js/mypage.js" data-ajax-reload></script>
 
