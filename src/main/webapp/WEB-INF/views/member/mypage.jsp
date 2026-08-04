@@ -644,7 +644,8 @@
         <ul class="withdraw-list">
             <li>회원 상태가 탈퇴 상태로 변경됩니다.</li>
             <li>로그인 세션이 즉시 종료됩니다.</li>
-            <li>기존 지출/정산 이력은 서비스 기록 보존을 위해 바로 삭제하지 않습니다.</li>
+            <li>개인 지출 내역과 월별 예산, 등록된 계좌·카드 정보는 모두 삭제됩니다.</li>
+            <li>결제·정산·환불 등 서비스 거래 기록은 익명화하여 보존됩니다.</li>
         </ul>
         <form action="${contextPath}/spendolive/mypage/withdraw.do" method="post" id="withdrawForm">
             <label class="mypage-field">
