@@ -43,6 +43,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
                 e.memo,
                 e.repeat_yn,
                 e.repeat_cycle,
+                e.repeat_end_date,
                 e.fixed_yn,
                 e.created_at,
                 e.updated_at
@@ -55,6 +56,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             ORDER BY e.expense_date DESC, e.expense_id DESC
             """;
 
+    // [고정지출 종료월] 조회 월이 종료일을 지난 반복 원본은 자동 생성 대상에서 제외한다.
     private final String selectRepeatBaseExpenseSql = """
         SELECT
             e.expense_id,
@@ -69,6 +71,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             e.memo,
             e.repeat_yn,
             e.repeat_cycle,
+            e.repeat_end_date,
             e.fixed_yn,
             e.created_at,
             e.updated_at
@@ -80,6 +83,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
           AND e.repeat_yn = 'Y'
           AND e.repeat_cycle IN ('MONTHLY', 'WEEKLY', 'YEARLY')
           AND e.expense_date < ?
+          AND (e.repeat_end_date IS NULL OR e.repeat_end_date >= ?)
         ORDER BY e.expense_date ASC, e.expense_id ASC
         """;
 
@@ -97,6 +101,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
                 e.memo,
                 e.repeat_yn,
                 e.repeat_cycle,
+                e.repeat_end_date,
                 e.fixed_yn,
                 e.created_at,
                 e.updated_at
@@ -106,6 +111,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             WHERE e.expense_id = ?
             """;
 
+    // [고정지출 종료월] 등록 시 선택한 종료일을 함께 저장한다.
     private final String insertExpenseSql = """
             INSERT INTO expense_tb (
                 member_id,
@@ -117,10 +123,12 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
                 memo,
                 repeat_yn,
                 repeat_cycle,
+                repeat_end_date,
                 fixed_yn
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, NVL(?, 'N'), ?, NVL(?, 'N'))
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, NVL(?, 'N'), ?, ?, NVL(?, 'N'))
             """;
 
+    // [고정지출 종료월] 수정 시 종료일 변경 또는 NULL 해제를 반영한다.
     private final String updateExpenseSql = """
             UPDATE expense_tb
             SET
@@ -132,6 +140,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
                 memo = ?,
                 repeat_yn = NVL(?, 'N'),
                 repeat_cycle = ?,
+                repeat_end_date = ?,
                 fixed_yn = NVL(?, 'N'),
                 updated_at = SYSDATE
             WHERE expense_id = ?
@@ -230,6 +239,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
                 selectRepeatBaseExpenseSql,
                 expenseRowMapper(),
                 member_id,
+                Date.valueOf(startDate),
                 Date.valueOf(startDate)
         );
 
@@ -267,6 +277,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
                 expenseDTO.getMemo(),
                 expenseDTO.getRepeat_yn(),
                 expenseDTO.getRepeat_cycle(),
+                toSqlDate(expenseDTO.getRepeat_end_date()),
                 expenseDTO.getFixed_yn()
         );
     }
@@ -283,6 +294,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
                 expenseDTO.getMemo(),
                 expenseDTO.getRepeat_yn(),
                 expenseDTO.getRepeat_cycle(),
+                toSqlDate(expenseDTO.getRepeat_end_date()),
                 expenseDTO.getFixed_yn(),
                 expenseDTO.getExpense_id(),
                 expenseDTO.getMember_id()
@@ -432,6 +444,12 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             ExpenseDTO base,
             LocalDate repeatedDate) {
 
+        // [고정지출 종료월] 종료일을 지난 자동 반복 내역은 생성하지 않는다.
+        LocalDate repeatEndDate = toLocalDate(base.getRepeat_end_date());
+        if (repeatEndDate != null && repeatedDate.isAfter(repeatEndDate)) {
+            return;
+        }
+
         String occurrenceKey = makeOccurrenceKey(base, repeatedDate);
         String baseDateKey = String.valueOf(base.getExpense_id()) + "|" + repeatedDate;
 
@@ -478,6 +496,8 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
 
         repeated.setRepeat_yn(base.getRepeat_yn());
         repeated.setRepeat_cycle(base.getRepeat_cycle());
+        // [고정지출 종료월] 자동 생성 행에도 원본 종료일을 유지한다.
+        repeated.setRepeat_end_date(base.getRepeat_end_date());
         repeated.setFixed_yn(base.getFixed_yn());
         repeated.setAuto_generated_yn("Y");
         repeated.setCreated_at(base.getCreated_at());
@@ -508,6 +528,8 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
 
                 expense.setRepeat_yn(rs.getString("repeat_yn"));
                 expense.setRepeat_cycle(rs.getString("repeat_cycle"));
+                // [고정지출 종료월] DB 종료일을 DTO에 매핑한다.
+                expense.setRepeat_end_date(rs.getDate("repeat_end_date"));
                 expense.setFixed_yn(rs.getString("fixed_yn"));
                 expense.setAuto_generated_yn("N");
                 expense.setCreated_at(rs.getTimestamp("created_at"));
