@@ -30,6 +30,14 @@ public class ExpenseDTO {
 
     private String repeat_yn;       // 반복 지출 여부(Y/N)
     private String repeat_cycle;    // 반복 주기(MONTHLY/WEEKLY/YEARLY)
+
+    // [고정지출 종료월] DB에는 선택한 종료월의 마지막 날짜를 저장한다.
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date repeat_end_date;
+
+    // [고정지출 종료월] input type="month"의 yyyy-MM 값을 받는 화면 전용 필드다.
+    private String repeat_end_month;
+
     private String fixed_yn;        // 고정 지출 여부(Y/N)
 
     private String auto_generated_yn; // 반복 설정으로 화면에서 자동 생성된 내역 여부(Y/N)
