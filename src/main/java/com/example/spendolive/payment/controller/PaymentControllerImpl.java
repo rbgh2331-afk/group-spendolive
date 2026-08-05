@@ -73,7 +73,8 @@ public class PaymentControllerImpl implements PaymentController {
     public ModelAndView detail(
             @RequestParam("room_id") int roomId,
             HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+            HttpServletResponse response,
+            RedirectAttributes redirectAttributes) throws Exception {
 
         HttpSession session = request.getSession(false);
         MemberVO memberVO = session == null
@@ -84,7 +85,10 @@ public class PaymentControllerImpl implements PaymentController {
         if (!isLoggedIn(memberVO)) {
             return new ModelAndView("redirect:/member/loginForm.do");
         }
-
+        if (!hasLinkedCard(session)) {
+            redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 카드 등록이 필요합니다.");
+            return new ModelAndView("redirect:/spendolive/main.do");
+        }
         try {
             String paymentStatus = paymentService.getRoomPaymentStatus(memberVO.getId(), roomId);
             PaymentAmountDTO paymentAmount = paymentService.getPaymentAmount(roomId);
@@ -368,5 +372,9 @@ public class PaymentControllerImpl implements PaymentController {
                             null,
                             null ));
         }
+    }
+    private boolean hasLinkedCard(HttpSession session) {
+        MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
+        return memberInfo != null && "YES".equals(memberInfo.getCard_status());
     }
 }

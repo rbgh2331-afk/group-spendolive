@@ -194,8 +194,8 @@ public class OttController {
         }
 
         // 빠른 참가도 OTT 기능이므로 동일한 계좌 연동 검사를 적용한다.
-        if (!hasLinkedAccount(session)) {
-            redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 계좌 연동이 필요합니다.");
+        if (!hasLinkedCard(session)) {
+            redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 카드 등록이 필요합니다.");
             return "redirect:/spendolive/main.do";
         }
 
@@ -445,6 +445,10 @@ public class OttController {
     private boolean hasLinkedAccount(HttpSession session) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         return memberInfo != null && "YES".equals(memberInfo.getAccount_status());
+    }
+    private boolean hasLinkedCard(HttpSession session) {
+        MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
+        return memberInfo != null && "YES".equals(memberInfo.getCard_status());
     }
 
     // 로그인 사용자 ID 조회 - 세션의 회원 정보에서 ID 추출
