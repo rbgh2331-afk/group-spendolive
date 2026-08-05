@@ -1,5 +1,5 @@
 /* SpendOlive Complete Fixed JS */
-const contextPath = 'http://localhost:8080';
+const contextPath = window.contextPath;
 let currentMonth = 6;
 
 function openModal(id){const el=document.getElementById(id);if(el)el.classList.add("show")}

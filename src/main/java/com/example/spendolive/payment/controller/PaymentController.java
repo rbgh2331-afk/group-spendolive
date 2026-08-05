@@ -14,7 +14,8 @@ public interface PaymentController {
     ModelAndView detail(
         @RequestParam("room_id") int roomId,
         HttpServletRequest request,
-        HttpServletResponse response) throws Exception;
+        HttpServletResponse response,
+        RedirectAttributes redirectAttributes) throws Exception;
 
 String tossCallback(
         @RequestParam("customerKey") String customerKey,
