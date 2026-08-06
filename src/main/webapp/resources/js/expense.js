@@ -9,6 +9,10 @@ function initExpensePage() {
         const repeatCycleSelect = document.getElementById('repeat_cycle');
         const repeatYnInput = document.getElementById('repeat_yn');
         const fixedYnInput = document.getElementById('fixed_yn');
+        // [고정지출 종료월] 등록 화면의 종료월 영역과 시작일을 함께 제어한다.
+        const repeatEndMonthArea = document.getElementById('repeatEndMonthArea');
+        const repeatEndMonthInput = document.getElementById('repeat_end_month');
+        const expenseDateInput = document.querySelector('#expense-form input[name="expense_date"]');
 
         const categoryMasterList = categorySelect
             ? Array.from(categorySelect.querySelectorAll('option[data-type]')).map(option => ({
@@ -68,6 +72,31 @@ function initExpensePage() {
             }
         }
 
+        // [고정지출 종료월] 고정 분류에서만 종료월 입력을 노출하고 시작월 이전 선택을 막는다.
+        function syncRepeatEndMonthArea() {
+            const fixedExpense = expenseTypeSelect && expenseTypeSelect.value === 'FIXED';
+
+            if (repeatEndMonthArea) {
+                repeatEndMonthArea.classList.toggle('expense-hidden', !fixedExpense);
+            }
+
+            if (!fixedExpense && repeatEndMonthInput) {
+                repeatEndMonthInput.value = '';
+            }
+
+            syncRepeatEndMonthMin();
+        }
+
+        function syncRepeatEndMonthMin() {
+            if (!repeatEndMonthInput) {
+                return;
+            }
+
+            repeatEndMonthInput.min = expenseDateInput && expenseDateInput.value
+                ? expenseDateInput.value.substring(0, 7)
+                : '';
+        }
+
         function filterCategories() {
             if (!expenseTypeSelect || !categorySelect) {
                 return;
@@ -107,6 +136,7 @@ function initExpensePage() {
                 }
             }
 
+            syncRepeatEndMonthArea();
             changeRepeatYn();
         }
 
@@ -264,6 +294,10 @@ function initExpensePage() {
             const editRepeatCycleSelect = row.querySelector('.edit-repeat-cycle');
             const editRepeatYnInput = document.getElementById(`editRepeatYn${expense_id}`);
             const editFixedYnInput = document.getElementById(`editFixedYn${expense_id}`);
+            // [고정지출 종료월] 수정 행의 종료월 입력과 시작일을 함께 제어한다.
+            const editRepeatEndArea = row.querySelector('.edit-repeat-end-area');
+            const editRepeatEndInput = row.querySelector('.edit-repeat-end-month');
+            const editExpenseDateInput = row.querySelector('.edit-expense-date');
 
             if (!typeSelect || !editRepeatCycleSelect || !editRepeatYnInput || !editFixedYnInput) {
                 return;
@@ -282,12 +316,34 @@ function initExpensePage() {
                 editRepeatYnInput.value = 'N';
                 editRepeatCycleSelect.value = '';
             }
+
+            const fixedExpense = typeSelect.value === 'FIXED';
+            if (editRepeatEndArea) {
+                editRepeatEndArea.classList.toggle('expense-hidden', !fixedExpense);
+            }
+            if (!fixedExpense && editRepeatEndInput) {
+                editRepeatEndInput.value = '';
+            }
+            if (editRepeatEndInput) {
+                editRepeatEndInput.min = editExpenseDateInput && editExpenseDateInput.value
+                    ? editExpenseDateInput.value.substring(0, 7)
+                    : '';
+            }
+        }
+
+        // [고정지출 종료월] 수정 중 시작일이 바뀌면 종료월의 최소값도 즉시 갱신한다.
+        function syncEditRepeatEndMonthMin(input) {
+            const row = input.closest('tr');
+            if (row) {
+                changeEditRepeatYnByRow(row);
+            }
         }
 
         window.changeEditMode = changeEditMode;
         window.cancelEditMode = cancelEditMode;
         window.filterEditCategoriesFromSelect = filterEditCategoriesFromSelect;
         window.changeEditRepeatYnFromSelect = changeEditRepeatYnFromSelect;
+        window.syncEditRepeatEndMonthMin = syncEditRepeatEndMonthMin;
 
         if (expenseTypeSelect) {
             expenseTypeSelect.addEventListener('change', filterCategories);
@@ -295,6 +351,10 @@ function initExpensePage() {
 
         if (repeatCycleSelect) {
             repeatCycleSelect.addEventListener('change', changeRepeatYn);
+        }
+
+        if (expenseDateInput) {
+            expenseDateInput.addEventListener('change', syncRepeatEndMonthMin);
         }
 
         filterCategories();

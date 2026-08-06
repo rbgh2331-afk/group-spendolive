@@ -588,6 +588,15 @@ function verifyMyPagePhoneCode(button) {
 
 
 
+// [회원탈퇴 불가 팝업] 탈퇴 제한 안내 팝업을 닫는다.
+function closeWithdrawBlockedModal() {
+    const modal = document.getElementById('withdrawBlockedModal');
+    if (!modal) return;
+
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden', 'true');
+}
+
 function submitWithdrawForm() {
     const confirmInput = document.getElementById('withdrawConfirm');
     const form = document.getElementById('withdrawForm');
@@ -608,12 +617,26 @@ function submitWithdrawForm() {
 }
 
 if (!window.__mypageWithdrawClickBound) {
+    // [회원탈퇴 불가 팝업] 기존 탈퇴 팝업과 탈퇴 불가 팝업 모두 배경 클릭으로 닫는다.
     document.addEventListener('click', function (event) {
-        const modal = document.getElementById('withdrawModal');
-        if (modal && event.target === modal) {
-            closeWithdrawModal();
-        }
+        const withdrawModal = document.getElementById('withdrawModal');
+        const blockedModal = document.getElementById('withdrawBlockedModal');
+
+        if (withdrawModal && event.target === withdrawModal) closeWithdrawModal();
+        if (blockedModal && event.target === blockedModal) closeWithdrawBlockedModal();
     });
+
+    // [회원탈퇴 불가 팝업] ESC 키로 열려 있는 회원탈퇴 관련 팝업을 닫는다.
+    document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+
+        const withdrawModal = document.getElementById('withdrawModal');
+        const blockedModal = document.getElementById('withdrawBlockedModal');
+
+        if (withdrawModal && withdrawModal.classList.contains('show')) closeWithdrawModal();
+        if (blockedModal && blockedModal.classList.contains('show')) closeWithdrawBlockedModal();
+    });
+
     window.__mypageWithdrawClickBound = true;
 }
 

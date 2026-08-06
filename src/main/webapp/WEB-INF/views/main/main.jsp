@@ -34,7 +34,7 @@
                         메인에서는 지출관리, 캘린더, OTT관리, 마이페이지를 간단히 확인하고, 각 메뉴에서 더 자세한 기능을 사용할 수 있습니다.
                     </p>
                     <div class="hero-buttons">
-                        <a href="${contextPath}/spendolive/expense.do" class="btn btn-primary btn-large">
+                        <a href="${contextPath}/spendolive/expense/list.do" class="btn btn-primary btn-large">
                             지출관리 바로가기
                         </a>
                         <a href="${contextPath}/spendolive/calendar.do" class="btn btn-primary btn-large">

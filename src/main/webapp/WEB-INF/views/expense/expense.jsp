@@ -160,6 +160,13 @@
                             </select>
                         </label>
 
+                        <%-- [고정지출 종료월] 고정 분류에서만 선택형 종료월을 표시한다. --%>
+                        <label id="repeatEndMonthArea" class="expense-hidden">
+                            고정지출 종료월
+                            <input type="month" id="repeat_end_month" name="repeat_end_month">
+                            <small>반복 주기를 선택한 경우 적용되며, 비워두면 계속 반복됩니다.</small>
+                        </label>
+
                         <label>
                             메모
                             <input type="text" name="memo" placeholder="선택 입력">
@@ -227,6 +234,8 @@
                             <tbody id="expenseRows">
                                 <c:forEach var="expense" items="${expenseList}" varStatus="status">
                                     <fmt:formatDate var="expenseDateValue" value="${expense.expense_date}" pattern="yyyy-MM-dd" />
+                                    <%-- [고정지출 종료월] 수정 입력창에 사용할 yyyy-MM 값을 만든다. --%>
+                                    <fmt:formatDate var="repeatEndMonthValue" value="${expense.repeat_end_date}" pattern="yyyy-MM" />
 
                                     <%--
                                         자동 반복 내역은 같은 원본 expense_id를 공유할 수 있으므로
@@ -248,7 +257,7 @@
                                             <span class="view-mode">
                                                 <fmt:formatDate value="${expense.expense_date}" pattern="yyyy.MM.dd" />
                                             </span>
-                                            <input class="edit-mode expense-hidden" form="editForm${expense.expense_id}" type="date" name="expense_date" value="${expenseDateValue}" required>
+                                            <input class="edit-mode edit-expense-date expense-hidden" form="editForm${expense.expense_id}" type="date" name="expense_date" value="${expenseDateValue}" onchange="syncEditRepeatEndMonthMin(this)" required>
                                         </td>
 
                                         <td>
@@ -324,6 +333,10 @@
                                                     <c:when test="${expense.repeat_cycle == 'YEARLY'}">매년</c:when>
                                                     <c:otherwise>-</c:otherwise>
                                                 </c:choose>
+                                                <%-- [고정지출 종료월] 종료월이 있으면 반복 정보 아래에 함께 표시한다. --%>
+                                                <c:if test="${expense.expense_type == 'FIXED' and not empty expense.repeat_end_date}">
+                                                    <br><small>종료 ${repeatEndMonthValue}</small>
+                                                </c:if>
                                             </span>
                                             <select class="edit-mode edit-repeat-cycle expense-hidden" form="editForm${expense.expense_id}" name="repeat_cycle" data-row-id="${expense.expense_id}" onchange="changeEditRepeatYnFromSelect(this)">
                                                 <option value="" ${empty expense.repeat_cycle ? 'selected' : ''}>반복 없음</option>
@@ -331,12 +344,17 @@
                                                 <option value="WEEKLY" ${expense.repeat_cycle == 'WEEKLY' ? 'selected' : ''}>매주</option>
                                                 <option value="YEARLY" ${expense.repeat_cycle == 'YEARLY' ? 'selected' : ''}>매년</option>
                                             </select>
+                                            <%-- [고정지출 종료월] 수정 모드에서 기존 종료월을 변경하거나 비울 수 있다. --%>
+                                            <div class="edit-mode edit-repeat-end-area expense-hidden">
+                                                <input type="month" class="edit-repeat-end-month" form="editForm${expense.expense_id}" name="repeat_end_month" value="${repeatEndMonthValue}">
+                                            </div>
                                         </td>
 
                                         <td>
                                             <c:choose>
                                                 <c:when test="${expense.auto_generated_yn == 'Y'}">
-                                                    <span class="tag">원본달에서 삭제</span>
+                                                    <%-- [고정지출 종료월] 자동 생성 행은 원본 등록월에서 종료월을 수정하도록 안내한다. --%>
+                                                    <span class="tag">원본 등록월에서 수정</span>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <form id="editForm${expense.expense_id}" action="${contextPath}/spendolive/expense/modify.do" method="post" data-ajax-form data-loading-message="지출을 수정하고 있습니다.">

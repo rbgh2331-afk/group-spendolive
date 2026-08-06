@@ -44,6 +44,7 @@ CREATE TABLE expense_tb (
     memo           VARCHAR2(1000),
     repeat_yn      CHAR(1) DEFAULT 'N' NOT NULL,
     repeat_cycle   VARCHAR2(20),
+    repeat_end_date DATE,                                 -- [고정지출 종료월] 선택한 종료월의 마지막 날짜
     fixed_yn       CHAR(1) DEFAULT 'N' NOT NULL,
     created_at     DATE DEFAULT SYSDATE NOT NULL,
     updated_at     DATE,
@@ -54,7 +55,8 @@ CREATE TABLE expense_tb (
     CONSTRAINT ck_expense_amount CHECK (amount >= 0),
     CONSTRAINT ck_expense_repeat_yn CHECK (repeat_yn IN ('Y', 'N')),
     CONSTRAINT ck_expense_fixed_yn CHECK (fixed_yn IN ('Y', 'N')),
-    CONSTRAINT ck_expense_repeat_cycle CHECK (repeat_cycle IS NULL OR repeat_cycle IN ('MONTHLY', 'WEEKLY', 'YEARLY'))
+    CONSTRAINT ck_expense_repeat_cycle CHECK (repeat_cycle IS NULL OR repeat_cycle IN ('MONTHLY', 'WEEKLY', 'YEARLY')),
+    CONSTRAINT ck_expense_repeat_end_date CHECK (repeat_end_date IS NULL OR repeat_end_date >= expense_date)
 );
 
 CREATE SEQUENCE seq_expense START WITH 1 INCREMENT BY 1 NOCACHE;
@@ -70,6 +72,9 @@ END;
 
 CREATE INDEX idx_expense_member_date ON expense_tb(member_id, expense_date);
 CREATE INDEX idx_expense_category ON expense_tb(category_id);
+
+-- [고정지출 종료월] NULL이면 무기한 반복, 값이 있으면 해당 날짜까지만 반복한다.
+COMMENT ON COLUMN expense_tb.repeat_end_date IS '고정지출 반복 종료일(선택한 종료월의 마지막 날짜)';
 
 /* =========================================================
    4. 회원별 월간 예산 테이블

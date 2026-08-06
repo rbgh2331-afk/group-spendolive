@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.spendolive.member.domain.MemberAccountVO;
 import com.example.spendolive.member.domain.MemberTranVO;
@@ -347,7 +348,8 @@ public class MyPageController {
 
     @PostMapping("/mypage/withdraw.do")
     public ModelAndView withdrawMember(@RequestParam(value = "withdrawConfirm", required = false) String withdrawConfirm,
-                                       HttpSession session) {
+                                       HttpSession session,
+                                       RedirectAttributes redirectAttributes) {
         ModelAndView mav = new ModelAndView();
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
 
@@ -362,7 +364,20 @@ public class MyPageController {
         }
 
         try {
-            myPageService.withdrawMember(loginMember.getId());
+            // [회원탈퇴 개선] 본인 탈퇴 전용 서비스에서 방·참여·환불 조건을 먼저 확인한다.
+            MyPageDTO result = myPageService.withdrawSelfMember(loginMember.getId());
+
+            // [회원탈퇴 개선] 탈퇴 불가 사유를 한 번에 표시할 수 있도록 건수를 Flash Attribute로 전달한다.
+            if (!result.isWithdrawEligible()) {
+                redirectAttributes.addFlashAttribute("withdrawBlocked", true);
+                redirectAttributes.addFlashAttribute("ownedRoomCount", result.getOwnedRoomCount());
+                redirectAttributes.addFlashAttribute("joinedRoomCount", result.getJoinedRoomCount());
+                redirectAttributes.addFlashAttribute("pendingRefundCount", result.getPendingRefundCount());
+                mav.setViewName("redirect:/spendolive/mypage.do#withdraw-section");
+                return mav;
+            }
+
+            // [회원탈퇴 개선] 모든 조건을 통과하고 익명화가 완료된 경우에만 현재 세션을 종료한다.
             session.invalidate();
             mav.setViewName("redirect:/member/loginForm.do?withdraw=Y");
         } catch (Exception e) {
