@@ -69,4 +69,5 @@ public interface MemberService {
 
     // 마이페이지에서 카드 표시 이름을 수정한다.
     void updateCardName(String id, int cardIdx, String cardName) throws Exception;
+    public void deleteCard(int card_idx,String id) throws Exception;
 }

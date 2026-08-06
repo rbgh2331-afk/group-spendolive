@@ -60,4 +60,6 @@ public interface PaymentService {
     String selectEscrowStatus(int room_id, String host_id)throws Exception;
         String selectRefundStatus(int payment_id) throws Exception;
     void executeRoomRefund(SettlementPaymentVO payment) throws Exception;
-  }
+    void deleteCard(int card_idx,String id) throws Exception;
+    void deleteAccount(int account_idx,String id) throws Exception;
+}
