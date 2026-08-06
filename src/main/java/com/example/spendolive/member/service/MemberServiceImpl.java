@@ -104,7 +104,7 @@ public class MemberServiceImpl implements MemberService {
 
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("chung100302@gmail.com");
+        message.setFrom("rbgh2331@gmail.com");
         message.setTo(toEmail);
         message.setSubject("[SpendOlive] 회원가입 인증번호 안내");
         message.setText(
@@ -131,7 +131,7 @@ public class MemberServiceImpl implements MemberService {
 
         DefaultMessageService messageService =  SolapiClient.INSTANCE.createInstance(solapiapikey, solapisecretkey);
         Message message = new Message();
-        message.setFrom("01024414631");
+        message.setFrom("01023310468");
         message.setTo(toNumber);
         message.setText("★ 발송 메세지: [SpendOlive] 가입 인증번호는 [" + verificationCode + "] 입니다.");
 
