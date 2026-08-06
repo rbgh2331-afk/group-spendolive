@@ -126,6 +126,9 @@ public class MemberRepositoryImpl implements MemberRepository{
                         AND target_card.card_idx = ?
                   )
                 """;
+
+               //delete
+    private static final String deleteCard = "DELETE FROM member_card_tb WHERE card_idx = ? AND id = ?";
     public MemberRepositoryImpl(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -496,4 +499,8 @@ public class MemberRepositoryImpl implements MemberRepository{
                 accountIdx
         );
     }
+    @Override
+        public void deleteCard(int card_idx,String id) {
+            jdbcTemplate.update(deleteCard, card_idx, id);
+        }
 }

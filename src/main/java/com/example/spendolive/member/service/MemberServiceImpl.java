@@ -549,4 +549,15 @@ public class MemberServiceImpl implements MemberService {
     public void updatePasswordById(String id, String newPassword) throws Exception {
         memberRepository.updatePasswordById(id, newPassword);
     }
+    @Override
+    public void deleteCard(int card_idx,String id) throws Exception {
+        try{
+        memberRepository.deleteCard(card_idx, id);
+        }catch(Exception e){
+            throw new MemberProcessException(
+                    "DELETE_FAILED",
+                    "카드 삭제에 실패하였습니다.",
+                    e);
+        }
+    }
 }

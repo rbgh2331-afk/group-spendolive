@@ -153,7 +153,19 @@ public class MyPageAjaxController {
             return ResponseEntity.internalServerError().body(AjaxResponse.failure("SERVER_ERROR", "주카드 변경에 실패했습니다."));
         }
     }
-
+    // [AJAX 변경] 주카드 변경 완료 후 자산관리 영역 갱신 주소를 반환한다.
+    @PostMapping("/card/delete.do")
+    public ResponseEntity<?> deleteCard(@RequestParam("cardIdx") int cardIdx, HttpSession session) {
+        MemberVO member = AjaxAuthSupport.member(session);
+        if (member == null) return AjaxAuthSupport.unauthorized();
+        try {
+            memberService.deleteCard(cardIdx,member.getId());
+            return ResponseEntity.ok(AjaxResponse.success("카드가 삭제되었습니다.",
+                    Map.of("refreshUrl", "/spendolive/mypage.do#asset-manage")));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(AjaxResponse.failure("SERVER_ERROR", "카드가 삭제에 실패했습니다."));
+        }
+    }
     // 공백 차이로 불필요한 재인증이 발생하지 않도록 정리한 값끼리 비교한다.
     private boolean isChanged(String newValue, String oldValue) {
         return !(newValue == null ? "" : newValue.trim()).equals(oldValue == null ? "" : oldValue.trim());

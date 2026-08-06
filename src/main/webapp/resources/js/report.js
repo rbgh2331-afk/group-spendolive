@@ -1,3 +1,4 @@
+
 const reportCloseBtn = document.getElementById('StatusCloseButton');
 if (reportCloseBtn) {
     reportCloseBtn.addEventListener('click', function() {

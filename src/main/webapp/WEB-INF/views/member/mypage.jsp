@@ -493,6 +493,10 @@
                                            value="${fn:escapeXml(cardDisplayName)}"
                                            aria-label="카드 이름">
                                     <button type="button" class="btn btn-outline btn-mini" onclick="toggleCardNameEdit(this)">수정</button>
+                                    <button type="button"
+                                                       class="btn btn-primary carddeleteSubmitButton"
+                                                       data-card_idx="${card.card_idx}" >카드 삭제</button>
+                                            </div>
                                 </form>
                                 <p>
                                     <c:out value="${cardCompanyDisplayName}" />
