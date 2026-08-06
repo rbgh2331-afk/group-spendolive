@@ -65,7 +65,13 @@ public class CalendarApiController {
         String yearMonth = String.format("%04d-%02d", year, month);
 
         // 지출 도메인 조회: 반복(고정/OTT) 지출을 이 달에 맞게 확장한 결과를 돌려준다.
-        List<ExpenseDTO> expenses = expenseRepository.selectExpenseList(member_id, yearMonth);
+        List<ExpenseDTO> expenses;
+        try {
+            expenses = expenseRepository.selectExpenseList(member_id, yearMonth);
+        } catch (Exception e) {
+            System.err.println("[CalendarApiController.getMonthlyExpenses] 조회 실패: " + e.getMessage());
+            expenses = List.of();
+        }
 
         // 캘린더 JS가 쓰는 필드만 골라, 기존과 동일한 JSON 형태(Map)로 매핑
         List<Map<String, Object>> result = new ArrayList<>();
