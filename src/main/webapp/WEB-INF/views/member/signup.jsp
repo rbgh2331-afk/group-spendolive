@@ -213,7 +213,7 @@
                 <label class="auth-check-row">
                     <input type="checkbox"required>
                     서비스 이용약관 동의
-        <textarea style="margin-top: 12px; width: 100%; height: 200px; resize: none; box-sizing: border-box;" class="form-textarea"  readonly>제1장  서비스 이용약관
+        <textarea style="margin-top: 12px; width: 100%; height: 400px; resize: none; box-sizing: border-box;"  readonly>제1장  서비스 이용약관
 제1조 (목적)
 본 약관은 SpendOlive(이하 '서비스')가 제공하는 지출 관리 및 OTT 구독 관리 서비스의 이용과 관련하여 서비스와 이용자 간의 권리, 의무 및 책임 사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
 제2조 (용어의 정의)
@@ -320,7 +320,7 @@
 <input type="checkbox"required>
 개인정보 처리방침 동의
 </label>
-<textarea style="margin-top: 12px; width: 100%; height: 200px; resize: none; box-sizing: border-box;" class="form-textarea"  readonly>제2장  개인정보처리방침
+<textarea style="margin-top: 12px; width: 100%; height: 400px; resize: none; box-sizing: border-box;"  readonly>제2장  개인정보처리방침
 SpendOlive(이하 '서비스')는 개인정보 보호법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 등 관련 법령에 따라 이용자의 개인정보를 처리하며, 이를 아래와 같이 공개합니다.
 제1조 (개인정보의 수집 항목 및 수집 방법)
 ① 서비스는 다음과 같은 개인정보를 수집합니다.
