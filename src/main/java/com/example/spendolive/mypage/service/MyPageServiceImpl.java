@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.example.spendolive.Expense.service.ExpenseService;
+import com.example.spendolive.inquiry.service.FileStorageService;
 import com.example.spendolive.member.domain.MemberVO;
 import com.example.spendolive.member.domain.MemberAccountVO;
 import com.example.spendolive.member.domain.MemberCardVO;
@@ -24,17 +27,20 @@ public class MyPageServiceImpl implements MyPageService {
     private final MyPageReportRepository myPageReportRepository;
     private final OttService ottService;
     private final ExpenseService expenseService;
+    private final FileStorageService fileStorageService;
 
     public MyPageServiceImpl(MemberService memberService,
                              MyPageRepository myPageRepository,
                              MyPageReportRepository myPageReportRepository,
                              OttService ottService,
-                             ExpenseService expenseService) {
+                             ExpenseService expenseService,
+                             FileStorageService fileStorageService) {
         this.memberService = memberService;
         this.myPageRepository = myPageRepository;
         this.myPageReportRepository = myPageReportRepository;
         this.ottService = ottService;
         this.expenseService = expenseService;
+        this.fileStorageService = fileStorageService;
     }
 
     @Override
@@ -173,13 +179,41 @@ public class MyPageServiceImpl implements MyPageService {
             return result;
         }
 
+        // [회원탈퇴 정책 변경] 문의 DB 행을 삭제하기 전에 문의 번호를 보관해 실제 첨부파일 폴더도 함께 정리한다.
+        List<Integer> inquiryIdList = myPageRepository.selectInquiryIds(loginId);
+
         // [회원탈퇴 개선] 기존 아이디와 이메일을 비워 즉시 신규 회원가입에 사용할 수 있게 한다.
         String temporaryId = makeTemporaryId(memberId);
         String anonymousId = makeAnonymousId(memberId, loginId);
         String anonymousEmail = "deleted_" + memberId + "_" + loginId + "@spendolive.local";
 
         myPageRepository.withdrawSelfMember(memberId, loginId, temporaryId, anonymousId, anonymousEmail);
+
+        // [회원탈퇴 정책 변경] DB 트랜잭션이 정상 커밋된 뒤에만 문의 첨부파일 디렉토리를 삭제한다.
+        deleteInquiryFilesAfterCommit(inquiryIdList);
         return result;
+    }
+
+    // [회원탈퇴 정책 변경] DB 롤백 시 파일만 먼저 사라지는 일을 막기 위해 커밋 이후 실제 파일을 정리한다.
+    private void deleteInquiryFilesAfterCommit(List<Integer> inquiryIdList) {
+        if (inquiryIdList == null || inquiryIdList.isEmpty()) {
+            return;
+        }
+
+        Runnable deleteFiles = () -> inquiryIdList.forEach(fileStorageService::deleteInquiryFiles);
+
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    deleteFiles.run();
+                }
+            });
+            return;
+        }
+
+        // [회원탈퇴 정책 변경] 트랜잭션 동기화가 없는 예외적인 실행 환경에서는 DB 처리 직후 파일을 정리한다.
+        deleteFiles.run();
     }
 
     // [회원탈퇴 개선] 임시 회원 아이디는 외래키 이동 중에만 사용하며 VARCHAR2(20)를 넘지 않게 한다.
