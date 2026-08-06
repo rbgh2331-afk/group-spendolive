@@ -240,7 +240,7 @@ public class PaymentServiceImpl implements PaymentService{
         int baseAmount = (int) Math.ceil(totalPrice / (double) memberLimit);
         int feeAmount = (int) Math.round(baseAmount * (PLATFORM_FEE_RATE / 100.0));
         int totalAmount = baseAmount + feeAmount;
-
+        //자동결제일 계산 로직
         int billingDay = roomInfo.getBilling_day() == null
                 ? 1
                 : roomInfo.getBilling_day();
@@ -650,7 +650,7 @@ public class PaymentServiceImpl implements PaymentService{
     @Override
     @Transactional
     public void registerSubMall(String userId, String bankCode, String accNum, String holderName, MemberVO memberVO) {
-    
+    /*
     // 1. v1 정산 API 주소
     String TOSS_API_URL = "https://api.tosspayments.com/v1/payouts/sub-malls"; 
     
@@ -659,24 +659,21 @@ public class PaymentServiceImpl implements PaymentService{
         RestTemplate restTemplate = new RestTemplate();
         String name = memberVO.getMember_name();
         
-        // v1은 계좌 실시간 조회를 안 하므로 마스킹이 섞여도 포맷만 맞으면 무조건 패스합니다.
         String cleanNum = accNum.replace("***", "000").replace("-", ""); 
 
-        // 🌟 2. 별도 DTO 없이 Map 구조로 v1 스펙에 맞게 데이터 세팅
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("subMallId", "SELLER_" + userId);   // 고유 식별자
         requestBody.put("companyName", name);               // 상호명
         requestBody.put("representativeName", name);        // 대표자명
         requestBody.put("identityNumber", "0001013111111"); // 예시: 주민번호 앞자리6자리 + 뒷자리7자리 총 13자리
         requestBody.put("type", "INDIVIDUAL");
-        // 정산 계좌 객체 조립 (v1 필드명: bank, accountNumber, holderName)
         Map<String, String> accountInfo = new HashMap<>();
         accountInfo.put("bank", "국민"); 
         accountInfo.put("accountNumber", cleanNum);
         accountInfo.put("holderName", name);
         requestBody.put("account", accountInfo);
 
-        // 🌟 3. HTTP 헤더 세팅 (순수 JSON 통신 설정)
+        // 헤더 세팅 
         HttpHeaders headers = new HttpHeaders();
         String rawKey = secretKey.trim() + ":";
         String encodedSecretKey = Base64.getEncoder().encodeToString(rawKey.getBytes());
@@ -684,10 +681,9 @@ public class PaymentServiceImpl implements PaymentService{
         headers.set("Authorization", "Basic " + encodedSecretKey);
         headers.setContentType(MediaType.APPLICATION_JSON); // text/plain 대신 무조건 JSON!
 
-        // Map 객체와 헤더를 바인딩
+
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-        // 🌟 4. 토스 API 호출
         ResponseEntity<String> response = restTemplate.exchange(
             TOSS_API_URL,
             HttpMethod.POST,
@@ -700,7 +696,6 @@ public class PaymentServiceImpl implements PaymentService{
             tools.jackson.databind.ObjectMapper mapper = new tools.jackson.databind.ObjectMapper();
             Map<String, Object> resBody = mapper.readValue(response.getBody(), Map.class);
             
-            // 🌟 5. v1 응답 데이터 구조에 맞춰 파싱 및 DB 저장
 
             SellerAccountVO seller = SellerAccountVO.builder()
                     .member_id(userId)
@@ -715,11 +710,9 @@ public class PaymentServiceImpl implements PaymentService{
             .member_id(userId)
             .bank_name(bankCode)
             .account_number(accNum)
-            .traceId(traceId) // v1은 traceId를 안 주므로 내부용 임의 생성
+            .traceId(traceId)
             .build();
             paymentRepository.insertSeller(seller);
-            
-            System.out.println("🎉 [토스 셀러 등록 성공] subMallId : SELLER_" + userId);
             }catch(Exception e){
                 //취소 api요청
                 throw new RuntimeException("서버 오류 로 송금을 취소합니다");
@@ -727,12 +720,12 @@ public class PaymentServiceImpl implements PaymentService{
         }
 
     } catch (HttpClientErrorException e) {
-        System.err.println("🚨 [토스 API 리턴 에러]: " + e.getResponseBodyAsString());
+
         throw new RuntimeException("토스 서브몰 등록 중 API 검증 오류 발생");
     } catch (Exception e) {
-        System.err.println("🚨 [시스템 에러]: " + e.getMessage());
+
         throw new RuntimeException("토스 서브몰 등록 중 시스템 오류 발생");
-    }
+    } */
 }
 
     @Override
@@ -859,6 +852,27 @@ public class PaymentServiceImpl implements PaymentService{
         }
         
     }
-
+    @Override
+    public void deleteCard(int card_idx,String id) throws Exception {
+        try{
+        paymentRepository.deleteCard(card_idx, id);
+        }catch(Exception e){
+            throw new PaymentProcessException(
+                    "DELETE_FAILED",
+                    "카드 삭제에 실패하였습니다.",
+                    e);
+        }
+    }
+    @Override
+    public void deleteAccount(int account_idx,String id) throws Exception {
+        try{
+        paymentRepository.deleteAccount(account_idx, id);
+        }catch(Exception e){
+            throw new PaymentProcessException(
+                    "DELETE_FAILED",
+                    "계좌 삭제에 실패하였습니다.",
+                    e);
+        }
+    }
 }    
 

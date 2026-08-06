@@ -63,5 +63,5 @@ public interface MemberRepository {
 	// 로그인 회원이 소유한 특정 계좌의 거래내역을 최신순으로 조회한다.
 	public List<MemberTranVO> selectTransactionsByAccount(String userId, int accountIdx)
 			throws DataAccessException;
-
+	public void deleteCard(int card_idx,String id)throws DataAccessException;
 }

@@ -11,6 +11,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpendOlive | ${isAdminPage ? '관리자' : '지출관리 플랫폼'}</title>
+    <script>
+        window.contextPath = "${contextPath}";
+    </script>
     <link rel="stylesheet" href="${contextPath}/resources/css/styles.css">
     <c:if test="${isAdminPage}">
         <link rel="stylesheet" href="${contextPath}/resources/css/admin.css">
@@ -71,7 +74,10 @@
                 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
             </footer>
         </div>
-        
+      
+        <jsp:include page="/WEB-INF/views/payment/popup.jsp" />
+        <jsp:include page="/WEB-INF/views/ott/popup.jsp" />
+        <jsp:include page="/WEB-INF/views/member/popup.jsp" />
         <jsp:include page="/WEB-INF/views/common/font.jsp" />
         <jsp:include page="/WEB-INF/views/common/chatbotWidget.jsp" />
         <script src="${contextPath}/resources/js/report.js"></script>
