@@ -38,4 +38,5 @@ ResponseEntity<PaymentAjaxResponse> paymentStatus(
 String tossCallback(RedirectAttributes redirectAttributes) throws Exception;
 ResponseEntity<PaymentAjaxResponse> updatePrimaryCard(@RequestParam("card_Idx") String card_idxstr,@RequestHeader(value = "Referer", required = false) String referer,HttpServletRequest request,HttpSession session) throws Exception;
 ResponseEntity<PaymentAjaxResponse> deleteCard(@RequestParam("card_idx") int card_idx, HttpServletRequest request,HttpSession session) throws Exception;
+ResponseEntity<PaymentAjaxResponse> deleteAccount(@RequestParam("account_idx") int account_idx,  HttpServletRequest request,HttpSession session) throws Exception;
 }

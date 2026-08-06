@@ -852,6 +852,27 @@ public class PaymentServiceImpl implements PaymentService{
         }
         
     }
-    
+    @Override
+    public void deleteCard(int card_idx,String id) throws Exception {
+        try{
+        paymentRepository.deleteCard(card_idx, id);
+        }catch(Exception e){
+            throw new PaymentProcessException(
+                    "DELETE_FAILED",
+                    "카드 삭제에 실패하였습니다.",
+                    e);
+        }
+    }
+    @Override
+    public void deleteAccount(int account_idx,String id) throws Exception {
+        try{
+        paymentRepository.deleteAccount(account_idx, id);
+        }catch(Exception e){
+            throw new PaymentProcessException(
+                    "DELETE_FAILED",
+                    "계좌 삭제에 실패하였습니다.",
+                    e);
+        }
+    }
 }    
 
