@@ -1,14 +1,14 @@
 /* =========================================================
-   12. 종모양 아이콘
-   header.jsp의 알림 벨 아이콘 + 안읽은 알림 개수 배지
+   12. 헤더 알림 아이콘
+   header.jsp에 있는 종 아이콘 + 알림센터 아이콘 관련 스타일
    ========================================================= */
 
-/* 벨 아이콘을 감싸는 클릭 영역. 원래 <a>였는데 드롭다운 토글용 <button>으로 바뀌면서
-   버튼 기본 스타일(테두리/배경/커서)을 리셋함. */
+/* 종 아이콘에 배지 표시 자리 잡는 <a>아이콘부터 뱃지 위치 잡는 <button>디자인
+   전용으로 잡음 우측상단(빨간동그라미/숫자)의 위치를 잡음. */
    .header-bell {position: relative;display: inline-flex;align-items: center;justify-content: center;width: 2.125rem;height: 2.125rem;border: 0;background: transparent;padding: 0;cursor: pointer;}
-   /* 실제 종 모양 아이콘(이모지/아이콘 폰트) 크기 */
+   /* 아이콘 자체 폰트 크기(이모지/글자 둘 다) 공통 */
    .bell-icon {font-size: 1.125rem;line-height: 1;}
-   /* 안읽은 알림 개수를 보여주는 빨간 동그라미 배지. */
+   /* 알림센터 아이콘 눌렸을 때 우측상단에 표시할 배지 잡음. */
    .notification-badge {position: absolute;top: 0.125rem;right: 0.0625rem;min-width: 1.0625rem;height: 1.0625rem;padding: 0 0.25rem;border-radius: 999px;background: #ef4444;color: #fff;font-size: 0.625rem;font-weight: 900;line-height: 1.0625rem;text-align: center;box-shadow: 0 0 0 0.125rem #fff;}
    
    /* =========================================================
@@ -19,23 +19,23 @@
    .notif-dropdown {position: absolute;top: calc(100% + 0.75rem);right: 0;width: 20rem;background: #fff;border: 0.0625rem solid var(--line);border-radius: 1.125rem;box-shadow: 0 1.375rem 3.75rem rgba(34, 52, 31, .18);display: flex;flex-direction: column;overflow: hidden;z-index: 200;opacity: 0;visibility: hidden;transform: translateY(-0.5rem) scale(.98);transform-origin: top right;transition: opacity .15s ease, transform .15s ease, visibility .15s ease;}
    .notif-dropdown.show {opacity: 1;visibility: visible;transform: translateY(0) scale(1);}
    
-   .notif-dropdown .notif-dropdown-header {display: flex;justify-content: space-between;align-items: center;padding: 0.375rem 1.125rem;border-bottom: 0.0625rem solid var(--line);flex-shrink: 0;}
-   .notif-dropdown .notif-dropdown-header strong {font-size: 0.875rem;color: var(--text);}
-   .notif-dropdown .notif-dropdown-header a {font-size: 0.75rem;color: var(--olive-dark);font-weight: 800;padding: 0;border-bottom: none;}
+   .notif-dropdown .notif-dropdown-header {display: flex;flex-wrap: nowrap;justify-content: space-between;align-items: center;gap: 0.5rem;padding: 0.375rem 1.125rem;border-bottom: 0.0625rem solid var(--line);flex-shrink: 0;background: linear-gradient(135deg, var(--olive-soft), var(--olives));}
+   .notif-dropdown .notif-dropdown-header strong {font-size: 0.875rem;color: var(--olive-dark);white-space: nowrap;flex: 0 0 auto;}
+   .notif-dropdown .notif-dropdown-header a {font-size: 0.75rem;color: var(--olive-dark);font-weight: 800;padding: 0;border-bottom: none;white-space: nowrap;flex: 0 0 auto;}
    
-   /* 알림 한 줄이 대략 4.25rem(68px) 정도라 5개(약 21rem) 높이로 맞춰둠.
-      5개 넘으면 이 안에서 스크롤되고, 5개 이하로 보일 때도 자연스럽게 그만큼만 차지함. */
-   .notif-dropdown-list {overflow-y: auto;max-height: 21rem;}
+   /* 알림 목록 최대 5개 정도는 스크롤 없이 바로 보이고, 그 이상은 목록 안에서 스크롤(21rem)
+      5개 이상일 때는 이 스크롤 안에서 확인하도록 처리함. */
+   .notif-dropdown-list {overflow-y: auto;max-height: 21rem;background: var(--cream);}
    
    .notif-dropdown .notif-dropdown-item {display: block; padding: 0.75rem 1.125rem 0.75rem 1rem; border-bottom: 0.0625rem solid var(--line);text-decoration: none;color: inherit;}
    .notif-dropdown .notif-dropdown-item:last-child {border-bottom: none;}
-   .notif-dropdown .notif-dropdown-item:hover {background: var(--cream);}
-   .notif-dropdown .notif-dropdown-item.unread {background: #f8fbf2;}
+   .notif-dropdown .notif-dropdown-item:hover {background: var(--olive-soft);}
+   .notif-dropdown .notif-dropdown-item.unread {background: var(--olives);}
    .notif-dropdown .notif-dropdown-item strong {display: block;font-size: 0.8125rem;color: var(--text);margin-bottom: 0.125rem;}
    .notif-dropdown .notif-dropdown-item span {display: block;font-size: 0.75rem;color: var(--muted);line-height: 1.5;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
    .notif-dropdown .notif-dropdown-item small {display: block;margin-top: 0.25rem;font-size: 0.6875rem;color: var(--muted);}
    
-   .notif-dropdown-empty {padding: 1.5rem 1rem;text-align: center;color: var(--muted);font-size: 0.8125rem;}
+   .notif-dropdown-empty {padding: 1.5rem 1rem;text-align: center;color: var(--muted);font-size: 0.8125rem;background: var(--cream);}
    
    @media (max-width: 30rem) {
        .notif-dropdown {width: min(20rem, calc(100vw - 2rem));right: -0.5rem;}

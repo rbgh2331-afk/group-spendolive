@@ -71,7 +71,7 @@
                 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
             </footer>
         </div>
-
+        
         <jsp:include page="/WEB-INF/views/common/font.jsp" />
         <jsp:include page="/WEB-INF/views/common/chatbotWidget.jsp" />
         <script src="${contextPath}/resources/js/report.js"></script>
@@ -81,6 +81,7 @@
         <%-- data-ajax-form/data-ajax-navigation이 있는 내 담당 화면에서만 요청을 가로챈다. --%>
         <script src="${contextPath}/resources/js/pageAjax.js"></script>
         <script src="${contextPath}/resources/js/bellIcon.js"></script>
+        <script src="${contextPath}/resources/js/weather.js"></script>
     </c:otherwise>
 </c:choose>
 </body>
