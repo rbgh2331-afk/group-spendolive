@@ -1,3 +1,5 @@
+/* 
+
 package com.example.spendolive.common.error;
 
 import org.springframework.boot.web.error.ErrorPage;
@@ -27,3 +29,5 @@ public class ErrorConfig implements WebServerFactoryCustomizer<ConfigurableServl
         factory.addErrorPages(errorPage400, errorPage403, errorPage404, errorPage500);
     }
 }
+
+*/
