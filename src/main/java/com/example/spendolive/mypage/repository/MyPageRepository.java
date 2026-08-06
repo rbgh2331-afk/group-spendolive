@@ -2,6 +2,7 @@ package com.example.spendolive.mypage.repository;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -85,6 +86,12 @@ public class MyPageRepository {
         return count == null ? 0 : count;
     }
 
+    // [회원탈퇴 정책 변경] 탈퇴 전에 삭제할 문의 번호를 조회해 DB 삭제 후 실제 첨부파일 폴더까지 정리할 수 있게 한다.
+    public List<Integer> selectInquiryIds(String loginId) {
+        String sql = "SELECT inquiry_id FROM inquiry_tb WHERE id = ? ORDER BY inquiry_id";
+        return jdbcTemplate.queryForList(sql, Integer.class, loginId);
+    }
+
     // [회원탈퇴 개선] 개인 데이터 삭제와 보존 데이터 익명 아이디 이동을 한 트랜잭션 안에서 순서대로 수행한다.
     public void withdrawSelfMember(int memberId, String loginId, String temporaryId, String anonymousId, String anonymousEmail) {
         insertTemporaryMember(loginId, temporaryId);
@@ -111,7 +118,7 @@ public class MyPageRepository {
         }
     }
 
-    // [회원탈퇴 개선] 회원 개인 전용 데이터는 보존하지 않고 실제 행을 삭제한다.
+    // [회원탈퇴 정책 변경] 개인 데이터와 과거 OTT 참여 이력, 문의 내역은 보존하지 않고 실제 행을 삭제한다.
     private void deletePrivateData(int memberId, String loginId) {
         jdbcTemplate.update("DELETE FROM expense_tb WHERE member_id = ?", memberId);
         jdbcTemplate.update("DELETE FROM monthly_budget_tb WHERE member_id = ?", memberId);
@@ -123,13 +130,18 @@ public class MyPageRepository {
         jdbcTemplate.update("DELETE FROM notification_tb WHERE id = ?", loginId);
         jdbcTemplate.update("DELETE FROM notice_read_tb WHERE id = ?", loginId);
         jdbcTemplate.update("DELETE FROM notice_favorite_tb WHERE id = ?", loginId);
+
+        // [회원탈퇴 정책 변경] 종료된 방의 과거 참여 행은 결제·정산 기록과 독립되어 있으므로 삭제한다.
+        jdbcTemplate.update("DELETE FROM ott_room_member_tb WHERE member_login_id = ?", loginId);
+
+        // [회원탈퇴 정책 변경] 문의 본문과 DB 첨부파일 행은 삭제한다. inquiry_file_tb는 ON DELETE CASCADE로 함께 삭제된다.
+        jdbcTemplate.update("DELETE FROM inquiry_tb WHERE id = ?", loginId);
     }
 
-    // [회원탈퇴 개선] 거래·정산·채팅·문의·신고 이력은 삭제하지 않고 동일한 익명 아이디로 연결한다.
+    // [회원탈퇴 정책 변경] 결제·정산·환불·채팅·신고 이력만 동일한 탈퇴 아이디로 연결해 보존한다.
     private void movePreservedMemberReferences(String beforeId, String afterId) {
-        // [회원탈퇴 개선] OTT 방, 과거 참여 내역, 채팅 발신자 이력을 유지한다.
+        // [회원탈퇴 정책 변경] 종료된 방의 방장 정보와 채팅 발신자 이력은 유지한다. 과거 참여 행은 이미 삭제했다.
         jdbcTemplate.update("UPDATE ott_room_tb SET host_login_id = ? WHERE host_login_id = ?", afterId, beforeId);
-        jdbcTemplate.update("UPDATE ott_room_member_tb SET member_login_id = ? WHERE member_login_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE ott_chat_message_tb SET sender_id = ? WHERE sender_id = ?", afterId, beforeId);
 
         // [회원탈퇴 개선] 결제, 환불, 에스크로, 플랫폼 수익 이력을 유지한다.
@@ -139,8 +151,7 @@ public class MyPageRepository {
         jdbcTemplate.update("UPDATE escrow_payout_tb SET host_id = ? WHERE host_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE platform_revenue_tb SET payer_id = ? WHERE payer_id = ?", afterId, beforeId);
 
-        // [회원탈퇴 개선] 문의, 신고, 경고와 관리자 공지 작성 이력을 유지한다.
-        jdbcTemplate.update("UPDATE inquiry_tb SET id = ? WHERE id = ?", afterId, beforeId);
+        // [회원탈퇴 정책 변경] 신고·경고와 관리자 공지 작성 이력은 유지한다. 문의 내역은 삭제 대상이다.
         jdbcTemplate.update("UPDATE report_tb SET reporter_id = ? WHERE reporter_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE report_tb SET reported_member_id = ? WHERE reported_member_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE warning_tb SET member_id = ? WHERE member_id = ?", afterId, beforeId);

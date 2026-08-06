@@ -462,6 +462,256 @@ function initExpensePage() {
         syncExpenseCategoryFilter();
         filterExpenseRows();
     }
+
+    // [생필품 가격 비교] 지출관리 하단에서 상품 검색과 최근 조사 가격 조회를 AJAX로 처리한다.
+    const consumerPriceSection = document.getElementById('consumer-price-compare');
+
+    if (consumerPriceSection && consumerPriceSection.dataset.initialized !== 'true') {
+        consumerPriceSection.dataset.initialized = 'true';
+
+        const contextPath = consumerPriceSection.dataset.contextPath || '';
+        const searchForm = document.getElementById('consumerPriceSearchForm');
+        const keywordInput = document.getElementById('consumerProductKeyword');
+        const searchButton = document.getElementById('consumerProductSearchButton');
+        const messageElement = document.getElementById('consumerPriceMessage');
+        const productResults = document.getElementById('consumerProductResults');
+        const priceResults = document.getElementById('consumerPriceResults');
+        const selectedProduct = document.getElementById('consumerSelectedProduct');
+        const inspectDay = document.getElementById('consumerInspectDay');
+        const lowestPrice = document.getElementById('consumerLowestPrice');
+        const averagePrice = document.getElementById('consumerAveragePrice');
+        const highestPrice = document.getElementById('consumerHighestPrice');
+        const storePriceRows = document.getElementById('consumerStorePriceRows');
+
+        // [생필품 가격 비교 더미데이터] 인증키 활성화 전 결과 화면 확인을 위한 시연용 상품 목록이다.
+        const consumerPriceDemoProducts = [
+            {goodId: 'DEMO-MILK-001', goodName: '서울우유 나100% 1L', goodTotalCnt: '1000', goodTotalDivCode: 'mL', demo: true},
+            {goodId: 'DEMO-MILK-002', goodName: '매일우유 오리지널 900mL', goodTotalCnt: '900', goodTotalDivCode: 'mL', demo: true},
+            {goodId: 'DEMO-NOODLE-001', goodName: '신라면 5개입', goodTotalCnt: '5', goodTotalDivCode: '개', demo: true},
+            {goodId: 'DEMO-EGG-001', goodName: '신선한 계란 30구', goodTotalCnt: '30', goodTotalDivCode: '개', demo: true}
+        ];
+
+        // [생필품 가격 비교 더미데이터] 상품별 시연용 가격 비교 결과다. DB에는 저장하지 않는다.
+        const consumerPriceDemoComparisons = {
+            'DEMO-MILK-001': {
+                goodId: 'DEMO-MILK-001', goodName: '서울우유 나100% 1L', inspectDay: '2026-07-31', lowestPrice: 2580, averagePrice: 2830, highestPrice: 3200,
+                stores: [
+                    {entpId: 'DEMO-STORE-01', storeName: '하나로마트 둔산점', roadAddress: '대전광역시 서구 둔산중로 00', plusOneYn: 'N', discountYn: 'Y', price: 2580},
+                    {entpId: 'DEMO-STORE-02', storeName: '그린마트 탄방점', roadAddress: '대전광역시 서구 탄방로 00', plusOneYn: 'N', discountYn: 'N', price: 2710},
+                    {entpId: 'DEMO-STORE-03', storeName: '우리마트 유성점', roadAddress: '대전광역시 유성구 대학로 00', plusOneYn: 'Y', discountYn: 'N', price: 2900},
+                    {entpId: 'DEMO-STORE-04', storeName: '행복마트 노은점', roadAddress: '대전광역시 유성구 노은로 00', plusOneYn: 'N', discountYn: 'N', price: 3130}
+                ]
+            },
+            'DEMO-MILK-002': {
+                goodId: 'DEMO-MILK-002', goodName: '매일우유 오리지널 900mL', inspectDay: '2026-07-31', lowestPrice: 2380, averagePrice: 2615, highestPrice: 2890,
+                stores: [
+                    {entpId: 'DEMO-STORE-01', storeName: '하나로마트 둔산점', roadAddress: '대전광역시 서구 둔산중로 00', plusOneYn: 'N', discountYn: 'Y', price: 2380},
+                    {entpId: 'DEMO-STORE-02', storeName: '그린마트 탄방점', roadAddress: '대전광역시 서구 탄방로 00', plusOneYn: 'N', discountYn: 'N', price: 2540},
+                    {entpId: 'DEMO-STORE-03', storeName: '우리마트 유성점', roadAddress: '대전광역시 유성구 대학로 00', plusOneYn: 'N', discountYn: 'N', price: 2650},
+                    {entpId: 'DEMO-STORE-04', storeName: '행복마트 노은점', roadAddress: '대전광역시 유성구 노은로 00', plusOneYn: 'N', discountYn: 'N', price: 2890}
+                ]
+            },
+            'DEMO-NOODLE-001': {
+                goodId: 'DEMO-NOODLE-001', goodName: '신라면 5개입', inspectDay: '2026-07-31', lowestPrice: 3650, averagePrice: 3975, highestPrice: 4290,
+                stores: [
+                    {entpId: 'DEMO-STORE-01', storeName: '하나로마트 둔산점', roadAddress: '대전광역시 서구 둔산중로 00', plusOneYn: 'N', discountYn: 'Y', price: 3650},
+                    {entpId: 'DEMO-STORE-02', storeName: '그린마트 탄방점', roadAddress: '대전광역시 서구 탄방로 00', plusOneYn: 'N', discountYn: 'N', price: 3890},
+                    {entpId: 'DEMO-STORE-03', storeName: '우리마트 유성점', roadAddress: '대전광역시 유성구 대학로 00', plusOneYn: 'N', discountYn: 'N', price: 4070},
+                    {entpId: 'DEMO-STORE-04', storeName: '행복마트 노은점', roadAddress: '대전광역시 유성구 노은로 00', plusOneYn: 'N', discountYn: 'N', price: 4290}
+                ]
+            },
+            'DEMO-EGG-001': {
+                goodId: 'DEMO-EGG-001', goodName: '신선한 계란 30구', inspectDay: '2026-07-31', lowestPrice: 6990, averagePrice: 7645, highestPrice: 8290,
+                stores: [
+                    {entpId: 'DEMO-STORE-01', storeName: '하나로마트 둔산점', roadAddress: '대전광역시 서구 둔산중로 00', plusOneYn: 'N', discountYn: 'Y', price: 6990},
+                    {entpId: 'DEMO-STORE-02', storeName: '그린마트 탄방점', roadAddress: '대전광역시 서구 탄방로 00', plusOneYn: 'N', discountYn: 'N', price: 7490},
+                    {entpId: 'DEMO-STORE-03', storeName: '우리마트 유성점', roadAddress: '대전광역시 유성구 대학로 00', plusOneYn: 'N', discountYn: 'N', price: 7810},
+                    {entpId: 'DEMO-STORE-04', storeName: '행복마트 노은점', roadAddress: '대전광역시 유성구 노은로 00', plusOneYn: 'N', discountYn: 'N', price: 8290}
+                ]
+            }
+        };
+
+        function formatWon(value) { return `${Number(value || 0).toLocaleString('ko-KR')}원`; }
+
+        function setConsumerPriceMessage(message, state) {
+            messageElement.textContent = message;
+            messageElement.classList.toggle('is-error', state === 'error');
+            messageElement.classList.toggle('is-loading', state === 'loading');
+        }
+
+        function setSearchBusy(busy) {
+            searchButton.disabled = busy;
+            searchButton.textContent = busy ? '조회 중' : '조회';
+        }
+
+        function clearPriceResult() {
+            priceResults.classList.add('expense-hidden');
+            storePriceRows.replaceChildren();
+        }
+
+        // [생필품 가격 비교] 공통 AJAX 응답 형식과 로그인 만료 응답을 함께 처리한다.
+        async function requestConsumerPrice(url) {
+            const response = await fetch(url, {method: 'GET', credentials: 'same-origin', headers: {'Accept': 'application/json'}});
+            const payload = await response.json().catch(function () { return null; });
+
+            if (response.status === 401 && payload && payload.redirectUrl) {
+                window.location.href = contextPath + payload.redirectUrl;
+                throw new Error('로그인이 필요합니다.');
+            }
+
+            if (!response.ok || !payload || payload.success !== true) {
+                throw new Error(payload && payload.message ? payload.message : '공공데이터를 불러오지 못했습니다.');
+            }
+
+            return payload;
+        }
+
+        function makeProductButton(product) {
+            const button = document.createElement('button');
+            const name = document.createElement('strong');
+            const detail = document.createElement('small');
+            const volume = [product.goodTotalCnt, product.goodTotalDivCode].filter(Boolean).join('');
+
+            button.type = 'button';
+            button.className = 'consumer-product-button';
+            name.textContent = product.goodName || '상품명 없음';
+            detail.textContent = volume ? `상품번호 ${product.goodId} · ${volume}` : `상품번호 ${product.goodId}`;
+            button.append(name, detail);
+            button.addEventListener('click', function () { loadConsumerPrices(product); });
+            return button;
+        }
+
+        function renderProductResults(products) {
+            productResults.replaceChildren();
+            clearPriceResult();
+
+            if (!Array.isArray(products) || products.length === 0) {
+                productResults.classList.add('expense-hidden');
+                setConsumerPriceMessage('검색된 상품이 없습니다. 다른 상품명을 입력해주세요.', 'error');
+                return;
+            }
+
+            const title = document.createElement('p');
+            const list = document.createElement('div');
+            title.className = 'consumer-product-result-title';
+            title.textContent = `검색 결과 ${products.length}개 · 가격을 확인할 상품을 선택해주세요.`;
+            list.className = 'consumer-product-list';
+            products.forEach(function (product) { list.appendChild(makeProductButton(product)); });
+            productResults.append(title, list);
+            productResults.classList.remove('expense-hidden');
+            setConsumerPriceMessage('상품을 선택하면 최근 조사일의 판매점별 가격을 조회합니다.', '');
+        }
+
+        // [생필품 가격 비교 더미데이터] 검색어와 일치하는 시연용 상품을 찾는다.
+        function findConsumerPriceDemoProducts(keyword) {
+            const normalizedKeyword = String(keyword || '').replace(/\s/g, '').toLowerCase();
+            const matchedProducts = consumerPriceDemoProducts.filter(function (product) {
+                return product.goodName.replace(/\s/g, '').toLowerCase().includes(normalizedKeyword);
+            });
+
+            return matchedProducts.length > 0 ? matchedProducts : consumerPriceDemoProducts.slice(0, 3);
+        }
+
+        // [생필품 가격 비교 더미데이터] 외부 API 오류 시 DB 없이 브라우저 데이터만으로 결과 화면을 표시한다.
+        function renderConsumerPriceDemo(keyword) {
+            const demoProducts = findConsumerPriceDemoProducts(keyword);
+            const firstProduct = demoProducts[0];
+            renderProductResults(demoProducts);
+
+            if (firstProduct && consumerPriceDemoComparisons[firstProduct.goodId]) {
+                renderPriceComparison(consumerPriceDemoComparisons[firstProduct.goodId]);
+            }
+
+            setConsumerPriceMessage('한국소비자원 API 인증 대기 중 · 현재 시연용 예시 데이터를 표시합니다.', '');
+        }
+
+        function renderStoreRows(stores) {
+            storePriceRows.replaceChildren();
+
+            stores.forEach(function (store) {
+                const row = document.createElement('tr');
+                const storeCell = document.createElement('td');
+                const addressCell = document.createElement('td');
+                const eventCell = document.createElement('td');
+                const priceCell = document.createElement('td');
+                const eventLabels = [];
+
+                if (store.plusOneYn === 'Y') eventLabels.push('1+1');
+                if (store.discountYn === 'Y') eventLabels.push('할인');
+                storeCell.textContent = store.storeName || `판매점 ${store.entpId}`;
+                addressCell.textContent = store.roadAddress || '-';
+                eventCell.textContent = eventLabels.length > 0 ? eventLabels.join(' · ') : '-';
+                priceCell.textContent = formatWon(store.price);
+                priceCell.className = 'consumer-store-price';
+                row.append(storeCell, addressCell, eventCell, priceCell);
+                storePriceRows.appendChild(row);
+            });
+        }
+
+        function renderPriceComparison(comparison) {
+            const stores = Array.isArray(comparison.stores) ? comparison.stores : [];
+            selectedProduct.textContent = comparison.goodName || '선택 상품';
+            inspectDay.textContent = `${comparison.inspectDay} 조사 기준`;
+            lowestPrice.textContent = formatWon(comparison.lowestPrice);
+            averagePrice.textContent = formatWon(comparison.averagePrice);
+            highestPrice.textContent = formatWon(comparison.highestPrice);
+            renderStoreRows(stores);
+            priceResults.classList.remove('expense-hidden');
+            setConsumerPriceMessage(`판매점 ${stores.length}곳의 가격을 비교했습니다.`, '');
+            priceResults.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+        }
+
+        // [생필품 가격 비교] 선택 상품의 goodId로 최근 금요일 가격을 서버에 요청한다.
+        async function loadConsumerPrices(product) {
+            clearPriceResult();
+
+            // [생필품 가격 비교 더미데이터] 시연용 상품은 외부 API를 호출하지 않고 즉시 화면에 표시한다.
+            if (product.demo === true && consumerPriceDemoComparisons[product.goodId]) {
+                renderPriceComparison(consumerPriceDemoComparisons[product.goodId]);
+                setConsumerPriceMessage('한국소비자원 API 인증 대기 중 · 현재 시연용 예시 데이터를 표시합니다.', '');
+                return;
+            }
+
+            setConsumerPriceMessage(`${product.goodName} 가격을 불러오고 있습니다.`, 'loading');
+
+            try {
+                const query = new URLSearchParams({goodId: product.goodId, goodName: product.goodName});
+                const payload = await requestConsumerPrice(`${contextPath}/spendolive/publicdata/consumer-price/prices.do?${query.toString()}`);
+                renderPriceComparison(payload.data);
+            } catch (error) {
+                setConsumerPriceMessage(error.message, 'error');
+            }
+        }
+
+        searchForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const keyword = keywordInput.value.trim();
+
+            if (!keyword) {
+                setConsumerPriceMessage('검색할 상품명을 입력해주세요.', 'error');
+                keywordInput.focus();
+                return;
+            }
+
+            productResults.classList.add('expense-hidden');
+            productResults.replaceChildren();
+            clearPriceResult();
+            setSearchBusy(true);
+            setConsumerPriceMessage(`${keyword} 상품을 검색하고 있습니다.`, 'loading');
+
+            try {
+                const query = new URLSearchParams({keyword: keyword});
+                const payload = await requestConsumerPrice(`${contextPath}/spendolive/publicdata/consumer-price/products.do?${query.toString()}`);
+                renderProductResults(payload.data);
+            } catch (error) {
+                // [생필품 가격 비교 더미데이터] 인증키 동기화 전에도 결과 화면을 확인할 수 있도록 자동 전환한다.
+                console.warn('[생필품 가격 비교] 실제 API 호출 실패로 시연용 데이터를 표시합니다.', error);
+                renderConsumerPriceDemo(keyword);
+            } finally {
+                setSearchBusy(false);
+            }
+        });
+    }
 }
 
 window.initExpensePage = initExpensePage;

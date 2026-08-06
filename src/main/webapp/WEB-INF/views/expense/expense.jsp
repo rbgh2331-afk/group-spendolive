@@ -16,7 +16,6 @@
                 </p>
                 <div class="hero-buttons">
                     <a href="#expense-form" class="btn btn-primary btn-large">지출 등록</a>
-                    <a href="#expense-list" class="btn btn-primary btn-large">월별 내역 보기</a>
                     <a href="${contextPath}/spendolive/calendar.do" class="btn btn-primary btn-large">캘린더</a>
                 </div>
             </div>
@@ -495,6 +494,65 @@
                             </ol>
                         </c:otherwise>
                     </c:choose>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%-- [생필품 가격 비교] 한국소비자원 OpenAPI 조회 기능을 지출관리 하단에 별도 카드로 배치한다. --%>
+    <section id="consumer-price-compare" class="section compact" data-context-path="${contextPath}">
+        <div class="container">
+            <div class="section-title">
+                <p class="eyebrow">PUBLIC PRICE DATA</p>
+                <h2>생필품 가격 비교</h2>
+                <p class="section-desc">한국소비자원 조사자료를 기준으로 상품별 판매점 가격을 비교합니다.</p>
+            </div>
+
+            <div class="consumer-price-card card">
+                <%-- [생필품 가격 비교] 상품명 검색 후 사용자가 정확한 상품을 선택한다. --%>
+                <form id="consumerPriceSearchForm" class="consumer-price-search-form">
+                    <label for="consumerProductKeyword">상품명 검색</label>
+                    <div class="consumer-price-search-row">
+                        <input type="search" id="consumerProductKeyword" placeholder="예: 우유, 라면, 세제" autocomplete="off" required>
+                        <button type="submit" id="consumerProductSearchButton" class="btn btn-primary">조회</button>
+                    </div>
+                </form>
+
+                <%-- [생필품 가격 비교] 조회 상태와 공공 API 오류를 같은 위치에서 안내한다. --%>
+                <p id="consumerPriceMessage" class="consumer-price-message">상품명을 입력한 뒤 조회해주세요.</p>
+
+                <%-- [생필품 가격 비교] 같은 검색어에 여러 상품이 있을 수 있어 선택 목록을 먼저 표시한다. --%>
+                <div id="consumerProductResults" class="consumer-product-results expense-hidden" aria-live="polite"></div>
+
+                <%-- [생필품 가격 비교] 선택 상품의 최저·평균·최고가와 판매점별 가격을 표시한다. --%>
+                <div id="consumerPriceResults" class="consumer-price-results expense-hidden" aria-live="polite">
+                    <div class="consumer-price-result-head">
+                        <div>
+                            <span id="consumerSelectedProduct" class="consumer-selected-product"></span>
+                            <strong id="consumerInspectDay"></strong>
+                        </div>
+                        <small>자료 제공: 한국소비자원 참가격</small>
+                    </div>
+
+                    <div class="consumer-price-summary">
+                        <div><span>최저가</span><strong id="consumerLowestPrice">-</strong></div>
+                        <div><span>평균가</span><strong id="consumerAveragePrice">-</strong></div>
+                        <div><span>최고가</span><strong id="consumerHighestPrice">-</strong></div>
+                    </div>
+
+                    <div class="consumer-price-table-wrap">
+                        <table class="consumer-price-table">
+                            <thead>
+                                <tr>
+                                    <th>판매점</th>
+                                    <th>주소</th>
+                                    <th>행사</th>
+                                    <th>가격</th>
+                                </tr>
+                            </thead>
+                            <tbody id="consumerStorePriceRows"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 package com.example.spendolive.weather.util;
 
-public class GridConverter {
+public class WeatherGridConverter {
 
     private static final double RE = 6371.00877;
     private static final double GRID = 5.0;

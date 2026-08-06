@@ -94,3 +94,42 @@
 .expense-empty-cell {text-align:center;}
 .expense-chart-bar {height:calc(var(--bar-height, 0) * 1%);}
 .category-progress-bar {width:calc(var(--progress-width, 0) * 1%);}
+/* [생필품 가격 비교] 지출관리 하단 공공데이터 가격 비교 카드 */
+#consumer-price-compare > .container {width:min(90rem, calc(100% - 4rem));}
+#consumer-price-compare .section-title {margin-bottom:1.5rem;}
+#consumer-price-compare .section-desc {margin:0.625rem 0 0;max-width:47.5rem;}
+.consumer-price-card {display:grid;gap:1.25rem;padding:1.5rem;}
+.consumer-price-search-form {display:grid;gap:0.625rem;}
+.consumer-price-search-form > label {color:var(--olive-dark);font-weight:900;}
+.consumer-price-search-row {display:grid;grid-template-columns:minmax(0, 1fr) auto;gap:0.625rem;}
+.consumer-price-search-row input {width:100%;margin:0;}
+.consumer-price-search-row .btn {min-width:6.25rem;white-space:nowrap;}
+.consumer-price-message {margin:0;padding:0.875rem 1rem;border:1px solid var(--line);border-radius:0.875rem;background:var(--cream);color:var(--muted);font-weight:800;}
+.consumer-price-message.is-loading {color:var(--olive-dark);}
+.consumer-price-message.is-error {border-color:#e7b2a8;background:#fff6f3;color:#a54332;}
+.consumer-product-results {display:grid;gap:0.75rem;}
+.consumer-product-result-title {margin:0;color:var(--muted);font-size:0.875rem;font-weight:850;}
+.consumer-product-list {display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:0.625rem;}
+.consumer-product-button {display:grid;gap:0.25rem;width:100%;padding:0.875rem 1rem;border:1px solid var(--line);border-radius:0.875rem;background:#fff;text-align:left;cursor:pointer;transition:transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;}
+.consumer-product-button:hover {transform:translateY(-0.125rem);border-color:var(--olive);background:var(--cream);}
+.consumer-product-button strong {color:var(--olive-dark);font-size:0.9375rem;}
+.consumer-product-button small {color:var(--muted);font-size:0.75rem;}
+.consumer-price-results {display:grid;gap:1rem;padding-top:0.25rem;}
+.consumer-price-result-head {display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;}
+.consumer-price-result-head > div {display:grid;gap:0.25rem;}
+.consumer-selected-product {color:var(--olive-dark);font-size:1.125rem;font-weight:950;}
+.consumer-price-result-head strong,.consumer-price-result-head small {color:var(--muted);font-size:0.75rem;}
+.consumer-price-summary {display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:0.75rem;}
+.consumer-price-summary > div {display:grid;gap:0.375rem;padding:1rem;border:1px solid var(--line);border-radius:1rem;background:var(--cream);text-align:center;}
+.consumer-price-summary span {color:var(--muted);font-size:0.8125rem;font-weight:850;}
+.consumer-price-summary strong {color:var(--olive-dark);font-size:1.25rem;}
+.consumer-price-table-wrap {overflow-x:auto;border:1px solid var(--line);border-radius:1rem;}
+.consumer-price-table {width:100%;min-width:43.75rem;border-collapse:collapse;}
+.consumer-price-table th,.consumer-price-table td {padding:0.875rem 1rem;border-bottom:1px solid var(--line);text-align:left;}
+.consumer-price-table th {background:var(--cream);color:var(--olive-dark);font-size:0.8125rem;}
+.consumer-price-table tbody tr:last-child td {border-bottom:0;}
+.consumer-price-table td {color:var(--muted);font-size:0.8125rem;}
+.consumer-store-price {color:var(--olive-dark) !important;font-weight:950;white-space:nowrap;}
+
+@media(max-width:65rem) {#consumer-price-compare > .container {width:min(100% - 2.5rem, 71.25rem);}}
+@media(max-width:43.75rem) {.consumer-price-search-row {grid-template-columns:1fr;}.consumer-price-search-row .btn {width:100%;}.consumer-product-list {grid-template-columns:1fr;}.consumer-price-result-head {align-items:flex-start;flex-direction:column;}.consumer-price-summary {grid-template-columns:1fr;}}
