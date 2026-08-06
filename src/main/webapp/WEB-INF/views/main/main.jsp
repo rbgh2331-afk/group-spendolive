@@ -40,7 +40,7 @@
                         <a href="${contextPath}/spendolive/calendar.do" class="btn btn-primary btn-large">
                             캘린더 보기
                         </a>
-                    </div>
+                        </div>
                     <div class="hero-stats">
                         <div>
                             <strong>

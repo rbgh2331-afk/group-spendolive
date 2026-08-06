@@ -42,6 +42,43 @@
             </a>
 
             <nav class="nav">
+                    <div class="header-weather-wrap">
+            <button type="button"
+                id="weatherToggleBtn"
+                class="header-bell"
+                onclick="toggleWeatherDropdown(event)">
+                <span class="bell-icon">🌞</span>
+            </button>
+
+            <div id="weatherDropdown" class="notif-dropdown">
+                <div class="notif-dropdown-header">
+                    <strong>날씨</strong>
+                    <select id="weatherPageRegionSelect" class="weather-select-mini" onchange="loadWeatherPage()">
+                        <option value="current">내 위치</option>
+                        <option value="seoul" selected>서울</option>
+                        <option value="incheon">인천</option>
+                        <option value="suwon">경기(수원)</option>
+                        <option value="chuncheon">강원(춘천)</option>
+                        <option value="cheongju">충북(청주)</option>
+                        <option value="hongseong">충남(홍성)</option>
+                        <option value="daejeon">대전</option>
+                        <option value="sejong">세종</option>
+                        <option value="jeonju">전북(전주)</option>
+                        <option value="mokpo">전남(목포)</option>
+                        <option value="gwangju">광주</option>
+                        <option value="andong">경북(안동)</option>
+                        <option value="daegu">대구</option>
+                        <option value="changwon">경남(창원)</option>
+                        <option value="busan">부산</option>
+                        <option value="ulsan">울산</option>
+                        <option value="jeju">제주</option>
+                    </select>
+                </div>
+        <div id="weatherPageResult" class="weather-dropdown-body">
+            <span class="weather-page-loading">불러오는 중...</span>
+        </div>
+    </div>
+</div>
                 <div class="header-bell-wrap">
                     <button type="button"
                         id="bellToggleBtn"

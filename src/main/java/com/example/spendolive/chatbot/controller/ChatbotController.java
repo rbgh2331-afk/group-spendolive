@@ -35,6 +35,16 @@ public class ChatbotController {
     @PostMapping("/ask.do")
     @ResponseBody
     public ChatbotAnswerDTO ask(@RequestBody ChatbotAskDTO request) {
-        return chatbotService.findAnswer(request.getQuestion());
+        try {
+            return chatbotService.findAnswer(request.getQuestion());
+        } catch (Exception e) {
+            System.err.println("[ChatbotController.ask] 답변 조회 실패: " + e.getMessage());
+            return new ChatbotAnswerDTO(
+                    false,
+                    "일시적인 오류로 답변을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.",
+                    null,
+                    null
+            );
+        }
     }
 }
