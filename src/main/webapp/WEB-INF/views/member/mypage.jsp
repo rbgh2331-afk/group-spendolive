@@ -376,6 +376,10 @@
                                            value="${fn:escapeXml(empty account.account_name ? '계좌' : account.account_name)}"
                                            aria-label="계좌 제목">
                                     <button type="button" class="btn btn-outline btn-mini" onclick="toggleAccountNameEdit(this)">수정</button>
+                                                <span>
+                                    <button type="button"
+                                                       class="btn btn-primary accountdeleteSubmitButton"
+                                                       data-account_idx="${account.account_idx}" >계좌 삭제</button></span>
                                 </form>
                                 <p>
                                     <c:out value="${empty accountBankName ? account.bank_code : accountBankName}" />
@@ -493,9 +497,10 @@
                                            value="${fn:escapeXml(cardDisplayName)}"
                                            aria-label="카드 이름">
                                     <button type="button" class="btn btn-outline btn-mini" onclick="toggleCardNameEdit(this)">수정</button>
+                                    <span>
                                     <button type="button"
                                                        class="btn btn-primary carddeleteSubmitButton"
-                                                       data-card_idx="${card.card_idx}" >카드 삭제</button>
+                                                       data-card_idx="${card.card_idx}" >카드 삭제</button></span>
                                             </div>
                                 </form>
                                 <p>

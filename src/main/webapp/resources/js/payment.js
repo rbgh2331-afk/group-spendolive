@@ -279,3 +279,28 @@ if (paymentActionBtn) {
     // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
     
   })();
+  (function () {
+  
+    document.addEventListener('click', async function (event) {
+        const accountdeleteButton = event.target.closest('.accountdeleteSubmitButton');
+        if (!accountdeleteButton) return;
+    
+        const account_idx = accountdeleteButton.dataset.account_idx;
+        if (!account_idx) {
+            showFailure(accountdeleteButton, { message: '삭제할 계좌를 찾을 수 없습니다.' });
+            return;
+        }
+        const body = new URLSearchParams({ account_idx });
+        // 모듈화된 함수 호출
+        await executeRequest({
+            button: accountdeleteButton,
+            confirmMessage: '계좌 삭제 처리하겠습니다.',
+            requestUrl: '/payment/deleteAccount.do',
+            bodyData: body,
+            modalTitle: '계좌 삭제를 처리하고 있습니다.',
+            fallbackErrorMessage: '계좌 삭제 처리 결과를 확인하지 못했습니다.'
+        },'payment');
+    });
+    // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
+    
+  })();
