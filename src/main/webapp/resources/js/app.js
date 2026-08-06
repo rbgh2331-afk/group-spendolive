@@ -454,7 +454,7 @@ function showStatusModal(prefix,state, modalTitle, modalMessage, option) {
     }
 }
 
-async function executeRequest(options,prefix) {
+window.executeRequest = async function(options,prefix) {
   const {
       button,           // 클릭된 타겟 버튼 (disabled 처리용)
       confirmMessage,   // confirm 창 메시지
@@ -548,7 +548,7 @@ function moveAfterSuccess(result,prefix) {
   showStatusModal(
       prefix,
       'success',
-      '결제가 완료되었습니다.',
+      result.message,
       result.message || '참여한 방으로 이동합니다.',
       { hideClose: true }
   );

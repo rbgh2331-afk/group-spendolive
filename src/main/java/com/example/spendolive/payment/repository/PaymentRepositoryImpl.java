@@ -110,7 +110,7 @@ public class PaymentRepositoryImpl implements PaymentRepository{
     public PaymentRepositoryImpl(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
-
+ 
     //Select
     @Override
     public void updatePaymentStatus(SettlementPaymentVO paymentInfo) {

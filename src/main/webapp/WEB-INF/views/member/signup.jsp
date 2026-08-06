@@ -478,4 +478,13 @@ var msg = "${msg}";
     if (message && message !== "") {
         alert(message);
     }
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        // 현재 엔터를 친 요소가 input 태그인지 확인 
+        // (textarea나 button에서 엔터를 칠 때는 정상 작동하게 두기 위함)
+        if (event.target.tagName === 'INPUT') {
+            event.preventDefault(); // 기본 동작(submit) 막기
+        }
+    }
+});
 </script>

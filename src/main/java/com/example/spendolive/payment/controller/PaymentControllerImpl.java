@@ -373,6 +373,34 @@ public class PaymentControllerImpl implements PaymentController {
                             null ));
         }
     }
+    @Override
+    @PostMapping("/deleteCard.do")
+    public ResponseEntity<PaymentAjaxResponse> deleteCard(@RequestParam("card_idx") int card_idx,  HttpServletRequest request,HttpSession session) throws Exception {
+        MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
+        String id = memberVO.getId();
+        try{
+        paymentService.deleteCard(card_idx,id);
+        return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new PaymentAjaxResponse(
+                            true,
+                            "DELETE_COMPLETED",
+                            "삭제에 성공하였습니다.",
+                            "SUCCESS",
+                            null,
+                            "/spendolive/myPage.do"));
+        }catch(PaymentProcessException e){
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new PaymentAjaxResponse(
+                            false,
+                            "DELETE_FAILED",
+                            e.getMessage(),
+                            "FAILED",
+                            null,
+                            "/spendolive/myPage.do"));
+        }
+    }
     private boolean hasLinkedCard(HttpSession session) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         return memberInfo != null && "YES".equals(memberInfo.getCard_status());
