@@ -7,10 +7,11 @@
 /* Expense page width + inline edit layout fix */
 
 #expense-form > .container {width: min(90rem, calc(100% - 4rem));}
-#expense-form .expense-layout {grid-template-columns: 22.5rem minmax(0, 1fr);gap: 1.375rem;align-items: start;}
-#expense-form .expense-form {min-width: 0;}
-#expense-form .expense-table {min-width: 0;overflow: hidden;}
-#expense-form .table-wrap {width: 100%;overflow-x: auto;}
+#expense-form .expense-layout {grid-template-columns:22.5rem minmax(0, 1fr);gap:1.375rem;align-items:stretch;}
+/* [최근 지출 높이 통일] 같은 행의 빠른 등록 카드와 최근 지출 카드를 같은 높이로 맞춘다. */
+#expense-form .expense-form,#expense-form .expense-table {min-width:0;height:100% !important;}
+#expense-form .expense-table {display:flex;flex-direction:column;overflow:hidden;}
+#expense-form .table-wrap {width:100%;overflow-x:auto;flex:1 1 auto;}
 #expense-form .expense-table table {min-width: 57.5rem;table-layout: auto;}
 #expense-form .expense-table th,#expense-form .expense-table td {padding: 0.875rem 0.5rem;}
 #expense-form .edit-mode {margin-top: 0;padding: 0.625rem 0.6875rem;border-radius: 0.75rem;min-height: 2.625rem;}
@@ -24,8 +25,9 @@
 
 @media(max-width: 65rem) {
   #expense-form > .container {width: min(100% - 2.5rem, 71.25rem);}
-  #expense-form .expense-layout {grid-template-columns: 1fr;}
-  #expense-form .expense-table table {min-width: 57.5rem;}
+  #expense-form .expense-layout {grid-template-columns:1fr;align-items:start;}
+  #expense-form .expense-form,#expense-form .expense-table {height:auto !important;}
+  #expense-form .expense-table table {min-width:57.5rem;}
 }
 /* Expense analytics section */
 
@@ -87,6 +89,11 @@
 .expense-filter-bar {display:flex;justify-content:flex-end;gap:0.5rem;flex-wrap:wrap;margin:1rem 0;}
 .expense-filter-bar select {width:auto;min-width:8.75rem;margin:0;padding:0.625rem 0.75rem;}
 @media(max-width:43.75rem) {.expense-filter-bar {justify-content:stretch;}.expense-filter-bar select {flex:1;min-width:8rem;}}
+
+/* [최근 지출 페이지 처리] 공통 pagination/pg-btn 디자인을 사용하고 숫자 버튼만 한 줄로 묶는다. */
+.expense-pagination {margin-top:auto;padding-top:1.25rem;}
+.expense-page-numbers {display:flex;align-items:center;gap:0.375rem;}
+.expense-pagination .pg-btn:disabled {opacity:0.45;cursor:not-allowed;}
 
 /* JSP 인라인 스타일 분리 */
 .expense-hidden {display:none;}

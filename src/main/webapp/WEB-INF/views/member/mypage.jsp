@@ -500,8 +500,7 @@
                                     <span>
                                     <button type="button"
                                                        class="btn btn-primary carddeleteSubmitButton"
-                                                       data-card_idx="${card.card_idx}" >카드 삭제</button></span>
-                                            </div>
+                                                       data-card_idx="${card.card_idx}">카드 삭제</button></span>
                                 </form>
                                 <p>
                                     <c:out value="${cardCompanyDisplayName}" />
