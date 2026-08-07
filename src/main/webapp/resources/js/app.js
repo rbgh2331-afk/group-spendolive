@@ -1,6 +1,8 @@
 /* SpendOlive Complete Fixed JS */
 const contextPath = window.contextPath;
 let currentMonth = 6;
+let isEmailVerified = false; 
+let isPhoneVerified = false;
 
 function openModal(id){const el=document.getElementById(id);if(el)el.classList.add("show")}
 function closeModal(id){const el=document.getElementById(id);if(el)el.classList.remove("show")}
@@ -33,7 +35,7 @@ function setAuthMessage(id,message,type){
   el.textContent=message;
   el.className="auth-result-text "+type;
 }
-var isIdVerified = false; 
+let isIdVerified = false;
 document.addEventListener("DOMContentLoaded",()=>{
   document.querySelectorAll(".modal").forEach((modal)=>{
     modal.addEventListener("click",(event)=>{
@@ -41,12 +43,11 @@ document.addEventListener("DOMContentLoaded",()=>{
     });
   });
 });
-var isEmailVerified = false; 
 
 
 // 2. 사용자가 입력한 6자리 인증번호를 확인
 function verifyEmail() {
-  const inputCode = $('#emailAuthCode').val();
+  const inputCode = $('#emailAuthCode').val().trim();
   if (!inputCode) {
       alert('인증번호를 입력해 주세요.');
       return;
@@ -75,7 +76,7 @@ function verifyEmail() {
 }
 
 // 글로벌 변수로 휴대폰 인증 여부 체크용 플래그 선언
-let isPhoneVerified = false;
+
 
 // 2. 사용자가 입력한 가상 인증번호 검증
 function verifySms() {
@@ -105,6 +106,14 @@ function verifySms() {
       }
   });
 }
+
+function loginYn(log,loginYn){
+  if (!loginYn) {
+      soAlert("로그인이 필요한 기능입니다. 로그인을 해주세요!", { type: "error" })
+          .then(function () { location.href = "/member/loginForm.do?log="+log; });
+      return;
+  }
+}
 // 3. 회원가입 버튼 누를 때 최종 방어선 함수
 function joinCheck() {
 if(!isEmailVerified) {
@@ -115,7 +124,7 @@ if (!isPhoneVerified) {
   alert('전화번호 인증을 완료해 주세요.');
   return false;
 }
-if (isIdVerified) {
+if (!isIdVerified) {
   alert('아이디 중복확인을 완료해 주세요.');
   return false;
 }

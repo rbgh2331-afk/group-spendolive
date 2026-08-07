@@ -215,7 +215,7 @@
                         <!-- 마이페이지 -->
                         <li class="so-menu-item has-submenu">
                             <a class="so-menu-link ${fn:contains(requestURI, '/mypage') ? 'active' : ''}"
-                            href="${contextPath}/spendolive/mypage.do">
+                            href="${contextPath}/spendolive/mypage.do" onclick="return loginYn('mypage', ${isLogOn})">
                                 <strong>마이페이지</strong>
                                 <span class="so-menu-arrow">◂</span>
                             </a>
@@ -227,7 +227,7 @@
                                         통합 계좌 연동
                                     </a>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/member/openBankingAuth.do">
+                                    href="${contextPath}/member/openBankingAuth.do">    
                                         계좌 연동
                                     </a>
                                 </li>

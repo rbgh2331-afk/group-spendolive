@@ -80,10 +80,11 @@
         <jsp:include page="/WEB-INF/views/member/popup.jsp" />
         <jsp:include page="/WEB-INF/views/common/font.jsp" />
         <jsp:include page="/WEB-INF/views/common/chatbotWidget.jsp" />
+        <script src="${contextPath}/resources/js/app.js"></script>
         <script src="${contextPath}/resources/js/report.js"></script>
          <script src="${contextPath}/resources/js/payment.js"></script>
         <script src="${contextPath}/resources/js/chatbot.js"></script>
-        <script src="${contextPath}/resources/js/app.js"></script>
+        <script src="${contextPath}/resources/js/notice.js"></script>
         <%-- data-ajax-form/data-ajax-navigation이 있는 내 담당 화면에서만 요청을 가로챈다. --%>
         <script src="${contextPath}/resources/js/pageAjax.js"></script>
         <script src="${contextPath}/resources/js/bellIcon.js"></script>

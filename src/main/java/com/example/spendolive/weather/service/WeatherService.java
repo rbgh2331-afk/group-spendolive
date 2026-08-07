@@ -1,6 +1,6 @@
 package com.example.spendolive.weather.service;
 
-import com.example.spendolive.weather.util.GridConverter;
+import com.example.spendolive.weather.util.WeatherGridConverter;
 import com.example.spendolive.weather.util.WeatherTimeUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -27,7 +27,7 @@ public class WeatherService {
      * 위경도 기반 조회 (Geolocation으로 받은 좌표를 격자로 변환해서 조회)
      */
     public List<JsonObject> getForecastByLatLon(double lat, double lon) {
-        GridConverter.GridXY grid = GridConverter.convertToGrid(lat, lon);
+        WeatherGridConverter.GridXY grid = WeatherGridConverter.convertToGrid(lat, lon);
         return getForecastByGrid(grid.nx, grid.ny);
     }
 
