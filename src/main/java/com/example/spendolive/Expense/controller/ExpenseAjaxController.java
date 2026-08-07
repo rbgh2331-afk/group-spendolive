@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.spendolive.Expense.domain.ExpenseDTO;
 import com.example.spendolive.Expense.service.ExpenseService;
-import com.example.spendolive.common.ajax.AjaxAuthSupport;
 import com.example.spendolive.common.ajax.AjaxDuplicateGuard;
 import com.example.spendolive.common.ajax.AjaxResponse;
 import com.example.spendolive.member.domain.MemberVO;
@@ -53,10 +52,8 @@ public class ExpenseAjaxController {
                                             @RequestParam(value = "budget_amount", required = false) String budgetAmount,
                                             HttpSession session) {
 
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) {
-            return AjaxAuthSupport.unauthorized();
-        }
+        // [내 담당 로그인 공통화] 로그인 팝업/이동은 공통 JS가 처리하므로 AJAX Controller의 중복 인증 응답 검사를 제거한다.
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         try {
             int parsedBudgetAmount = Integer.parseInt(budgetAmount);
@@ -87,10 +84,7 @@ public class ExpenseAjaxController {
                                             @RequestParam(value = "yearMonth", required = false) String yearMonth,
                                             HttpSession session) {
 
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) {
-            return AjaxAuthSupport.unauthorized();
-        }
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest()
@@ -144,10 +138,7 @@ public class ExpenseAjaxController {
                                                @RequestParam(value = "yearMonth", required = false) String yearMonth,
                                                HttpSession session) {
 
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) {
-            return AjaxAuthSupport.unauthorized();
-        }
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest()
@@ -181,10 +172,7 @@ public class ExpenseAjaxController {
                                                @RequestParam(value = "yearMonth", required = false) String yearMonth,
                                                HttpSession session) {
 
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) {
-            return AjaxAuthSupport.unauthorized();
-        }
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         try {
             Long parsedExpenseId = Long.valueOf(expenseId);

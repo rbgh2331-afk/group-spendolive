@@ -106,6 +106,7 @@ function verifySms() {
       }
   });
 }
+
 // 3. 회원가입 버튼 누를 때 최종 방어선 함수
 function joinCheck() {
 if(!isEmailVerified) {

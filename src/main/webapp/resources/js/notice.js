@@ -102,14 +102,16 @@ function soEnsureModal() {
     function soAlert(message, opts) { return soOpenModal(message, opts, false); }
     function soConfirm(message, opts) { return soOpenModal(message, opts, true); }
 
-function login(log){
-    if (mode === "alert" && !loginYn) {
-        soAlert("로그인이 필요한 기능입니다. 로그인을 해주세요!", { type: "error" })
-            .then(function () { location.href = "/member/loginForm.do?log=notice"; });
-        return;
-    }
-}
 
+
+    function loginYn(log,loginYn){
+        if (!loginYn) {
+            soAlert("로그인이 필요한 기능입니다. 로그인을 해주세요!", { type: "error" })
+                .then(function () { location.href = "/member/loginForm.do?log="+log; });
+            return false;
+        }
+        return true;
+      }
 function setBoardTab(mode, initialFilter) {
 
 
