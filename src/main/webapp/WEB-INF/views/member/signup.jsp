@@ -417,7 +417,7 @@ SpendOlive(이하 '서비스')는 개인정보 보호법, 정보통신망 이용
            </c:otherwise>
         </c:choose>
             <br>
-            <button id="signupButton"class="auth-btn auth-btn-primary" type="submit">
+            <button id="signupButton"class="auth-btn auth-btn-primary" type="submit" >
                 회원가입
             </button>
         </form>

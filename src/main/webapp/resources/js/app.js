@@ -1,6 +1,8 @@
 /* SpendOlive Complete Fixed JS */
 const contextPath = window.contextPath;
 let currentMonth = 6;
+let isEmailVerified = false; 
+let isPhoneVerified = false;
 
 function openModal(id){const el=document.getElementById(id);if(el)el.classList.add("show")}
 function closeModal(id){const el=document.getElementById(id);if(el)el.classList.remove("show")}
@@ -33,7 +35,7 @@ function setAuthMessage(id,message,type){
   el.textContent=message;
   el.className="auth-result-text "+type;
 }
-var isIdVerified = false; 
+let isIdVerified = false;
 document.addEventListener("DOMContentLoaded",()=>{
   document.querySelectorAll(".modal").forEach((modal)=>{
     modal.addEventListener("click",(event)=>{
@@ -41,7 +43,6 @@ document.addEventListener("DOMContentLoaded",()=>{
     });
   });
 });
-var isEmailVerified = false; 
 
 
 // 2. 사용자가 입력한 6자리 인증번호를 확인
@@ -75,7 +76,7 @@ function verifyEmail() {
 }
 
 // 글로벌 변수로 휴대폰 인증 여부 체크용 플래그 선언
-let isPhoneVerified = false;
+
 
 // 2. 사용자가 입력한 가상 인증번호 검증
 function verifySms() {
@@ -115,7 +116,7 @@ if (!isPhoneVerified) {
   alert('전화번호 인증을 완료해 주세요.');
   return false;
 }
-if (isIdVerified) {
+if (!isIdVerified) {
   alert('아이디 중복확인을 완료해 주세요.');
   return false;
 }

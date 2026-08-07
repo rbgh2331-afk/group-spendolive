@@ -173,6 +173,9 @@ function showMemberModal(prefix, type, titleText, messageText) {
         const formData = new FormData(signupForm);
         const payload = new URLSearchParams(formData);
         e.preventDefault();
+        if(!joinCheck()){
+            return;
+        }
         try {
             showMemberModal('signup','processing', '회원가입 중 입니다.', '잠시만 기다려주세요.');
             const response = await fetch('/member/addmember.do', {
@@ -304,10 +307,14 @@ function showMemberModal(prefix, type, titleText, messageText) {
 (function () {
 
     document.addEventListener('click', async function (e) {
+        
         const whitdrawButton = e.target.closest('.adminmemberSubmitButton');
         if (!whitdrawButton) return;
         const id = whitdrawButton.dataset.id;
         const body = new URLSearchParams({ id });
+        if(!confirm("정말 탈퇴 시키겠습니까?")){
+            return;
+        }
         try {
             showMemberModal('adminmember','processing', '탈퇴 진행 중 입니다.', '잠시만 기다려주세요.');
             const response = await fetch('/member/whitdraw.do', {
