@@ -16,6 +16,7 @@
                 </p>
                 <div class="hero-buttons">
                     <a href="#expense-form" class="btn btn-primary btn-large">지출 등록</a>
+                    <a href="#expense-list" class="btn btn-primary btn-large">월별 내역 보기</a>
                     <a href="${contextPath}/spendolive/calendar.do" class="btn btn-primary btn-large">캘린더</a>
                 </div>
             </div>
@@ -84,6 +85,7 @@
                             <fmt:formatNumber value="${expenseTypeSummary.OTT}" pattern="#,###" />원
                         </strong>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -181,7 +183,8 @@
                     <div class="row-title">
                         <div>
                             <h3>최근 지출 내역</h3>
-                            <p class="card-desc">선택한 달의 지출만 표시됩니다.</p>
+                            <%-- [최근 지출 페이지 처리] 선택한 달의 지출을 한 페이지에 10개씩 표시한다. --%>
+                            <p class="card-desc">선택한 달의 지출을 한 페이지에 10개씩 표시합니다.</p>
                         </div>
 
                         <%-- [공통 AJAX 로딩 적용] 사용자가 조회 월을 바꿀 때 본문만 갱신하고 지정 문구를 공통 팝업에 표시한다. --%>
@@ -395,6 +398,25 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <%-- [최근 지출 페이지 처리]
+                         분류·카테고리·금액 정렬 결과를 기준으로 JavaScript가 페이지 버튼을 구성한다.
+                         기존 월별 전체 목록은 유지하므로 차트·요약 계산에는 영향을 주지 않는다.
+                    --%>
+                    <div id="expensePagination"
+                         class="pagination expense-pagination expense-hidden"
+                         aria-label="최근 지출 내역 페이지">
+                        <button type="button"
+                                class="pg-btn"
+                                data-expense-page-direction="prev"
+                                aria-label="이전 페이지">‹</button>
+
+                        <div id="expensePageNumbers" class="expense-page-numbers"></div>
+
+                        <button type="button"
+                                class="pg-btn"
+                                data-expense-page-direction="next"
+                                aria-label="다음 페이지">›</button>
                     </div>
                 </div>
             </div>
