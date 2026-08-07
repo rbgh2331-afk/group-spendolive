@@ -46,7 +46,7 @@ var isEmailVerified = false;
 
 // 2. 사용자가 입력한 6자리 인증번호를 확인
 function verifyEmail() {
-  const inputCode = $('#emailAuthCode').val();
+  const inputCode = $('#emailAuthCode').val().trim();
   if (!inputCode) {
       alert('인증번호를 입력해 주세요.');
       return;

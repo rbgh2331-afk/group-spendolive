@@ -14,12 +14,15 @@
         window.contextPath = "${contextPath}";
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script>
+        window.contextPath = "${contextPath}";
+    </script>
     <link rel="stylesheet" href="${contextPath}/resources/css/styles.css">
 </head>
 <body class="auth-body">
     <div class="auth-wrap">
         <aside class="auth-brand-panel">
-        <a href="${contextPath}/spendolive/main.do" class="auth-logo">
+        <a href="${contextPath}/spendolive/main.do" class="auth-logo" onclick-"login()">
             <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
             <span>
                 SpendOlive
@@ -215,7 +218,7 @@
                 </div>
                 <div class="auth-form-group">
                 <label class="auth-check-row">
-                    <input type="checkbox"required>
+                    <input type="checkbox" required>
                     서비스 이용약관 동의
         <textarea style="margin-top: 12px; width: 100%; height: 400px; resize: none; box-sizing: border-box;"  readonly>제1장  서비스 이용약관
 제1조 (목적)
@@ -321,7 +324,7 @@
 </textarea>
 </label>
 <label class="auth-check-row">
-<input type="checkbox"required>
+<input type="checkbox" required>
 개인정보 처리방침 동의
 </label>
 <textarea style="margin-top: 12px; width: 100%; height: 400px; resize: none; box-sizing: border-box;"  readonly>제2장  개인정보처리방침
