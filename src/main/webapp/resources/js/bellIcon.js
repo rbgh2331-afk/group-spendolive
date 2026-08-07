@@ -88,18 +88,18 @@ function loadNotifDropdownList() {
 
     list.innerHTML = '<div class="notif-dropdown-empty">불러오는 중...</div>';
 
-    // 벨 드롭다운은 "안읽은 알림만" 보여준다. 읽으면 다음 조회부터 자연히 사라짐.
-    // 전체 내역(읽은 것 포함)은 알림센터 페이지에서 확인.
-    /* [AJAX] GET /notification/ajax/unread_list.do
-       - 드롭다운을 열 때마다(toggleNotifDropdown) 매번 새로 요청함(캐싱 안 함)
-         → 종 아이콘을 열어볼 때마다 방금 들어온 알림까지 최신 상태로 보여주기 위함
-       - unread_count.do와 달리 안 읽은 알림의 실제 목록(제목/메시지/링크)까지 받아옴 */
     fetch("/spendolive/notification/ajax/unread_list.do", { credentials: 'same-origin' })
         .then(response => {
+            if (response.status === 401) {
+                // 비로그인 - 서버가 401로 구분해서 알려줌
+                list.innerHTML = '<div class="notif-dropdown-empty">로그인 시 알림을 확인할 수 있습니다.</div>';
+                return null;
+            }
             if (!response.ok) throw new Error("HTTP " + response.status);
             return response.json();
         })
         .then(data => {
+            if (data === null) return; // 위에서 401 처리하고 끝낸 경우
             if (!data || data.length === 0) {
                 list.innerHTML = '<div class="notif-dropdown-empty">새 알림이 없습니다.</div>';
                 return;

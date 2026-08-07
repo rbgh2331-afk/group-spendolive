@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.example.spendolive.member.domain.MemberVO;
 import com.example.spendolive.notification.domain.NotificationDTO;
@@ -44,17 +46,18 @@ public class NotificationController {
     // 벨 드롭다운 전용: 안읽은 알림만 반환. 읽음 처리되면 다음 호출부터 목록에서 사라짐.
     // (전체 내역이 필요한 알림센터 페이지는 기존 /ajax/list.do 그대로 사용)
     @GetMapping("/ajax/unread_list.do")
-    public List<NotificationDTO> unreadNotificationList(HttpSession session) {
+    public ResponseEntity<List<NotificationDTO>> unreadNotificationList(HttpSession session) {
 
         MemberVO memberInfo =
                 (MemberVO) session.getAttribute("memberInfo");
 
         if (memberInfo == null || memberInfo.getId() == null) {
-            return Collections.emptyList();
+            // 비로그인 - 빈 배열이 아니라 401로 구분해서 응답
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
         }
 
-        return notificationService.getUnreadNotificationList(memberInfo.getId());
-    }
+        return ResponseEntity.ok(notificationService.getUnreadNotificationList(memberInfo.getId()));
+}
 
     @GetMapping("/ajax/unread_count.do")
     public Map<String, Integer> unread_count(HttpSession session) {
