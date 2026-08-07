@@ -456,7 +456,7 @@ public class MemberControllerImpl implements MemberController{
         // 1. 인가 코드 누락(사용자가 취소 버튼을 누른 경우 등) 처리
         if (code == null || code.trim().isEmpty()) {
             redirectAttributes.addFlashAttribute("msg", "카카오 로그인이 취소되었거나 오류가 발생했습니다."); 
-            return layout("/WEB-INF/views/member/loginForm.jsp");
+            return new ModelAndView("redirect:/member/loginForm.jsp");
 
         }
        
@@ -472,7 +472,7 @@ public class MemberControllerImpl implements MemberController{
                 session.setAttribute("login_type", "KAKAO");
                 session.setAttribute("id", id);
                 session.setAttribute("member_name", userInfo.get("nickname")); 
-                return layout("/WEB-INF/views/member/signup.jsp");
+                return new ModelAndView("redirect:/member/signup.jsp");
             } else {
                 MemberVO memberVO = memberService.getMemberById(id);
                 List<GrantedAuthority> authorities = List.of(
@@ -513,7 +513,7 @@ public class MemberControllerImpl implements MemberController{
             } catch (Exception e) {
                 e.printStackTrace(); 
                 redirectAttributes.addFlashAttribute("msg", "카카오 로그인 연동 중 서버 오류가 발생했습니다."); 
-                return layout("/WEB-INF/views/member/loginForm.jsp");
+                return new ModelAndView("redirect:/member/loginForm.jsp");
             }
             
         return mav;

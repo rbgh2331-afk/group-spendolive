@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
+<c:set var="requestURI" value="${pageContext.request.requestURI}" />
 <!DOCTYPE html>
 <html lang="ko">
     <head>
@@ -9,6 +10,9 @@
         <title>
         SpendOlive | 회원가입
     </title>
+    <script>
+        window.contextPath = "${contextPath}";
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="${contextPath}/resources/css/styles.css">
 </head>
