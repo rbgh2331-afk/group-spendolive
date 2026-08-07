@@ -201,7 +201,7 @@ public class MemberControllerImpl implements MemberController{
                 "SIGNUP_COMPLETED",
                 "회원가입에 성공하였습니다.",
                 "SUCCESS",
-                "",
+                null,
                 "/member/loginForm.do"));
         }catch(Exception e) {
             e.printStackTrace();

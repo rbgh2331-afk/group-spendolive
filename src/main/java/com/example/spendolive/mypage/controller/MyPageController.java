@@ -100,12 +100,7 @@ public class MyPageController {
     public ModelAndView mypage(HttpSession session) throws Exception {
         MemberVO sessionMember = (MemberVO) session.getAttribute("memberInfo");
 
-        if (sessionMember == null || sessionMember.getId() == null || sessionMember.getId().isBlank()) {
-            ModelAndView loginMav = new ModelAndView();
-            loginMav.setViewName("redirect:/member/loginForm.do?log=mypage");
-            return loginMav;
-        }
-
+        
         MyPageDTO myPage = myPageService.getMyPage(sessionMember.getId());
         MemberVO memberInfo = myPage.getMemberInfo();
         if (memberInfo == null) {
