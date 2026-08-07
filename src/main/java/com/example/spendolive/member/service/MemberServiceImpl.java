@@ -85,6 +85,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void addMember(MemberVO memberVO) throws Exception {
         String rawPassword = memberVO.getPassword();
+        if(rawPassword == null || rawPassword.equals("")){
+            throw new RuntimeException("비밀번호를 입력해 주세요");
+        }
         String encodedPassword = passwordEncoder.encode(rawPassword);
         memberVO.setPassword(encodedPassword);
         memberRepository.insertNewMember(memberVO);
