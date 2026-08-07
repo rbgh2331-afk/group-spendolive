@@ -106,6 +106,14 @@ function verifySms() {
       }
   });
 }
+
+function loginYn(log,loginYn){
+  if (!loginYn) {
+      soAlert("로그인이 필요한 기능입니다. 로그인을 해주세요!", { type: "error" })
+          .then(function () { location.href = "/member/loginForm.do?log="+log; });
+      return;
+  }
+}
 // 3. 회원가입 버튼 누를 때 최종 방어선 함수
 function joinCheck() {
 if(!isEmailVerified) {
