@@ -74,6 +74,7 @@ function showMemberModal(prefix, type, titleText, messageText) {
         }
     });
 })();
+// Email 인증번호 전송
 (function () {
     const emailInput = document.getElementById('email');
     const emailButton = document.getElementById('emailButton');
@@ -115,18 +116,19 @@ function showMemberModal(prefix, type, titleText, messageText) {
             }
 
         } catch (error) {
-            console.error("🚨 에러 원인:", error); // 👈 이 코드를 추가해 보세요!
+
     showMemberModal('member','error', '시스템 오류', '중복확인 중 오류가 발생했습니다.');
         }
     });
 })();
+
+    // SMS 인증번호 전송
 (function () {
     const phoneInput = document.getElementById('phone');
     const phoneButton = document.getElementById('phoneButton');
     if (!phoneButton || !phoneInput) return;
 
    
-    // 2. 아이디 중복확인 버튼 클릭 이벤트
     phoneButton.addEventListener('click', async function (e) {
     
         const phone = phoneInput.value.trim();
@@ -163,18 +165,21 @@ function showMemberModal(prefix, type, titleText, messageText) {
         }
     });
 })();
+    //  아이디 중복확인 버튼 클릭 이벤트
 (function () {
     const signupForm = document.querySelector('form');
     const signupButton = document.getElementById('signupButton');
     if (!signupButton||!signupForm) return;
     
-    // 2. 아이디 중복확인 버튼 클릭 이벤트
+
     signupButton.addEventListener('click', async function (e) {
         const formData = new FormData(signupForm);
         const payload = new URLSearchParams(formData);
         e.preventDefault();
         if(!joinCheck()){
-            return;
+            if(!formData.get('login_type') === 'KAKAO'){
+                return;
+            }
         }
         try {
             showMemberModal('signup','processing', '회원가입 중 입니다.', '잠시만 기다려주세요.');
@@ -209,12 +214,13 @@ function showMemberModal(prefix, type, titleText, messageText) {
         }, 1200);
     }
 })();
+    
+    // 2. 로그인
 (function () {
     const loginForm = document.querySelector('form');
     const loginButton = document.getElementById('loginButton');
     if (!loginButton||!loginForm) return;
-    
-    // 2. 아이디 중복확인 버튼 클릭 이벤트
+
     loginButton.addEventListener('click', async function (e) {
         const formData = new FormData(loginForm);
         const payload = new URLSearchParams(formData);
@@ -255,6 +261,8 @@ function showMemberModal(prefix, type, titleText, messageText) {
         }, 500);
     }
 })();
+    
+    // 주카드 변경
 (function () {
     // class로 모든 카드 변경 버튼을 가져옵니다.
     const changeCardButtons = document.querySelectorAll('.btn-change-card');
@@ -304,6 +312,8 @@ function showMemberModal(prefix, type, titleText, messageText) {
         });
     });
 })();
+    
+    // 관리자 회원 강제 탈퇴
 (function () {
 
     document.addEventListener('click', async function (e) {

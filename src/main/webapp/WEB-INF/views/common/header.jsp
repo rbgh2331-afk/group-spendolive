@@ -124,7 +124,7 @@
                         <!-- 지출관리 -->
                         <li class="so-menu-item has-submenu">
                             <a class="so-menu-link ${fn:contains(requestURI, '/expense') or fn:contains(requestURI, '/calendar') ? 'active' : ''}"
-                            href="${contextPath}/spendolive/expense/list.do">
+                            href="${contextPath}/spendolive/expense/list.do" onclick="return loginYn('expense', ${isLogOn})">
                                 <strong>지출관리</strong>
                                 <span class="so-menu-arrow">◂</span>
                             </a>
@@ -142,7 +142,7 @@
                         <!-- OTT 관리 -->
                         <li class="so-menu-item has-submenu">
                             <a class="so-menu-link ${fn:contains(requestURI, '/ott') ? 'active' : ''}"
-                            href="${contextPath}/spendolive/ott.do">
+                            href="${contextPath}/spendolive/ott.do" onclick="return loginYn('ott', ${isLogOn})">
                                 <strong>OTT관리</strong>
                                 <span class="so-menu-arrow">◂</span>
                             </a>
@@ -150,19 +150,19 @@
                             <ul class="so-submenu">
                                 <li>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/spendolive/ott/friends.do">
+                                    href="${contextPath}/spendolive/ott/friends.do" onclick="return loginYn('ott', ${isLogOn})">
                                         가족 공유방
                                     </a>
                                 </li>
                                 <li>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/spendolive/ott/recruit.do">
+                                    href="${contextPath}/spendolive/ott/recruit.do" onclick="return loginYn('ott', ${isLogOn})">
                                         외부 공유방
                                     </a>
                                 </li>
                                 <li>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/spendolive/ott/recruit.do?tab=manage">
+                                    href="${contextPath}/spendolive/ott/recruit.do?tab=manage" onclick="return loginYn('ott', ${isLogOn})">
                                         참여방 관리
                                     </a>
                                 </li>

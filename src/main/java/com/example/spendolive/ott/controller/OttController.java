@@ -2,7 +2,6 @@ package com.example.spendolive.ott.controller;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Collections;
 import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
@@ -49,25 +48,16 @@ public class OttController {
         model.addAttribute("serviceList", ottService.getShareableServices());
         model.addAttribute("recruitRoomCount", ottService.getRecruitRoomCount());
         
-        if (loginId != null) {
-            model.addAttribute("myRoomCount", ottService.getMyRoomCount(loginId));
-            model.addAttribute("body_page", "/WEB-INF/views/ott/ott.jsp");
-            return "common/layout";
-        } else {
-            model.addAttribute("myRoomCount", 0);
-            return "redirect:/member/loginForm.do?log=ott";
-        }
+        // [내 담당 로그인 공통화] OTT 진입 로그인 안내는 공통 JS에서 처리하고 Controller는 화면 데이터만 구성한다.
+        model.addAttribute("myRoomCount", ottService.getMyRoomCount(loginId));
+        model.addAttribute("body_page", "/WEB-INF/views/ott/ott.jsp");
+        return "common/layout";
     }
 
     // 가족·지인 공유방 화면 - 참여방, 방장 방, 정산 내역 조회
     @GetMapping("/ott/friends.do")
     public String friends(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
-        
-        if (loginId == null) {   
-            redirectAttributes.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인해 주세요.");
-            return "redirect:/member/loginForm.do";
-        }
         // 계좌 상태는 null 여부가 아니라 실제 연동 완료 값인 "YES"로 검사한다.
         // DB 기본값이 "NO"이므로 null만 검사하면 미연동 회원도 통과할 수 있다.
         if (!hasLinkedAccount(session)) {
@@ -86,10 +76,6 @@ public class OttController {
     @PostMapping("/ott/friends/create.do")
     public String createFriendRoom(@ModelAttribute OttRoomDTO roomDTO,HttpSession session,RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
-        
-        if (loginId == null) {
-            return "redirect:/member/loginForm.do";
-        }
 
         // 화면 주소를 거치지 않고 생성 URL을 직접 호출하는 경우도 막는다.
         if (!hasLinkedAccount(session)) {
@@ -117,11 +103,6 @@ public class OttController {
                           RedirectAttributes redirectAttributes,
                           HttpSession session) {
         String loginId = getLoginId(session);
-        
-        if (loginId == null) {
-            redirectAttributes.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인해 주세요.");
-            return "redirect:/member/loginForm.do";
-        }
         // OTT 화면과 생성·참가 요청에서 같은 계좌 연동 기준을 사용한다.
         if (!hasLinkedAccount(session)) {
             redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 계좌 연동이 필요합니다.");
@@ -161,11 +142,6 @@ public class OttController {
     @PostMapping("/ott/recruit/create.do")
     public String createRecruitRoom(@ModelAttribute OttRoomDTO roomDTO, HttpSession session, RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
-
-        if (loginId == null) {
-            
-            return "redirect:/member/loginForm.do";
-        }
         // DB 기본값 "NO"를 확실히 차단하기 위해 "YES"만 허용한다.
         if (!hasLinkedAccount(session)) {
             redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 계좌 연동이 필요합니다.");
@@ -187,11 +163,6 @@ public class OttController {
                                     HttpSession session,
                                     RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
-
-        if (loginId == null) {
-            redirectAttributes.addFlashAttribute("msg", "로그인이 필요한 기능입니다.");
-            return "redirect:/member/loginForm.do";
-        }
 
         // 빠른 참가도 OTT 기능이므로 동일한 계좌 연동 검사를 적용한다.
         if (!hasLinkedCard(session)) {
@@ -242,10 +213,6 @@ public class OttController {
     public String chatRoom(@RequestParam("room_id") Long room_id, Model model, HttpSession session) {
         String loginId = getLoginId(session);
 
-        if (loginId == null) {
-            return "redirect:/member/loginForm.do";
-        }
-
         OttRoomDTO chatRoom = ottService.getChatRoom(room_id, loginId);
         if (chatRoom == null) {
             return "redirect:/spendolive/ott.do?error=noChatAccess";
@@ -265,10 +232,6 @@ public class OttController {
     public List<OttChatMessageDTO> chatMessages(@RequestParam("room_id") Long room_id, HttpSession session) {
         String loginId = getLoginId(session);
 
-        if (loginId == null) {
-            return Collections.emptyList();
-        }
-
         List<OttChatMessageDTO> messages = ottService.getChatMessages(room_id, loginId);
         ottService.markChatRoomAsRead(room_id, loginId);
         return messages;
@@ -280,10 +243,6 @@ public class OttController {
                                   @RequestParam("message_content") String message_content,
                                   HttpSession session) {
         String loginId = getLoginId(session);
-
-        if (loginId == null) {
-            return "redirect:/member/loginForm.do";
-        }
 
         ottService.sendChatMessage(room_id, loginId, message_content);
         return "redirect:/spendolive/ott/chat/room.do?room_id=" + room_id;
@@ -297,10 +256,6 @@ public class OttController {
                                     @RequestParam(value = "returnPage", required = false, defaultValue = "recruit") String returnPage,
                                     HttpSession session) {
         String loginId = getLoginId(session);
-
-        if (loginId == null) {
-            return "redirect:/member/loginForm.do";
-        }
 
         if (settlement_month == null || settlement_month.isBlank()) {
             settlement_month = YearMonth.now().plusMonths(1).toString();
@@ -322,10 +277,6 @@ public class OttController {
                                 HttpSession session) {
         String loginId = getLoginId(session);
 
-        if (loginId == null) {
-            return "redirect:/member/loginForm.do";
-        }
-
         ottService.markPaymentPaid(payment_id, loginId);
 
         if ("friends".equals(returnPage)) {
@@ -343,10 +294,6 @@ public class OttController {
                             @RequestParam(value = "returnPage", required = false, defaultValue = "friends") String returnPage,
                             HttpSession session) {
         String loginId = getLoginId(session);
-
-        if (loginId == null) {
-            return "redirect:/member/loginForm.do";
-        }
 
         ottService.requestRoomClose(room_id, loginId, close_notice, close_reason);
 
@@ -366,11 +313,6 @@ public class OttController {
                                    RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
 
-        if (loginId == null) {
-            redirectAttributes.addFlashAttribute("msg", "로그인이 필요한 기능입니다.");
-            return "redirect:/member/loginForm.do";
-        }
-
         String msg = ottService.reserveRoomLeave(room_id, loginId);
         redirectAttributes.addFlashAttribute("msg", msg);
         return redirectAfterRoomAction(returnPage);
@@ -383,11 +325,6 @@ public class OttController {
                                   HttpSession session,
                                   RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
-
-        if (loginId == null) {
-            redirectAttributes.addFlashAttribute("msg", "로그인이 필요한 기능입니다.");
-            return "redirect:/member/loginForm.do";
-        }
 
         String msg = ottService.cancelRoomLeave(room_id, loginId);
         redirectAttributes.addFlashAttribute("msg", msg);
@@ -451,13 +388,9 @@ public class OttController {
         return memberInfo != null && "YES".equals(memberInfo.getCard_status());
     }
 
-    // 로그인 사용자 ID 조회 - 세션의 회원 정보에서 ID 추출
+    // [내 담당 로그인 공통화] 로그인 여부 판단은 공통 JS에서 처리하고 Controller에서는 세션 사용자 ID만 사용한다.
     private String getLoginId(HttpSession session) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
-
-        if (memberInfo == null) {
-            return null;
-        }
 
         if (memberInfo.getId() != null && !memberInfo.getId().isBlank()) {
             return memberInfo.getId();

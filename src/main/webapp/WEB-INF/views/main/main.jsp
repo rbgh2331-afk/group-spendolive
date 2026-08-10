@@ -34,7 +34,7 @@
                         메인에서는 지출관리, 캘린더, OTT관리, 마이페이지를 간단히 확인하고, 각 메뉴에서 더 자세한 기능을 사용할 수 있습니다.
                     </p>
                     <div class="hero-buttons">
-                        <a href="${contextPath}/spendolive/expense/list.do" class="btn btn-primary btn-large">
+                        <a href="${contextPath}/spendolive/expense/list.do" onclick="return loginYn('expense', ${isLogOn})" class="btn btn-primary btn-large">
                             지출관리 바로가기
                         </a>
                         <a href="${contextPath}/spendolive/calendar.do" class="btn btn-primary btn-large">
@@ -165,7 +165,7 @@
                 <p>
                     고정지출, 변동지출, OTT지출을 나누어 등록하고 통계와 랭킹을 확인합니다.
                 </p>
-                <a href="${contextPath}/spendolive/expense/list.do" class="btn btn-primary full">
+                <a href="${contextPath}/spendolive/expense/list.do" onclick="return loginYn('expense', ${isLogOn})" class="btn btn-primary full">
                     자세히 보기
                 </a>
             </article>
@@ -193,7 +193,7 @@
                 <p>
                     지인과의 공유방, 다른 사람들과의 모집 게시판, 정산 요청을 관리합니다.
                 </p>
-                <a href="${contextPath}/spendolive/ott.do" class="btn btn-primary full">
+                <a href="${contextPath}/spendolive/ott.do" onclick="return loginYn('ott', ${isLogOn})" class="btn btn-primary full">
                     자세히 보기
                 </a>
             </article>
@@ -207,7 +207,7 @@
                 <p>
                     나의 지출 현황, 정산 상태, 회원정보를 한 화면에서 확인합니다.
                 </p>
-                <a href="${contextPath}/spendolive/mypage.do" class="btn btn-primary full">
+                <a href="${contextPath}/spendolive/mypage.do" onclick="return loginYn('mypage', ${isLogOn})" class="btn btn-primary full">
                     자세히 보기
                 </a>
             </article>
