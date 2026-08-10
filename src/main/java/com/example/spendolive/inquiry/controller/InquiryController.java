@@ -55,8 +55,6 @@ public class InquiryController {
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
-        // 벨 알림 클릭이 아니라 메뉴 등으로 이 페이지에 직접 들어와도,
-        // INQUIRY_REPLY 알림이 가리키는 페이지를 실제로 확인한 것이므로 읽음 처리
        
         ModelAndView mav = new ModelAndView("common/layout");
         mav.addObject("body_page", "/WEB-INF/views/inquiry/inquiryList.jsp");
@@ -257,6 +255,8 @@ public class InquiryController {
         inquiry.setContent(content.strip());
 
         try {
+            // updateInquiry가 false를 반환하는 경우 = 대상이 없거나, 본인 것이 아니거나,
+            // 이미 답변이 달려서(WAIT 아님) 수정 조건에 안 맞는 경우 (Service 쪽에서 판단)
             boolean updated = inquiryService.updateInquiry(inquiry);
             if (!updated) {
                 return ResponseEntity.badRequest().body(Map.of("result", "ERROR",

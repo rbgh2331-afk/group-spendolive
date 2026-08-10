@@ -8,6 +8,12 @@ import com.example.spendolive.chatbot.domain.ChatbotAnswerDTO;
 import com.example.spendolive.faq.domain.FaqVO;
 import com.example.spendolive.faq.repository.FaqRepository;
 
+/**
+ * 챗봇이 사용자 질문에 답할 FAQ를 찾아주는 서비스.
+ * - 새 테이블/AI 모델 없이, 기존 FAQ 데이터를 키워드 매칭으로 검색해서 답변함
+ * - 매칭 방식: 질문/답변/카테고리에 사용자 키워드가 얼마나 겹치는지 점수로 채점(scoreMatch)해서
+ *   가장 점수 높은 FAQ 하나를 골라 답변으로 씀 (findAnswer가 전체 흐름 담당)
+ */
 @Service
 public class ChatbotServiceImpl implements ChatbotService {
 
@@ -21,6 +27,7 @@ public class ChatbotServiceImpl implements ChatbotService {
     // FAQ 기능에서 이미 만들어둔 Repository를 그대로 재사용 (새 테이블/새 DAO 안 만듦)
     private final FaqRepository faqRepository;
 
+    // 생성자 주입 - 스프링이 빈 등록할 때 이 생성자를 보고 FaqRepository를 자동으로 넣어줌
     public ChatbotServiceImpl(FaqRepository faqRepository) {
         this.faqRepository = faqRepository;
     }

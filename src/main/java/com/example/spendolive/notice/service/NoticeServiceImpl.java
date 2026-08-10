@@ -7,18 +7,22 @@ import org.springframework.stereotype.Service;
 import com.example.spendolive.notice.domain.NoticeDTO;
 import com.example.spendolive.notice.repository.NoticeRepository;
 
-
+/**
+ * NoticeService 구현체.
+ * 대부분의 메서드는 NoticeRepository 호출을 그대로 위임만 함.
+ * 로직다운 로직이 있는 곳은 두 곳: 관리자 페이지네이션 계산(getNoticeListForAdmin/getNoticeAdminTotalPages),
+ * 공지 등록 시 전체 알림 발송(insertNotice).
+ */
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
     // 관리자 공지 목록 전용: 20개 이하면 페이지네이션 없이 전부 표시, 넘으면 20개씩 페이지 분리
-    // (사용자 화면의 공지/알림 AJAX 목록은 전체를 한 번에 받아 JS에서 자체 페이지네이션하므로
-    //  이 상수와는 무관함 — getNoticeList(id)는 그대로 건드리지 않음)
     private static final int ADMIN_PAGE_SIZE = 20;
     private static final int ADMIN_PAGINATION_THRESHOLD = 20;
 
     private final NoticeRepository noticeRepository;
 
+    // 생성자 주입 - 스프링이 빈 등록할 때 이 생성자를 보고 NoticeRepository를 자동으로 넣어줌
     public NoticeServiceImpl(NoticeRepository noticeRepository) {
         this.noticeRepository = noticeRepository;
     }
@@ -28,6 +32,9 @@ public class NoticeServiceImpl implements NoticeService {
         return noticeRepository.findAll(id);
     }
 
+    // 전체 개수가 기준(ADMIN_PAGINATION_THRESHOLD) 이하면 페이지 계산 없이 그냥 전부 반환.
+    // 기준을 넘으면 요청받은 page를 1 미만이 안 되게 보정한 뒤, 그 페이지에 해당하는
+    // offset만큼 건너뛰고 ADMIN_PAGE_SIZE(20)개만 잘라서 반환
     @Override
     public List<NoticeDTO> getNoticeListForAdmin(int page) {
         int totalCount = noticeRepository.countAll();
@@ -39,6 +46,7 @@ public class NoticeServiceImpl implements NoticeService {
         return noticeRepository.findAllPaged(offset, ADMIN_PAGE_SIZE);
     }
 
+    // 위 getNoticeListForAdmin과 같은 기준(ADMIN_PAGINATION_THRESHOLD)으로 총 페이지 수만 계산
     @Override
     public int getNoticeAdminTotalPages() {
         int totalCount = noticeRepository.countAll();
@@ -89,6 +97,9 @@ public class NoticeServiceImpl implements NoticeService {
         noticeRepository.toggleNoticeStar(notice_id, id);
     }
 
+    /**
+     * 공지 등록 + 전체 회원 알림 발송.
+     */
     @Override
     public int insertNotice(NoticeDTO notice) {
         int newId = noticeRepository.insertNotice(notice);

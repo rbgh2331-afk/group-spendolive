@@ -6,91 +6,96 @@
      교체될 때마다 새로 만들어지므로 document에 위임(delegation)해서 가로챈다.
    - 성공하면 모달을 닫고 목록 조각(#adminBoardArea)만 다시 불러와 배지를 갱신.
    - 공용 파일(admin.js 등)은 건드리지 않고, 알림 모달은 기존 공통 CSS 클래스 재사용.
+   - soAlert/soConfirm은 이 파일이 전역으로 정의(IIFE 밖). adminFaq.js는 항상
+     이 파일 다음에 로드되므로(adminInquiryList.jsp, adminFaqList.jsp) 거기서
+     재정의하지 않고 이 전역 함수를 그대로 가져다 씀. adminNotice.js는 단독
+     페이지에서만 로드되므로 그대로 자체 사본을 유지함.
    ============================================================ */
+
+/* 공통 CSS(.modal/.modal-box/.panel-title/.toolbar/.btn)만 사용하는 알림·확인 모달 */
+function soEnsureModal() {
+    var el = document.getElementById("soLocalModalOverlay");
+    if (el == null) {
+        el = document.createElement("div");
+        el.id = "soLocalModalOverlay";
+        el.className = "modal";
+        el.setAttribute("role", "dialog");
+        el.setAttribute("aria-modal", "true");
+        el.innerHTML =
+              '<div class="modal-box">'
+            +   '<div class="panel-title">'
+            +     '<p class="section-kicker" id="soLocalModalKicker">NOTICE</p>'
+            +     '<h3 id="soLocalModalTitle"></h3>'
+            +     '<p id="soLocalModalMessage" hidden></p>'
+            +   '</div>'
+            +   '<div class="toolbar">'
+            +     '<span></span>'
+            +     '<div class="toolbar-left">'
+            +       '<button type="button" class="btn ghost" id="soLocalModalCancel" hidden>취소</button>'
+            +       '<button type="button" class="btn primary" id="soLocalModalOk">확인</button>'
+            +     '</div>'
+            +   '</div>'
+            + '</div>';
+        document.body.appendChild(el);
+    }
+    return el;
+}
+
+function soOpenModal(message, opts, isConfirm) {
+    opts = opts || {};
+    var el = soEnsureModal();
+    var kickerEl = document.getElementById("soLocalModalKicker");
+    var titleEl = document.getElementById("soLocalModalTitle");
+    var msgEl = document.getElementById("soLocalModalMessage");
+    var okBtn = document.getElementById("soLocalModalOk");
+    var cancelBtn = document.getElementById("soLocalModalCancel");
+    var type = opts.type || (isConfirm ? "info" : "success");
+
+    kickerEl.textContent = type === "error" ? "ERROR" : (isConfirm ? "CONFIRM" : "NOTICE");
+
+    if (opts.title) {
+        titleEl.textContent = opts.title;
+        msgEl.textContent = message || "";
+        msgEl.hidden = !message;
+    } else {
+        titleEl.textContent = message || "";
+        msgEl.textContent = "";
+        msgEl.hidden = true;
+    }
+
+    okBtn.textContent = opts.confirmText || "확인";
+    cancelBtn.textContent = opts.cancelText || "취소";
+    cancelBtn.hidden = !isConfirm;
+
+    return new Promise(function (resolve) {
+        function done(result) {
+            el.classList.remove("show");
+            okBtn.onclick = null;
+            cancelBtn.onclick = null;
+            el.onclick = null;
+            document.removeEventListener("keydown", onKey);
+            resolve(result);
+        }
+
+        function onKey(e) {
+            if (e.key === "Escape") done(false);
+            else if (e.key === "Enter") done(true);
+        }
+
+        okBtn.onclick = function () { done(true); };
+        cancelBtn.onclick = function () { done(false); };
+        el.onclick = function (e) { if (e.target === el) done(false); };
+        document.addEventListener("keydown", onKey);
+        el.classList.add("show");
+        okBtn.focus();
+    });
+}
+
+function soAlert(message, opts) { return soOpenModal(message, opts, false); }
+function soConfirm(message, opts) { return soOpenModal(message, opts, true); }
+
    (function () {
     "use strict";
-
-        /* 공통 CSS(.modal/.modal-box/.panel-title/.toolbar/.btn)만 사용하는 알림·확인 모달 */
-    function soEnsureModal() {
-        var el = document.getElementById("soLocalModalOverlay");
-        if (el == null) {
-            el = document.createElement("div");
-            el.id = "soLocalModalOverlay";
-            el.className = "modal";
-            el.setAttribute("role", "dialog");
-            el.setAttribute("aria-modal", "true");
-            el.innerHTML =
-                  '<div class="modal-box">'
-                +   '<div class="panel-title">'
-                +     '<p class="section-kicker" id="soLocalModalKicker">NOTICE</p>'
-                +     '<h3 id="soLocalModalTitle"></h3>'
-                +     '<p id="soLocalModalMessage" hidden></p>'
-                +   '</div>'
-                +   '<div class="toolbar">'
-                +     '<span></span>'
-                +     '<div class="toolbar-left">'
-                +       '<button type="button" class="btn ghost" id="soLocalModalCancel" hidden>취소</button>'
-                +       '<button type="button" class="btn primary" id="soLocalModalOk">확인</button>'
-                +     '</div>'
-                +   '</div>'
-                + '</div>';
-            document.body.appendChild(el);
-        }
-        return el;
-    }
-
-    function soOpenModal(message, opts, isConfirm) {
-        opts = opts || {};
-        var el = soEnsureModal();
-        var kickerEl = document.getElementById("soLocalModalKicker");
-        var titleEl = document.getElementById("soLocalModalTitle");
-        var msgEl = document.getElementById("soLocalModalMessage");
-        var okBtn = document.getElementById("soLocalModalOk");
-        var cancelBtn = document.getElementById("soLocalModalCancel");
-        var type = opts.type || (isConfirm ? "info" : "success");
-
-        kickerEl.textContent = type === "error" ? "ERROR" : (isConfirm ? "CONFIRM" : "NOTICE");
-
-        if (opts.title) {
-            titleEl.textContent = opts.title;
-            msgEl.textContent = message || "";
-            msgEl.hidden = !message;
-        } else {
-            titleEl.textContent = message || "";
-            msgEl.textContent = "";
-            msgEl.hidden = true;
-        }
-
-        okBtn.textContent = opts.confirmText || "확인";
-        cancelBtn.textContent = opts.cancelText || "취소";
-        cancelBtn.hidden = !isConfirm;
-
-        return new Promise(function (resolve) {
-            function done(result) {
-                el.classList.remove("show");
-                okBtn.onclick = null;
-                cancelBtn.onclick = null;
-                el.onclick = null;
-                document.removeEventListener("keydown", onKey);
-                resolve(result);
-            }
-
-            function onKey(e) {
-                if (e.key === "Escape") done(false);
-                else if (e.key === "Enter") done(true);
-            }
-
-            okBtn.onclick = function () { done(true); };
-            cancelBtn.onclick = function () { done(false); };
-            el.onclick = function (e) { if (e.target === el) done(false); };
-            document.addEventListener("keydown", onKey);
-            el.classList.add("show");
-            okBtn.focus();
-        });
-    }
-
-    function soAlert(message, opts) { return soOpenModal(message, opts, false); }
-    function soConfirm(message, opts) { return soOpenModal(message, opts, true); }
 
     /* ── 답변 폼 제출 가로채기 (모달 안 폼이 동적 생성되므로 document 위임) ── */
     document.addEventListener("submit", function (e) {

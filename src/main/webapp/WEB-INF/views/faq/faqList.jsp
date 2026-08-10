@@ -67,7 +67,7 @@
                 <h3>원하는 답을 찾지 못하셨나요?</h3>
                 <p>고객센터로 직접 문의하시면 빠르게 도와드립니다.</p>
             </div>
-            <a class="contact-btn" href="${contextPath}/spendolive/inquiry/write.do">문의하기 →</a>
+            <a class="contact-btn" href="${contextPath}/spendolive/inquiry/write.do" onclick="return loginYn('inquiry', ${isLogOn})">문의하기 →</a>
         </div>
     </div>
 </div>

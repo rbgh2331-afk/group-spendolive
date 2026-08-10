@@ -7,6 +7,11 @@ const SIDE_PAGE_SIZE = 3;
 let todayTodoItems = [];
 let todayTodoPage = 1;
 
+// "자세히보기" 목록 - FullCalendar listMonth뷰 대신 직접 페이지네이션
+let isDetailListOpen = false;
+let detailListPage = 1;
+const DETAIL_LIST_PAGE_SIZE = 9; // 달력(5주 기준) 높이랑 대략 맞춘 값
+
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar')
 
@@ -25,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 월/뷰가 바뀔 때마다(이전달, 다음달, 초기로드 전부 포함) 그 달 지출 다시 불러옴
         sidePanelPage = 1;
+        detailListPage = 1;
         loadMonthlyExpenses(year, month);
       },
       dateClick: function(info) {
@@ -66,12 +72,24 @@ document.addEventListener('DOMContentLoaded', function() {
   const detailBtn = document.getElementById('detailBtn');
   if (detailBtn) {
     detailBtn.addEventListener('click', function() {
-        if (calendar.view.type === 'dayGridMonth') {
-        calendar.changeView('listMonth');
+        const calendarGridEl = document.getElementById('calendar');
+        const detailListEl = document.getElementById('calendarDetailList');
+        if (!isDetailListOpen) {
+        calendarGridEl.style.display = 'none';
+        detailListEl.style.display = '';
+        isDetailListOpen = true;
+        detailListPage = 1;
+        renderDetailList();
         this.textContent = '달력으로 보기';
         } else {
-        calendar.changeView('dayGridMonth');
+        detailListEl.style.display = 'none';
+        calendarGridEl.style.display = '';
+        isDetailListOpen = false;
         this.textContent = '자세히보기';
+        // display:none으로 숨겨져 있는 동안 FullCalendar가 크기 계산을 못 해서
+        // 내부 치수가 0으로 굳어버림 - 다시 보여준 뒤 강제로 재계산시켜야 함
+        // (안 하면 달력이 콩알만하게 찌그러져 보임)
+        calendar.updateSize();
         }
     });
 } else {
@@ -103,6 +121,7 @@ function loadMonthlyExpenses(year, month) {
             monthlyExpenses = data;
             renderCalendarEvents();
             renderSidePanel();
+            if (isDetailListOpen) renderDetailList();
         })
         .catch(err => {
             console.error(err);
@@ -196,6 +215,83 @@ function renderSidePanelPager(totalPages) {
         });
     });
 }
+
+/* =========================================================
+   "자세히보기" 목록 - #calendarDetailList
+   FullCalendar listMonth뷰는 페이지네이션이 없어서, monthlyExpenses를
+   그대로 재활용해 사이드 패널(renderSidePanel)과 동일한 방식으로 직접 그림.
+   한 페이지에 DETAIL_LIST_PAGE_SIZE(9)개씩 - 사이드 패널(3개)보다 넉넉하게.
+   ========================================================= */
+function renderDetailList() {
+    const listEl = document.getElementById('calendarDetailList');
+    if (!listEl) {
+        console.warn('calendarDetailList 요소를 못 찾았어요 (calendar.jsp 확인 필요)');
+        return;
+    }
+
+    // 날짜 최신순 정렬 (사이드 패널과 동일)
+    const sorted = [...monthlyExpenses].sort((a, b) =>
+        a.expense_date < b.expense_date ? 1 : -1
+    );
+
+    const totalPages = Math.max(1, Math.ceil(sorted.length / DETAIL_LIST_PAGE_SIZE));
+    if (detailListPage > totalPages) {
+        detailListPage = totalPages;
+    }
+
+    const startIdx = (detailListPage - 1) * DETAIL_LIST_PAGE_SIZE;
+    const pageItems = sorted.slice(startIdx, startIdx + DETAIL_LIST_PAGE_SIZE);
+
+    let itemsHtml;
+    if (pageItems.length === 0) {
+        itemsHtml = '<p class="empty-text">이번 달 지출 내역이 없습니다.</p>';
+    } else {
+        itemsHtml = pageItems.map(exp => {
+            const dateLabel = exp.expense_date.slice(5).replace('-', '.'); // "2026-07-05" -> "07.05"
+            const typeClass = `type-${(exp.expense_type || 'variable').toLowerCase()}`;
+            return `
+                <div class="side-event ${typeClass}">
+                    <strong>${dateLabel} ${exp.expense_title}</strong>
+                    <span>${Number(exp.amount).toLocaleString()}원 · ${exp.category_name}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    listEl.innerHTML = `<div id="detailListItems">${itemsHtml}</div>`;
+
+    renderDetailListPager(totalPages);
+}
+
+function renderDetailListPager(totalPages) {
+    let pagerEl = document.getElementById('detailListPager');
+
+    if (!pagerEl) {
+        pagerEl = document.createElement('div');
+        pagerEl.id = 'detailListPager';
+        pagerEl.className = 'side-pager';
+        document.getElementById('calendarDetailList').appendChild(pagerEl);
+    }
+
+    if (totalPages <= 1) {
+        pagerEl.innerHTML = '';
+        return;
+    }
+
+    let buttonsHtml = '';
+    for (let page = 1; page <= totalPages; page++) {
+        const isActive = page === detailListPage ? 'active' : '';
+        buttonsHtml += `<button type="button" class="pager-num-btn ${isActive}" data-page="${page}">${page}</button>`;
+    }
+    pagerEl.innerHTML = buttonsHtml;
+
+    pagerEl.querySelectorAll('.pager-num-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            detailListPage = Number(btn.dataset.page);
+            renderDetailList();
+        });
+    });
+}
 /* =========================================================
    오늘 할 일 - "오늘 날짜에 잡혀있는 지출"만 따로 보여줌
    (달력을 이전달/다음달로 넘겨도 이건 안 바뀜)
@@ -250,7 +346,9 @@ function renderTodayTodo() {
     listEl.innerHTML = '';
 
     if (pageItems.length === 0) {
-        listEl.innerHTML = '<p class="empty-text">오늘 예정된 지출이 없습니다.</p>';
+        listEl.innerHTML = isLoggedIn
+            ? '<p class="empty-text">오늘 예정된 지출이 없습니다.</p>'
+            : '<p class="empty-text">로그인 시 <br>오늘 예정된 지출을 확인할 수 있어요.</p>';
         renderTodayTodoPager(totalPages);
         return;
     }

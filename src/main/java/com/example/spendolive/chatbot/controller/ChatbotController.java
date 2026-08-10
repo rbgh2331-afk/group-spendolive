@@ -10,14 +10,16 @@ import com.example.spendolive.chatbot.domain.ChatbotAnswerDTO;
 import com.example.spendolive.chatbot.domain.ChatbotAskDTO;
 import com.example.spendolive.chatbot.service.ChatbotService;
 
-/*
- * 챗봇 위젯(chatbot.js)이 fetch()로 호출하는 API의 진입점
+/**
+ * 챗봇 위젯(chatbot.js)이 fetch()로 호출하는 API의 진입점.
  * @RestController = 여기서 리턴하는 객체를 JSP 화면이 아니라 JSON으로 바로 응답함
  */
 @RestController
 @RequestMapping("/spendolive/chatbot")
 public class ChatbotController {
 
+    // 생성자 주입(필드에 @Autowired 안 붙이고 생성자로 받는 방식) - 스프링이
+    // 빈 등록할 때 이 생성자를 보고 ChatbotService 구현체를 자동으로 넣어줌
     private final ChatbotService chatbotService;
 
     public ChatbotController(ChatbotService chatbotService) {
