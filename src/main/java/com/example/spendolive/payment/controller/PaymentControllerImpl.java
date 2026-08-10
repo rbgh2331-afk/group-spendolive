@@ -139,6 +139,8 @@ public class PaymentControllerImpl implements PaymentController {
             redirectAttributes.addFlashAttribute(
                     "msg",
                     "결제 카드가 정상적으로 등록되었습니다.");
+            MemberVO newmemberVO = memberService.getMemberById(memberVO.getId());
+            session.setAttribute("memberInfo", newmemberVO);
             return "redirect:/spendolive/main.do";
 
         } catch (Exception e) {
