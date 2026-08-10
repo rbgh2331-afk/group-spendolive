@@ -1,26 +1,46 @@
 // 기상청 격자좌표(nx, ny) - 지역별 대표 지점 (근사값)
 const WEATHER_REGIONS = {
-    seoul:    { nx: 60, ny: 127 },
-    incheon:  { nx: 55, ny: 124 },
-    suwon:    { nx: 60, ny: 121 },
-    chuncheon:{ nx: 73, ny: 134 },
-    cheongju: { nx: 69, ny: 106 },
-    hongseong:{ nx: 55, ny: 106 },
-    daejeon:  { nx: 67, ny: 100 },
-    sejong:   { nx: 66, ny: 103 },
-    jeonju:   { nx: 63, ny: 89  },
-    mokpo:    { nx: 50, ny: 67  },
-    gwangju:  { nx: 58, ny: 74  },
-    andong:   { nx: 91, ny: 106 },
-    daegu:    { nx: 89, ny: 90  },
-    changwon: { nx: 90, ny: 77  },
-    busan:    { nx: 98, ny: 76  },
-    ulsan:    { nx: 102, ny: 84 },
-    jeju:     { nx: 52, ny: 38  }
+    seoul:    { nx: 60, ny: 127, label: "서울" },
+    incheon:  { nx: 55, ny: 124, label: "인천" },
+    suwon:    { nx: 60, ny: 121, label: "경기(수원)" },
+    chuncheon:{ nx: 73, ny: 134, label: "강원(춘천)" },
+    cheongju: { nx: 69, ny: 106, label: "충북(청주)" },
+    hongseong:{ nx: 55, ny: 106, label: "충남(홍성)" },
+    daejeon:  { nx: 67, ny: 100, label: "대전" },
+    sejong:   { nx: 66, ny: 103, label: "세종" },
+    jeonju:   { nx: 63, ny: 89,  label: "전북(전주)" },
+    mokpo:    { nx: 50, ny: 67,  label: "전남(목포)" },
+    gwangju:  { nx: 58, ny: 74,  label: "광주" },
+    andong:   { nx: 91, ny: 106, label: "경북(안동)" },
+    daegu:    { nx: 89, ny: 90,  label: "대구" },
+    changwon: { nx: 90, ny: 77,  label: "경남(창원)" },
+    busan:    { nx: 98, ny: 76,  label: "부산" },
+    ulsan:    { nx: 102, ny: 84, label: "울산" },
+    jeju:     { nx: 52, ny: 38,  label: "제주" }
 };
+
+// header.jsp의 <select id="weatherPageRegionSelect">를 WEATHER_REGIONS 기준으로 채움.
+// "내 위치 사용"(value="current")은 좌표가 없는 특수 옵션이라 고정으로 먼저 넣고,
+// 그 다음 WEATHER_REGIONS의 키 순서대로 지역 옵션을 이어붙임. 기본 선택은 서울.
+// header.jsp가 렌더링된 뒤 이 스크립트(weather.js)가 나중에 로드되므로,
+// DOMContentLoaded를 안 기다리고 바로 실행해도 <select>는 이미 존재함.
+function populateWeatherRegionSelect() {
+    const select = document.getElementById("weatherPageRegionSelect");
+    if (!select) return;
+
+    let html = '<option value="current">내 위치</option>';
+    for (const key in WEATHER_REGIONS) {
+        const selected = key === "seoul" ? " selected" : "";
+        html += `<option value="${key}"${selected}>${WEATHER_REGIONS[key].label}</option>`;
+    }
+    select.innerHTML = html;
+}
+populateWeatherRegionSelect();
 
 // ===== 날씨 페이지 (/spendolive/weather.do) 전용 =====
 
+// 지역 select에서 "내 위치 사용"(value="current")을 고르면 브라우저 GPS로 조회,
+// 그 외 지역이면 WEATHER_REGIONS에 미리 정해둔 좌표로 바로 조회
 function loadWeatherPage() {
     const select = document.getElementById("weatherPageRegionSelect");
     const region = select ? select.value : "seoul";
@@ -52,6 +72,7 @@ function loadWeatherPage() {
     );
 }
 
+// 지역 좌표(nx, ny)로 날씨 조회 - WeatherAjaxController의 nx/ny 파라미터 경로
 function fetchWeatherPageByGrid(nx, ny) {
     fetch(`/ajax/weather.do?nx=${nx}&ny=${ny}`)
         .then(res => {
@@ -66,6 +87,8 @@ function fetchWeatherPageByGrid(nx, ny) {
         });
 }
 
+// 위도/경도로 날씨 조회 - "내 위치 사용" 선택 시 브라우저 GPS 좌표를 그대로 서버에 넘김
+// (nx/ny 변환은 프론트에서 안 하고 WeatherAjaxController가 서버에서 처리)
 function fetchWeatherPageByLatLon(lat, lon) {
     fetch(`/ajax/weather.do?lat=${lat}&lon=${lon}`)
         .then(res => {
@@ -121,6 +144,8 @@ function getWeatherLabel(pty, sky) {
     }
 }
 
+// 기상청 응답 배열(items)에서 필요한 카테고리(TMP=기온, POP=강수확률, PTY=강수형태,
+// SKY=하늘상태)만 찾아 뽑아서 이모지 + 기온 + 강수확률 카드로 그림
 function renderWeatherPage(items) {
     const tmp = items.find(i => i.category === "TMP");
     const pop = items.find(i => i.category === "POP");
@@ -149,6 +174,8 @@ function renderWeatherPage(items) {
 
 // ===== 헤더 날씨 드롭다운 토글 (bellIcon.js의 toggleNotifDropdown과 동일한 패턴) =====
 
+// 헤더 날씨 아이콘 클릭 시 드롭다운 열기/닫기. 처음 열릴 때만 loadWeatherPage() 호출
+// (이미 열려있는 걸 또 열면 재조회 안 함 - willShow가 false일 때는 그냥 닫기만 함)
 function toggleWeatherDropdown(event) {
     event.stopPropagation();
     const dropdown = document.getElementById("weatherDropdown");

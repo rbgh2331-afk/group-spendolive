@@ -193,4 +193,52 @@ public class NoticeController {
             return Map.of("result", "ERROR");
         }
     }
+
+    /* ─── AJAX: 공지 상세(모달용) ──────────────────────────
+       기존 /detail.do(페이지 이동)와 서비스/읽음 처리 로직은 동일하고,
+       화면 이동 없이 JSON만 내려줌. 목록에서 모달로 띄우기 위해 추가. */
+    @GetMapping("/ajax/detail.do")
+    @ResponseBody
+    public Map<String, Object> ajaxNoticeDetail(
+            @RequestParam(value = "notice_id", required = false, defaultValue = "0") int notice_id,
+            HttpSession session) {
+
+        MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
+
+        if (notice_id <= 0) {
+            return Map.of("result", "INVALID_PARAM");
+        }
+
+        NoticeDTO notice;
+        try {
+            notice = noticeService.getNoticeDetailForUser(notice_id, memberInfo != null ? memberInfo.getId() : null);
+        } catch (Exception e) {
+            System.err.println("[NoticeController.ajaxNoticeDetail] 조회 실패: " + e.getMessage());
+            return Map.of("result", "ERROR");
+        }
+
+        if (notice == null) {
+            return Map.of("result", "NOT_FOUND");
+        }
+
+        // 로그인 사용자 읽음 처리 (기존 detail.do와 동일한 로직)
+        if (memberInfo != null && memberInfo.getId() != null) {
+            try {
+                noticeService.readNotice(notice_id, memberInfo.getId());
+            } catch (Exception e) {
+                System.err.println("[NoticeController.ajaxNoticeDetail] 읽음 처리 실패: " + e.getMessage());
+            }
+        }
+
+        Map<String, Object> res = new java.util.HashMap<>();
+        res.put("result", "OK");
+        res.put("notice_id", notice.getNotice_id());
+        res.put("title", notice.getTitle());
+        res.put("content", notice.getContent());
+        res.put("admin_id", notice.getAdmin_id());
+        res.put("created_at", notice.getCreated_at());
+        res.put("pinned_yn", notice.getPinned_yn());
+        res.put("star_yn", notice.getStar_yn());
+        return res;
+    }
 }

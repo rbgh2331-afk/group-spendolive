@@ -21,16 +21,27 @@ import com.example.spendolive.inquiry.domain.InquiryVO;
 import com.example.spendolive.inquiry.service.InquiryService;
 import com.example.spendolive.member.domain.MemberVO;
 
+/**
+ * 관리자 문의(1:1 문의) 관리 화면(목록/상세/답변)을 담당하는 컨트롤러.
+ * - 목록/상세는 화면(JSP)을 반환하고, 답변 등록만 AJAX(JSON)로 처리함
+ *   (adminInquiryList.jsp가 상세를 모달로 띄우고, adminInquiry.js가 답변 폼 제출을 가로챔).
+ *
+ */
+
 @Controller
 @RequestMapping("/admin/inquiry")
 public class AdminInquiryController {
 
     private final InquiryService inquiryService;
 
+    // 생성자 주입 - 스프링이 빈 등록할 때 이 생성자를 보고 InquiryService 구현체를 자동으로 넣어줌
     public AdminInquiryController(InquiryService inquiryService) {
         this.inquiryService = inquiryService;
     }
 
+
+    // 세션에 저장된 memberInfo가 있고, role이 "ADMIN"인지 확인.
+    // 아래 모든 요청 처리 메서드가 맨 앞에서 이걸로 관리자인지부터 검사함
     private boolean isAdmin(HttpSession session) {
         MemberVO m = (MemberVO) session.getAttribute("memberInfo");
         return m != null && "ADMIN".equals(m.getRole());
@@ -48,6 +59,11 @@ public class AdminInquiryController {
     }
 
     /* ─── 전체 문의 목록 ──────────────────────────────────── */
+    // GET /admin/inquiry/list.do?page=&status=
+    // 페이지네이션 + 상태 필터(전체/대기/완료/검토중)를 같이 처리.
+    // startNumber 계산이 핵심: 목록이 최신순(내림차순)으로 나오는데 번호는
+    // "오래된 문의부터 1번"으로 매기고 싶어서, 전체 개수에서 거꾸로 세어 내려가는 방식으로 구함
+    // (예: 전체 20건, 1페이지(최신 10건)면 맨 위 줄이 20번, 아래로 내려갈수록 감소)
     @GetMapping("/list.do")
     public ModelAndView list(
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -62,6 +78,7 @@ public class AdminInquiryController {
         String normalizedStatus = normalizeStatusFilter(status);
         try {
             int totalPages = inquiryService.getAdminInquiryTotalPages(normalizedStatus);
+            // 요청받은 page가 범위를 벗어나면(너무 크거나 0 이하) 유효 범위 안으로 보정
             int currentPage = Math.min(Math.max(page, 1), totalPages);
             int totalCount = inquiryService.getAdminInquiryTotalCount(normalizedStatus);
             int pageSize = inquiryService.getAdminPageSize();

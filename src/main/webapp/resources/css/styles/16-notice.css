@@ -11,13 +11,21 @@
 /* 공지/알림 탭 (noticeCenter.jsp 상단 "공지사항" / "알림" 탭) */
 .notice-board-wrap { position: relative; margin-top: 4.875rem; }.notice-board-tabs {position: absolute; top: -3.375rem; right: 0; z-index: 10;display: flex; width: 23.75rem; height: 3.4375rem; overflow: hidden;background: #fff; border: 0.0625rem solid var(--line); border-bottom: none;border-radius: 1.125rem 1.125rem 0 0;}
 /* 탭 바 밑줄과 카드 상단 테두리가 만나는 부분의 이음매를 지우는 역할*/
-.notice-board-tabs::after {content: "";position: absolute; left: 0; right: 0; bottom: -0.0625rem; height: 0.125rem;background: #fff; pointer-events: none;}.notice-board-tab {position: relative; z-index: 1; flex: 1; height: 3.4375rem; border: none;background: #eef1db; color: var(--olive-dark); font-weight: 900;cursor: pointer; transition: 0.2s;}.notice-board-tab:hover { background: #dde5b5; }.notice-board-tab.active {background: var(--olive); color: #fff;box-shadow: 0 0.125rem 0 var(--olive);   /* 활성 탭이 카드와 이어진 것처럼 보이게 */}.notice-board-card { position: relative; z-index: 1; min-height: 48.75rem; padding-top: 2.125rem; border-top-right-radius: 0; }
+.notice-board-tabs::after {content: "";position: absolute; left: 0; right: 0; bottom: -0.0625rem; height: 0.125rem;background: #fff; pointer-events: none;}.notice-board-tab {position: relative; z-index: 1; flex: 1; height: 3.4375rem; border: none;background: #eef1db; color: var(--olive-dark); font-weight: 900;cursor: pointer; transition: 0.2s;}.notice-board-tab:hover { background: #dde5b5; }.notice-board-tab.active {background: var(--olive); color: #fff;box-shadow: 0 0.125rem 0 var(--olive);   /* 활성 탭이 카드와 이어진 것처럼 보이게 */}.notice-board-card { position: relative; z-index: 1; min-height: 48.75rem; padding-top: 2.125rem; }
+.notice-board-wrap .notice-board-card { border-top-right-radius: 0; }
 /* 목록 테이블*/
-.notice-list-section .table-wrap { min-height: 38.75rem; }   /* 목록 개수가 적어도 카드 높이가 안 줄어들게 */.notice-list-section table { width: 100%; table-layout: fixed; border-collapse: collapse; }.notice-list-section th,.notice-list-section td { border-bottom: 0.0625rem solid var(--line); }
+.notice-list-section .table-wrap { min-height: 38.75rem; }   /* 목록 개수가 적어도 카드 높이가 안 줄어들게 */.notice-list-section table { width: 100%; min-width: 37.5rem; table-layout: fixed; border-collapse: collapse; }.notice-list-section th,.notice-list-section td { border-bottom: 0.0625rem solid var(--line); }
+/* min-width 덕분에 이 너비 밑으론 컬럼이 안 눌리고, .table-wrap의 overflow-x:auto(01-foundation.css)가
+   대신 가로 스크롤을 보여줌 - 예전엔 table이 width:100%로만 강제돼 있어서 스크롤이 생길 수가 없었고,
+   화면이 좁아지면 컬럼들이 그대로 짓눌려 글자가 겹쳐 보였음 */
 /* 4번째 컬럼(제목)만 왼쪽 정렬, 나머지(번호/별/구분)는 가운데 정렬 */
 .notice-list-section td:nth-child(4),.notice-list-section th:nth-child(4) { text-align: left; }
 /* 컬럼별 너비 지정 — table-layout:fixed라서 각 열 폭을 명시해야 함 */
 .notice-list-section th:nth-child(1),.notice-list-section td:nth-child(1) { width: 3.4375rem; text-align: center; }   /* <-번호 */.notice-list-section th:nth-child(2),.notice-list-section td:nth-child(2) { width: 2.25rem; text-align: center; padding-left: 0; padding-right: 0; }   /* <-찜(별) */.notice-list-section th:nth-child(3),.notice-list-section td:nth-child(3) { width: 5.625rem; text-align: center; }/* <-구분(중요/일반) */.notice-list-section th:nth-child(4),.notice-list-section td:nth-child(4) { padding-left: 1rem; }   /* <-제목 */
+/* 화면이 좁아져서 제목 칸 폭이 줄어들면, white-space:nowrap(01-foundation.css 전역) 때문에
+   글자가 옆 칸으로 삐져나가 겹쳐 보이던 문제 - 셀/링크에 말줄임(ellipsis) 처리 */
+.notice-list-section td:nth-child(4) { overflow: hidden; text-overflow: ellipsis; }
+.notice-list-section .notice-title-link { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* 목록이 비어있을 때 */
 .notice-empty { padding: 3.75rem 0 !important; text-align: center; color: var(--muted); }.notice-empty .empty-icon { font-size: 2.125rem; margin-bottom: 0.625rem; }.notice-empty p { margin: 0 0 0.375rem; font-weight: 900; color: var(--text); }.notice-empty span { font-size: 0.8125rem; }
 /*필터 버튼 (전체 / 안읽음 등) */
@@ -38,9 +46,3 @@
 .notice-pagination { display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.5rem; }.notice-page-btn {width: 2.125rem; height: 2.125rem; border: 0.0625rem solid #dfe5c8; background: #eef1db;color: var(--olive-dark); border-radius: 50%; font-weight: 900; cursor: pointer;}.notice-page-btn.active { background: var(--olive); color: #fff; border-color: var(--olive); }
 /* 관리자 공지 작성/수정 폼의 textarea */
 .form-textarea {border: 0.0625rem solid #dfe4cb; background: #fffdf6; border-radius: 0.875rem;min-height: 2.75rem; padding: 0 0.875rem; color: var(--text); font-weight: 700;outline: none; width: 80%;}
-.notification-modal{position: fixed;inset: 0;background: rgba(0,0,0,.45);display: none;justify-content: center;align-items: center;z-index: 9999;}
-.notification-modal.show{display: flex;}
-.notification-modal-box{width: 31.25rem;max-width: 90%;background: #fff;border-radius: 1rem; padding: 1.75rem;box-shadow: 0 0.625rem 1.875rem rgba(0,0,0,.2);}
-.notification-modal-box h3{margin-bottom: 1.125rem; }
-.notification-modal-message{white-space: pre-wrap;line-height: 1.7;margin-bottom: 1.75rem; }
-.notification-modal-buttons{display: flex;justify-content: flex-end;gap: 0.625rem; }

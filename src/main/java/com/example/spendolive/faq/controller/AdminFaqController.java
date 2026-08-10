@@ -20,22 +20,34 @@ import com.example.spendolive.faq.domain.FaqVO;
 import com.example.spendolive.faq.service.FaqService;
 import com.example.spendolive.member.domain.MemberVO;
 
+/**
+ * 관리자 FAQ 관리 화면(목록/등록/수정/순서변경/삭제)을 담당하는 컨트롤러.
+ * - 목록(list.do)만 화면(JSP)을 반환하고, 나머지(등록/수정/순서/삭제)는 전부
+ *   AJAX 전용이라 페이지 이동 없이 JSON만 주고받음 (adminFaq.js가 호출 주체).
+ * - 모든 메서드 맨 앞에서 isAdmin()으로 관리자 세션인지부터 확인함.
+ */
 @Controller
 @RequestMapping("/spendolive/admin/faq")
 public class AdminFaqController {
 
     private final FaqService faqService;
 
+    // 생성자 주입 - 스프링이 빈 등록할 때 이 생성자를 보고 FaqService 구현체를 자동으로 넣어줌
     public AdminFaqController(FaqService faqService) {
         this.faqService = faqService;
     }
 
+    // 세션에 저장된 memberInfo가 있고, role이 "ADMIN"인지 확인.
+    // 아래 모든 요청 처리 메서드가 맨 앞에서 이걸로 관리자인지부터 검사함
     private boolean isAdmin(HttpSession session) {
         MemberVO m = (MemberVO) session.getAttribute("memberInfo");
         return m != null && "ADMIN".equals(m.getRole());
     }
 
     /* ─── 목록 ─────────────────────────────────────────────── */
+    // GET /spendolive/admin/faq/list.do
+    // 관리자가 아니면 메인으로 돌려보내고, 맞으면 전체 목록 + 카테고리별로
+    // 묶은 목록(faqGroups, adminFaqList.jsp가 카테고리 헤딩별로 표 나눠 그릴 때 씀)을 같이 넘김
     @GetMapping("/list.do")
     public ModelAndView list(HttpSession session) {
         if (!isAdmin(session)) return new ModelAndView("redirect:/spendolive/main.do");
@@ -79,6 +91,8 @@ public class AdminFaqController {
         faq.setCategory(category);
         faq.setQuestion(question.strip());
         faq.setAnswer(answer.strip());
+        // 새 FAQ는 항상 그 카테고리 맨 뒤 순서로 등록됨 (같은 카테고리 안에서 몇 번째인지는
+        // getNextSortOrder가 계산해줌 - 관리자가 직접 순서를 안 정해도 됨)
         faq.setSort_order(faqService.getNextSortOrder(category));
         faq.setUse_yn(useYn);
 
@@ -117,6 +131,8 @@ public class AdminFaqController {
         faq.setQuestion(question.strip());
         faq.setAnswer(answer.strip());
         faq.setUse_yn(useYn);
+        // 여기선 sort_order를 새로 안 세팅함 - 수정은 순서를 안 건드리고 내용만 바꾸는 거라
+        // updateFaq 쪽 SQL이 sort_order 컬럼은 아예 건드리지 않는 걸로 되어있어야 함
 
         try {
             faqService.updateFaq(faq);
@@ -181,6 +197,12 @@ public class AdminFaqController {
 
     /* ── 공통 응답 헬퍼 ── */
     private boolean isBlank(String s) { return s == null || s.isBlank(); }
+
+    // ⚠ 관리자 아닐 때 HTTP 상태코드는 401(UNAUTHORIZED)로 내려주는데,
+    //   응답 body의 result 값은 "FORBIDDEN"(원래 403 느낌)이라 이름이 좀 안 맞음.
+    //   adminFaq.js 쪽이 지금 status 401만 보고 처리하는 거면 상관없는데,
+    //   혹시 result 값 문자열("FORBIDDEN")을 직접 비교하는 코드가 있으면 헷갈릴 수 있음.
+    //   로직은 안 건드림
     private ResponseEntity<?> forbidden() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("result", "FORBIDDEN", "message", "관리자만 접근할 수 있습니다."));
