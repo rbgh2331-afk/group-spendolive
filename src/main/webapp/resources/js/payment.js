@@ -1,4 +1,4 @@
-
+// 처리 상태 확인
 async function checkPaymentStatus(controllerurl,room_id, member_login_id = null, host_id = null, payment = null) {
     const params = new URLSearchParams({ room_id: room_id });
     if (member_login_id) {
@@ -88,28 +88,30 @@ if (paymentActionBtn) {
   // 결제 요청의 응답이 끊기면 DB에 결제가 저장됐는지 여러 번 다시 확인합니다.
  
 
-  paymentButton.addEventListener('click', async function () {
+  paymentButton.addEventListener('click', async function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     const room_id = paymentButton.dataset.room_id;
+
     if (!room_id) {
         showFailure(paymentButton, {
             message: '결제할 방 정보를 찾을 수 없습니다.'
-        });
+        }, 'payment');
         return;
     }
 
-    // URL 파라미터 생성
     const body = new URLSearchParams();
     body.append('room_id', room_id);
-    // 공통 모듈 함수 호출
+
     await executeRequest({
         button: paymentButton,
         confirmMessage: '표시된 금액으로 결제하시겠습니까?',
         requestUrl: '/payment/paymenting.do',
         bodyData: body,
-        checkStatusFunc: () => checkPaymentStatus('payment',room_id),
-        // 필요하다면 에러 메시지도 커스텀 전달 가능
+        checkStatusFunc: () => checkPaymentStatus('payment', room_id),
         fallbackErrorMessage: '결제 결과를 확인하지 못했습니다. 카드 승인 내역을 확인한 뒤 다시 시도해주세요.'
-    },'payment');
+    }, 'payment');
 });
   // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
  
@@ -254,6 +256,7 @@ if (paymentActionBtn) {
     // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
     
   })();
+  // 카드 삭제
   (function () {
   
     document.addEventListener('click', async function (event) {
@@ -279,6 +282,7 @@ if (paymentActionBtn) {
     // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
     
   })();
+  // 계좌 삭제
   (function () {
   
     document.addEventListener('click', async function (event) {

@@ -546,15 +546,55 @@
                 <c:otherwise>
                     <div class="mypage-room-list">
                         <c:forEach var="room" items="${friendRoomList}">
-                            <div class="mypage-room-card">
-                                <div>
-                                    <strong>${room.room_name}</strong>
-                                    <p>${room.service_name} · ${room.plan_name} · ${room.current_member_count}/${room.member_limit}명</p>
-                                    <small>결제일 매월 ${room.billing_day}일 · 상태 ${room.status}</small>
-                                </div>
+                            <div class="mypage-room-actions-wrap">
                                 <div class="mypage-room-actions">
-                                    <a href="${contextPath}/spendolive/ott/chat/room.do?room_id=${room.room_id}" class="btn btn-primary full">대화방</a>
+                                    <a href="${contextPath}/spendolive/ott/chat.do?room_id=${room.room_id}"
+                                    class="btn btn-primary btn-mini">
+                                        대화방
+                                    </a>
+
+                                    <c:choose>
+                                        <c:when test="${room.leave_reserved_yn eq 'Y'}">
+                                            <form action="${contextPath}/spendolive/ott/room/leave-cancel.do"
+                                                method="post"
+                                                data-ajax-form
+                                                data-ajax-action="/spendolive/ott/ajax/room/leave-cancel.do"
+                                                data-ajax-confirm="나가기 예약을 취소할까요?"
+                                                data-loading-message="나가기 예약을 취소하고 있습니다.">
+
+                                                <input type="hidden" name="room_id" value="${room.room_id}">
+                                                <input type="hidden" name="returnPage" value="mypage">
+
+                                                <button type="submit" class="btn btn-danger-outline btn-mini">
+                                                    예약 취소
+                                                </button>
+                                            </form>
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <form action="${contextPath}/spendolive/ott/room/leave-reserve.do"
+                                                method="post"
+                                                data-ajax-form
+                                                data-ajax-action="/spendolive/ott/ajax/room/leave-reserve.do"
+                                                data-ajax-confirm="이 방에서 나가기를 예약할까요?"
+                                                data-loading-message="나가기 예약을 처리하고 있습니다.">
+
+                                                <input type="hidden" name="room_id" value="${room.room_id}">
+                                                <input type="hidden" name="returnPage" value="mypage">
+
+                                                <button type="submit" class="btn btn-danger-outline btn-mini">
+                                                    나가기 예약
+                                                </button>
+                                            </form>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
+
+                                <c:if test="${room.leave_reserved_yn eq 'Y'}">
+                                    <small class="mypage-leave-reserved-text">
+                                        나가기 예약됨 · ${room.leave_scheduled_date} 자동 퇴장
+                                    </small>
+                                </c:if>
                             </div>
                         </c:forEach>
                     </div>
@@ -625,7 +665,56 @@
                                             </c:choose>
                                         </div>
                                         <c:if test="${room.my_application_status eq 'ACTIVE' or empty room.my_application_status}">
-                                            <a href="${contextPath}/spendolive/ott/chat/room.do?room_id=${room.room_id}" class="btn btn-primary">대화방</a>
+                                            <div class="mypage-room-actions-wrap">
+                                                <div class="mypage-room-actions">
+                                                    <a href="${contextPath}/spendolive/ott/chat.do?room_id=${room.room_id}"
+                                                    class="btn btn-primary btn-mini">
+                                                        대화방
+                                                    </a>
+
+                                                    <c:choose>
+                                                        <c:when test="${room.leave_reserved_yn eq 'Y'}">
+                                                            <form action="${contextPath}/spendolive/ott/room/leave-cancel.do"
+                                                                method="post"
+                                                                data-ajax-form
+                                                                data-ajax-action="/spendolive/ott/ajax/room/leave-cancel.do"
+                                                                data-ajax-confirm="나가기 예약을 취소할까요?"
+                                                                data-loading-message="나가기 예약을 취소하고 있습니다.">
+
+                                                                <input type="hidden" name="room_id" value="${room.room_id}">
+                                                                <input type="hidden" name="returnPage" value="mypage">
+
+                                                                <button type="submit" class="btn btn-danger-outline btn-mini">
+                                                                    예약 취소
+                                                                </button>
+                                                            </form>
+                                                        </c:when>
+
+                                                        <c:otherwise>
+                                                            <form action="${contextPath}/spendolive/ott/room/leave-reserve.do"
+                                                                method="post"
+                                                                data-ajax-form
+                                                                data-ajax-action="/spendolive/ott/ajax/room/leave-reserve.do"
+                                                                data-ajax-confirm="이 방에서 나가기를 예약할까요?"
+                                                                data-loading-message="나가기 예약을 처리하고 있습니다.">
+
+                                                                <input type="hidden" name="room_id" value="${room.room_id}">
+                                                                <input type="hidden" name="returnPage" value="mypage">
+
+                                                                <button type="submit" class="btn btn-danger-outline btn-mini">
+                                                                    나가기 예약
+                                                                </button>
+                                                            </form>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+
+                                                <c:if test="${room.leave_reserved_yn eq 'Y'}">
+                                                    <small class="mypage-leave-reserved-text">
+                                                        나가기 예약됨 · ${room.leave_scheduled_date} 자동 퇴장
+                                                    </small>
+                                                </c:if>
+                                            </div>
                                         </c:if>
                                     </div>
                                 </c:forEach>
