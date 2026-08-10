@@ -1,4 +1,4 @@
-
+// 처리 상태 확인
 async function checkPaymentStatus(controllerurl,room_id, member_login_id = null, host_id = null, payment = null) {
     const params = new URLSearchParams({ room_id: room_id });
     if (member_login_id) {
@@ -254,6 +254,7 @@ if (paymentActionBtn) {
     // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
     
   })();
+  // 카드 삭제
   (function () {
   
     document.addEventListener('click', async function (event) {
@@ -279,6 +280,7 @@ if (paymentActionBtn) {
     // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
     
   })();
+  // 계좌 삭제
   (function () {
   
     document.addEventListener('click', async function (event) {
