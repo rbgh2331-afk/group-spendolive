@@ -10,6 +10,12 @@ import org.springframework.stereotype.Repository;
 
 import com.example.spendolive.faq.domain.FaqVO;
 
+/**
+ * FAQ(faq_tb) 테이블 조회/등록/수정/삭제를 담당하는 Repository.
+ * - 모든 메서드가 DataAccessException을 잡아서 로그만 남기고, 조회 계열은 빈 값(빈 리스트/null)을
+ *   반환해서 화면이 죽지 않게 함. 등록/수정/삭제 계열은 잡은 뒤 다시 throw해서 호출부
+ *   (AdminFaqController)가 실패를 알고 "오류가 발생했습니다" 응답을 내려줄 수 있게 함.
+ */
 @Repository
 public class FaqRepository {
 
@@ -90,10 +96,14 @@ public class FaqRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    // 생성자 주입 - 스프링이 빈 등록할 때 이 생성자를 보고 JdbcTemplate을 자동으로 넣어줌
     public FaqRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    // ResultSet 한 행을 FaqVO 하나로 변환. 위의 SELECT 계열 SQL들이 전부 같은
+    // 컬럼 구성(faq_id/category/question/answer/sort_order/use_yn/created_at)이라
+    // 이 매핑 함수 하나를 공용으로 재사용함 (findAllVisible/findAll/findById/findByCategory 전부)
     private FaqVO mapRow(java.sql.ResultSet rs) throws java.sql.SQLException {
         FaqVO faq = new FaqVO();
         faq.setFaq_id(rs.getInt("faq_id"));
@@ -132,6 +142,7 @@ public class FaqRepository {
         try {
             return jdbcTemplate.queryForObject(FIND_BY_ID_SQL, (rs, rowNum) -> mapRow(rs), faq_id);
         } catch (EmptyResultDataAccessException e) {
+            // 해당 faq_id가 없는 정상적인 경우 - 에러 로그 없이 조용히 null만 반환
             return null;
         } catch (DataAccessException e) {
             System.err.println("[FaqRepository.findById] DB 오류: " + e.getMessage());
@@ -151,6 +162,8 @@ public class FaqRepository {
 
 
 
+    // 시퀀스(seq_faq)로 새 PK를 미리 받아온 다음 INSERT에 직접 박아넣는 방식
+    // (IDENTITY 컬럼 자동증가 대신 시퀀스를 쓰는 이유는 Oracle이라 그런 걸로 보임)
     public int insertFaq(FaqVO faq) {
         Long faq_id = jdbcTemplate.queryForObject("SELECT seq_faq.NEXTVAL FROM dual", Long.class);
         try {

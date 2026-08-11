@@ -35,7 +35,12 @@
             <span id="calendarTitle"></span>
             <button class="detail-link" id="detailBtn">자세히보기</button>
         </div>
-        <div id="calendar"></div> 
+        <div id="calendar"></div>
+
+        <%-- "자세히보기" 누르면 위 달력(#calendar)은 숨기고 이걸 대신 보여줌.
+             FullCalendar listMonth뷰는 페이지네이션이 없어서, 사이드 패널(이번달 주요 지출)과
+             같은 방식(직접 페이지 잘라서 보여주기)으로 자체 구현함 --%>
+        <div id="calendarDetailList" class="calendar-detail-list" style="display:none"></div>
     </div>
 
     <div class="side-column">
@@ -76,6 +81,11 @@
         </div>
     </section>
 </main>
+
+<script>
+    // isLogOn은 CommonModelAdvice에서 모든 페이지에 전역으로 내려주는 값
+    const isLoggedIn = ${isLogOn};
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.21/index.global.min.js"></script>
 <script src="${contextPath}/resources/js/app.js"></script>

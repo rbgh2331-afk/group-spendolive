@@ -104,6 +104,9 @@
             </form>
         </template>
 
+        <%-- FAQ마다 수정용 숨김 템플릿을 하나씩 미리 만들어둠 (adminFaqEditTpl{id}).
+             수정 버튼 누르면 adminFaq.js가 이 템플릿을 모달 안으로 복사해서 보여줌
+             (서버에 다시 안 물어보고 이미 렌더링된 값을 그대로 재사용) --%>
         <c:forEach var="entry" items="${faqGroups}">
             <c:forEach var="faq" items="${entry.value}">
                 <template id="adminFaqEditTpl${faq.faq_id}">
@@ -152,5 +155,7 @@
     </div>
 </div>
 
+<%-- 순서 중요: adminFaq.js가 adminInquiry.js의 전역 soAlert/soConfirm을 갖다 쓰므로
+     adminInquiry.js가 먼저 로드돼야 함 --%>
 <script src="${contextPath}/resources/js/adminInquiry.js"></script>
 <script src="${contextPath}/resources/js/adminFaq.js"></script>

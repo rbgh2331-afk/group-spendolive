@@ -18,7 +18,7 @@
 .calendar-page-layout {display:grid;grid-template-columns:1fr 19rem;gap:1.125rem;align-items:start;}
 
 /* 이전달/+지출등록/다음달 버튼 줄 (01-foundation.css에서 이동함 - 캘린더 페이지 전용이라) */
-.calendar-controls {display:flex;gap:0.5rem;flex-wrap:wrap;margin-left:-0.625rem;}
+.calendar-controls {display:flex;gap:0.5rem;flex-wrap:wrap;margin-left:0.625rem;}
 /* 사이드 카드("오늘 할 일", "이번 달 주요 지출") 공통 스타일 (01-foundation.css에서 이동함) */
 .side-panel {height:auto !important;padding:1.5rem;}
 .side-panel h3 {margin:0 0 1rem;}
@@ -28,6 +28,9 @@
 .calendar-header {display:flex;justify-content:space-between;align-items:center;gap:1.25rem;padding:1.375rem 1.5rem;color:#fff;background:linear-gradient(135deg,var(--olive-dark),var(--olive));font-size:1.5rem;font-weight:950;}
 .detail-link {height:auto !important;padding:0.5625rem 0.875rem;border:0.0625rem solid rgba(255,255,255,.55);border-radius:999px;color:#fff;background:transparent;font-weight:850;cursor:pointer;}
 .side-event {height:auto !important;padding:0.875rem;border-radius:0.9375rem;background:var(--cream);border:0.0625rem solid var(--line);margin-bottom:0.625rem;}
+.calendar-detail-list {padding: 1.125rem 1.5rem;}
+/* 데이터 있을 때(.side-event, 두 줄짜리 카드)랑 크기 맞춤 - 원래는 한 줄짜리라 훨씬 얇아 보였음 */
+.calendar-detail-list .empty-text {display: flex; align-items: center; justify-content: center; min-height: 3.9375rem; padding: 0.75rem 0.875rem; border-radius: 0.75rem;}
 .side-event strong {display:block;margin-bottom:0.25rem;}
 .side-event span {color:var(--muted);font-size:0.8125rem;}
 .fc-daygrid-day-number {cursor: pointer;transition: font-weight 0.1s;}

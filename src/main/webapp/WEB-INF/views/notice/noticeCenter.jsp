@@ -32,7 +32,7 @@
 
             <button type="button"
                     id="alertTabBtn"
-                    class="notice-board-tab active"
+                    class="notice-board-tab"
                     onclick="setBoardTab('alert')">
                 알림
             </button>
@@ -93,38 +93,21 @@
 </section>
 
 <script>
-    <%-- loginYn이 model에 없으면 false로 fallback --%>
-    const loginYn = ${not empty loginYn ? loginYn : false};
+    <%-- loginYn이 model에 없으면 false로 fallback.
+         변수명은 isLoggedIn으로 둠 — app.js/notice.js의 loginYn() 함수와
+         이름이 겹치면 "Identifier 'loginYn' has already been declared" 문법 에러가
+         나서 두 스크립트가 아예 안 돌아가는 사고가 났었음(모델 속성명 loginYn은 그대로 둠). --%>
+    const isLoggedIn = ${not empty loginYn ? loginYn : false};
 </script>
 
 
 <script src="${contextPath}/resources/js/notice.js"></script>
 
-<!-- 알림 상세 모달 -->
-<div id="notificationModal" class="notification-modal">
-
-    <div class="notification-modal-box">
-
-        <h3 id="notificationModalTitle"></h3>
-
-        <div id="notificationModalMessage" class="notification-modal-message"></div>
-
-        <div class="notification-modal-buttons">
-
-            <button type="button"
-                    class="btn btn-secondary"
-                    onclick="closeNotificationModal()">
-                닫기
-            </button>
-
-            <button type="button"
-                    class="btn btn-primary"
-                    id="notificationMoveBtn">
-                해당 게시글로 이동
-            </button>
-
-        </div>
-
+<!-- 공지/알림 상세 모달 (문의 상세 모달과 같은 .modal/.modal-box 구조 재사용, 둘이 공유) -->
+<div class="modal" id="detailModal" onclick="closeDetailModal(event)">
+    <div class="modal-box modal-inquiry" onclick="event.stopPropagation()">
+        <button type="button" class="modal-close" onclick="closeDetailModal(event)">✕</button>
+        <div id="detailModalBody"></div>
     </div>
-
 </div>
+
