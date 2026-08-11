@@ -457,7 +457,6 @@ public class MemberControllerImpl implements MemberController{
         if (code == null || code.trim().isEmpty()) {
             redirectAttributes.addFlashAttribute("msg", "카카오 로그인이 취소되었거나 오류가 발생했습니다."); 
             return new ModelAndView("member/loginForm");
-
         }
        
         try {

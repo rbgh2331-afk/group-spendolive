@@ -404,14 +404,14 @@
                                                             <form action="${contextPath}/spendolive/ott/room/leave-cancel.do" method="post" class="compact-close-form" data-ajax-form data-ajax-action="/spendolive/ott/ajax/room/leave-cancel.do" data-loading-message="나가기 예약을 취소하고 있습니다.">
                                                                 <input type="hidden" name="room_id" value="${room.room_id}">
                                                                 <input type="hidden" name="returnPage" value="recruit">
-                                                                <button type="submit" class="btn btn-danger-outline btn-mini" onclick="return confirm('나가기 예약을 취소할까요?');">예약 취소</button>
+                                                                <button type="submit" class="btn btn-danger-outline btn-mini">예약 취소</button>
                                                             </form>
                                                         </c:when>
                                                         <c:otherwise>
                                                             <form action="${contextPath}/spendolive/ott/room/leave-reserve.do" method="post" class="compact-close-form" data-ajax-form data-ajax-action="/spendolive/ott/ajax/room/leave-reserve.do" data-ajax-confirm="다음 이용 회차부터 나가도록 예약할까요?" data-loading-message="나가기 예약을 처리하고 있습니다.">
                                                                 <input type="hidden" name="room_id" value="${room.room_id}">
                                                                 <input type="hidden" name="returnPage" value="recruit">
-                                                                <button type="submit" class="btn btn-danger-outline btn-mini" onclick="return confirm('나가기 예약을 할까요? 다음 결제일 7일 전 자동으로 방에서 나가집니다.');">나가기 예약</button>
+                                                                <button type="submit" class="btn btn-danger-outline btn-mini">나가기 예약</button>
                                                             </form>
                                                         </c:otherwise>
                                                     </c:choose>

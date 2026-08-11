@@ -337,6 +337,9 @@ public class OttController {
         if ("friends".equals(returnPage)) {
             return "redirect:/spendolive/ott/friends.do";
         }
+        if ("mypage".equals(returnPage)) {
+            return "redirect:/spendolive/mypage.do";
+        }
         return "redirect:/spendolive/ott/recruit.do?tab=manage";
     }
 
