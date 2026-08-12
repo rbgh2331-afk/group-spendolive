@@ -80,7 +80,7 @@ public class ExpenseDueNotificationScheduler {
                 continue;
             }
 
-            String linkUrl = "/spendolive/calendar.do?expenseId=" + row.expenseId;
+            String linkUrl = "/spendolive/calendar/main.do?expenseId=" + row.expenseId;
 
             Integer already = jdbcTemplate.queryForObject(
                     EXISTS_TODAY_NOTIFIED_SQL, Integer.class,

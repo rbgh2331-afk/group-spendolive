@@ -17,7 +17,7 @@
                 <div class="hero-buttons">
                     <a href="#expense-form" class="btn btn-primary btn-large">지출 등록</a>
                     <a href="#expense-list" class="btn btn-primary btn-large">월별 내역 보기</a>
-                    <a href="${contextPath}/spendolive/calendar.do" class="btn btn-primary btn-large">캘린더</a>
+                    <a href="${contextPath}/spendolive/calendar/main.do" class="btn btn-primary btn-large">캘린더</a>
                 </div>
             </div>
 

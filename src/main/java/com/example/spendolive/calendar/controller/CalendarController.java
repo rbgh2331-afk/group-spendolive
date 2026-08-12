@@ -25,7 +25,7 @@ import com.example.spendolive.member.domain.MemberVO;
  * - 실제 조회/가공 로직은 CalendarService로 위임 (Repository 직접 호출 X)
  */
 @Controller
-@RequestMapping("/spendolive")
+@RequestMapping("/spendolive/calendar")
 public class CalendarController {
 
     @Autowired
@@ -33,9 +33,9 @@ public class CalendarController {
 
     /**
      * 캘린더 페이지(calendar.jsp) 화면을 반환.
-     * GET 또는 POST /spendolive/calendar.do
+     * GET 또는 POST /spendolive/calendar/main.do
      */
-    @RequestMapping(value = "/calendar.do", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/main.do", method = {RequestMethod.GET, RequestMethod.POST})
     public ModelAndView calendar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("common/layout");
@@ -46,12 +46,8 @@ public class CalendarController {
     /**
      * 특정 연/월의 지출 내역을 JSON으로 반환.
      * GET /spendolive/calendar/expenses.do?year=2026&month=7
-     *
-     * 클래스 레벨 매핑이 "/spendolive"라서, 예전 CalendarApiController 때와 같은
-     * 주소(/spendolive/calendar/expenses.do)를 유지하려고 경로에 "/calendar"를
-     * 직접 붙여씀 (calendar.js가 이 주소로 이미 fetch하고 있어서 URL을 안 바꿈).
      */
-    @GetMapping("/calendar/expenses.do")
+    @GetMapping("/expenses.do")
     @ResponseBody
     public List<Map<String, Object>> getMonthlyExpenses(
             @RequestParam("year") int year,
