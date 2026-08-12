@@ -51,7 +51,7 @@ public class InquiryController {
             HttpSession session, RedirectAttributes ra) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         if (memberInfo == null) {
-            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인 후 이용해 주세요.");
+            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. \n로그인 후 이용해 주세요.");
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
@@ -98,7 +98,7 @@ public class InquiryController {
     public ModelAndView inquiryWriteForm(HttpSession session, RedirectAttributes ra) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         if (memberInfo == null) {
-            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인 후 이용해 주세요.");
+            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. \n로그인 후 이용해 주세요.");
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
@@ -116,7 +116,7 @@ public class InquiryController {
 
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         if (memberInfo == null) {
-            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인 후 이용해 주세요.");
+            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. \n로그인 후 이용해 주세요.");
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
@@ -149,7 +149,7 @@ public class InquiryController {
 
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         if (memberInfo == null) {
-            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인 후 이용해 주세요.");
+            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. \n로그인 후 이용해 주세요.");
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 

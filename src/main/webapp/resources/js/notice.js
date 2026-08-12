@@ -87,7 +87,7 @@ function soEnsureModal() {
 
     function loginYn(log,loginYn){
         if (!loginYn) {
-            soAlert("로그인이 필요한 기능입니다. 로그인을 해주세요!", { type: "error" })
+            soAlert("로그인이 필요한 기능입니다. \n로그인을 해주세요!", { type: "error" })
                 .then(function () { location.href = "/member/loginForm.do?log="+log; });
             return false;
         }
@@ -97,7 +97,7 @@ function soEnsureModal() {
       function setBoardTab(mode, initialFilter) {
 
         if (mode === "alert" && !isLoggedIn) {
-            soAlert("로그인이 필요한 기능입니다. 로그인을 해주세요!", { type: "error" })
+            soAlert("로그인이 필요한 기능입니다. \n로그인을 해주세요!", { type: "error" })
                 .then(function () { location.href = "/member/loginForm.do?log=notice"; });
             return;
         }
