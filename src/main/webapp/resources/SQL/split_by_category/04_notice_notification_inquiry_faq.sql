@@ -365,3 +365,65 @@ VALUES ('etc', '서비스 이용료가 따로 있나요?',
 INSERT INTO faq_tb (category, question, answer, sort_order, use_yn)
 VALUES ('etc', '회원 탈퇴는 어떻게 하나요?',
  '마이페이지 하단의 회원 탈퇴 메뉴에서 진행할 수 있어요. 진행 중인 정산이나 참여 중인 방이 있다면 정산 완료 후 탈퇴가 가능해요.', 3, 'Y');
+
+
+
+-- ============================================================
+-- 8. 샘플 데이터 (공지사항)
+-- ============================================================
+
+DECLARE
+    v_admin_id member_tb.id%TYPE;
+BEGIN
+    SELECT id INTO v_admin_id
+    FROM member_tb
+    WHERE role = 'ADMIN'
+      AND ROWNUM = 1;
+
+    INSERT INTO notice_tb (notice_id, admin_id, title, content, pinned_yn, created_at)
+    VALUES (seq_notice.NEXTVAL, v_admin_id,
+        '[필독] SpendOlive 서비스 이용약관 개정 안내',
+        '안녕하세요, SpendOlive입니다.' || CHR(10) ||
+        '2026년 8월 20일부로 서비스 이용약관 및 개인정보처리방침이 일부 개정될 예정입니다.' || CHR(10) ||
+        '주요 변경사항은 OTT 공유방 정산 수수료 정책 명확화 및 오픈뱅킹 연동 관련 조항 추가입니다.' || CHR(10) ||
+        '자세한 내용은 마이페이지 > 약관 메뉴에서 확인하실 수 있습니다.',
+        'Y', TO_DATE('2026.08.05','YYYY.MM.DD'));
+
+    INSERT INTO notice_tb (notice_id, admin_id, title, content, pinned_yn, created_at)
+    VALUES (seq_notice.NEXTVAL, v_admin_id,
+        '추석 연휴 고객센터 운영 안내',
+        '추석 연휴 기간 동안 고객센터 상담 운영이 일시 중단됩니다.' || CHR(10) ||
+        '문의하기를 통해 남겨주신 내용은 연휴 종료 후 순차적으로 답변드릴 예정이니 양해 부탁드립니다.' || CHR(10) ||
+        '서비스 자체는 연휴 기간에도 정상적으로 이용 가능합니다.',
+        'Y', TO_DATE('2026.08.10','YYYY.MM.DD'));
+
+    INSERT INTO notice_tb (notice_id, admin_id, title, content, pinned_yn, created_at)
+    VALUES (seq_notice.NEXTVAL, v_admin_id,
+        '캘린더 기능 업데이트 안내',
+        '캘린더에서 반복되는 고정지출 표시 방식이 개선되었습니다.' || CHR(10) ||
+        '이제 고정지출을 등록하면 매달 자동으로 해당 날짜에 반영되며, 팝오버를 통해 상세 내역을 바로 확인할 수 있습니다.' || CHR(10) ||
+        '이용 중 불편사항이 있으시면 문의하기로 알려주세요.',
+        'N', TO_DATE('2026.07.28','YYYY.MM.DD'));
+
+    INSERT INTO notice_tb (notice_id, admin_id, title, content, pinned_yn, created_at)
+    VALUES (seq_notice.NEXTVAL, v_admin_id,
+        'OTT 지원 서비스 추가 안내 (Coupang Play)',
+        '회원분들의 요청이 많았던 Coupang Play가 OTT 공유방 목록에 새롭게 추가되었습니다.' || CHR(10) ||
+        '방 생성 시 OTT 종류 선택 화면에서 바로 이용하실 수 있습니다.',
+        'N', TO_DATE('2026.07.15','YYYY.MM.DD'));
+
+    INSERT INTO notice_tb (notice_id, admin_id, title, content, pinned_yn, created_at)
+    VALUES (seq_notice.NEXTVAL, v_admin_id,
+        '서버 정기 점검 안내 (8월 15일 새벽 2시~4시)',
+        '보다 안정적인 서비스 제공을 위해 아래와 같이 정기 점검을 진행합니다.' || CHR(10) ||
+        '점검 시간: 2026년 8월 15일 새벽 2시 ~ 4시 (약 2시간)' || CHR(10) ||
+        '점검 시간 동안에는 로그인 및 결제 관련 기능 이용이 일시적으로 제한될 수 있습니다.' || CHR(10) ||
+        '이용에 불편을 드려 죄송합니다.',
+        'N', TO_DATE('2026.08.11','YYYY.MM.DD'));
+
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('member_tb에 role=ADMIN인 회원이 없어 샘플 공지 데이터는 넣지 않았습니다. 관리자 계정 생성 후 다시 실행해 주세요.');
+END;
+/
