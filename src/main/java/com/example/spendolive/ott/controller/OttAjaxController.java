@@ -148,6 +148,9 @@ public class OttAjaxController {
         MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         try {
             String message = ottService.reserveRoomLeave(roomId, member.getId());
+            if (!message.startsWith("나가기 예약이 완료되었습니다.")) {
+                return ResponseEntity.badRequest().body(AjaxResponse.failure("LEAVE_RESERVE_REJECTED", message));
+            }
             return ResponseEntity.ok(AjaxResponse.success(message,
                     Map.of("refreshUrl", refreshRoomUrl(returnPage))));
         } catch (Exception e) {
@@ -163,6 +166,9 @@ public class OttAjaxController {
         MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         try {
             String message = ottService.cancelRoomLeave(roomId, member.getId());
+            if (!"나가기 예약이 취소되었습니다.".equals(message)) {
+                return ResponseEntity.badRequest().body(AjaxResponse.failure("LEAVE_CANCEL_REJECTED", message));
+            }
             return ResponseEntity.ok(AjaxResponse.success(message,
                     Map.of("refreshUrl", refreshRoomUrl(returnPage))));
         } catch (Exception e) {
@@ -177,7 +183,13 @@ public class OttAjaxController {
 
     // 가족방과 외부 모집방에서 각각 돌아가야 할 부분 갱신 주소를 구분한다.
     private String refreshRoomUrl(String returnPage) {
-        return "friends".equals(returnPage) ? "/spendolive/ott/friends.do" : "/spendolive/ott/recruit.do?tab=manage";
+        if ("friends".equals(returnPage)) {
+            return "/spendolive/ott/friends.do";
+        }
+        if ("mypage".equals(returnPage)) {
+            return "/spendolive/mypage.do";
+        }
+        return "/spendolive/ott/recruit.do?tab=manage";
     }
 
     // 중복 요청은 성공처럼 처리하지 않고 HTTP 409와 공통 실패 코드를 반환한다.
