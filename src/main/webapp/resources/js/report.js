@@ -1,3 +1,4 @@
+
 const reportCloseBtn = document.getElementById('StatusCloseButton');
 if (reportCloseBtn) {
     reportCloseBtn.addEventListener('click', function() {
@@ -13,6 +14,7 @@ if (reportActionBtn) {
         }
     });
 }
+// 신고 처리
 (function () {
   
     document.addEventListener('click', async function (event) {
@@ -46,6 +48,7 @@ if (reportActionBtn) {
     // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
     
   })();
+  // 경고 처리
   (function () {
   
     document.addEventListener('click', async function (event) {

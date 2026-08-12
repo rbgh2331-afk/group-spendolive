@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.spendolive.common.ajax.AjaxAuthSupport;
 import com.example.spendolive.common.ajax.AjaxEndpoint;
 import com.example.spendolive.common.ajax.AjaxResponse;
 import com.example.spendolive.member.domain.MemberVO;
@@ -40,11 +39,13 @@ public class MyPageAjaxController {
                                            @RequestParam(value = "passwordConfirm", required = false) String passwordConfirm,
                                            @RequestParam(value = "passwordChecked", required = false) String passwordChecked,
                                            HttpSession session) {
-        MemberVO loginMember = AjaxAuthSupport.member(session);
-        if (loginMember == null) return AjaxAuthSupport.unauthorized();
+        // [내 담당 로그인 공통화] 로그인 판정은 공통 JS에서 처리하고 AJAX Controller에서는 세션 회원정보만 사용한다.
+        MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
         try {
             MemberVO savedMember = memberService.getMemberById(loginMember.getId());
-            if (savedMember == null) return AjaxAuthSupport.unauthorized();
+            if (savedMember == null) {
+                return ResponseEntity.badRequest().body(AjaxResponse.failure("MEMBER_NOT_FOUND", "회원정보를 찾을 수 없습니다."));
+            }
 
             if (isChanged(formMember.getEmail(), savedMember.getEmail())
                     && !isVerified(session, "mypageEmailVerified", "mypageEmailVerifiedValue", formMember.getEmail())) {
@@ -86,8 +87,7 @@ public class MyPageAjaxController {
     public ResponseEntity<?> updateAccountName(@RequestParam("accountIdx") int accountIdx,
                                                 @RequestParam("accountName") String accountName,
                                                 HttpSession session) {
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         String safeName = accountName == null ? "" : accountName.trim();
         if (safeName.isBlank() || safeName.length() > 20) {
             return ResponseEntity.badRequest().body(AjaxResponse.failure("INVALID_REQUEST", "계좌 제목은 1~20자로 입력해주세요."));
@@ -103,8 +103,7 @@ public class MyPageAjaxController {
     // [AJAX 변경] 주계좌 변경 완료 후 자산관리 영역 갱신 주소를 반환한다.
     @PostMapping("/account/primary/update.do")
     public ResponseEntity<?> updatePrimaryAccount(@RequestParam("accountIdx") int accountIdx, HttpSession session) {
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         try {
             memberService.updatePrimaryAccount(member.getId(), accountIdx);
             return ResponseEntity.ok(AjaxResponse.success("주계좌가 변경되었습니다.",
@@ -119,8 +118,7 @@ public class MyPageAjaxController {
     public ResponseEntity<?> updateCardName(@RequestParam("cardIdx") int cardIdx,
                                              @RequestParam("cardName") String cardName,
                                              HttpSession session) {
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         String safeName = cardName == null ? "" : cardName.trim();
         if (safeName.isBlank() || safeName.length() > 30) {
@@ -143,8 +141,7 @@ public class MyPageAjaxController {
     // [AJAX 변경] 주카드 변경 완료 후 자산관리 영역 갱신 주소를 반환한다.
     @PostMapping("/card/primary/update.do")
     public ResponseEntity<?> updatePrimaryCard(@RequestParam("cardIdx") int cardIdx, HttpSession session) {
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         try {
             memberService.updatePrimaryCard(member.getId(), cardIdx);
             return ResponseEntity.ok(AjaxResponse.success("주카드가 변경되었습니다.",
@@ -153,7 +150,18 @@ public class MyPageAjaxController {
             return ResponseEntity.internalServerError().body(AjaxResponse.failure("SERVER_ERROR", "주카드 변경에 실패했습니다."));
         }
     }
-
+    // [AJAX 변경] 주카드 변경 완료 후 자산관리 영역 갱신 주소를 반환한다.
+    @PostMapping("/card/delete.do")
+    public ResponseEntity<?> deleteCard(@RequestParam("cardIdx") int cardIdx, HttpSession session) {
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
+        try {
+            memberService.deleteCard(cardIdx,member.getId());
+            return ResponseEntity.ok(AjaxResponse.success("카드가 삭제되었습니다.",
+                    Map.of("refreshUrl", "/spendolive/mypage.do#asset-manage")));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(AjaxResponse.failure("SERVER_ERROR", "카드가 삭제에 실패했습니다."));
+        }
+    }
     // 공백 차이로 불필요한 재인증이 발생하지 않도록 정리한 값끼리 비교한다.
     private boolean isChanged(String newValue, String oldValue) {
         return !(newValue == null ? "" : newValue.trim()).equals(oldValue == null ? "" : oldValue.trim());

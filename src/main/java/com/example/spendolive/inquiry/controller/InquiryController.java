@@ -51,12 +51,10 @@ public class InquiryController {
             HttpSession session, RedirectAttributes ra) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         if (memberInfo == null) {
-            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인 후 이용해 주세요.");
+            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. \n로그인 후 이용해 주세요.");
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
-        // 벨 알림 클릭이 아니라 메뉴 등으로 이 페이지에 직접 들어와도,
-        // INQUIRY_REPLY 알림이 가리키는 페이지를 실제로 확인한 것이므로 읽음 처리
        
         ModelAndView mav = new ModelAndView("common/layout");
         mav.addObject("body_page", "/WEB-INF/views/inquiry/inquiryList.jsp");
@@ -100,7 +98,7 @@ public class InquiryController {
     public ModelAndView inquiryWriteForm(HttpSession session, RedirectAttributes ra) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         if (memberInfo == null) {
-            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인 후 이용해 주세요.");
+            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. \n로그인 후 이용해 주세요.");
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
@@ -118,7 +116,7 @@ public class InquiryController {
 
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         if (memberInfo == null) {
-            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인 후 이용해 주세요.");
+            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. \n로그인 후 이용해 주세요.");
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
@@ -151,7 +149,7 @@ public class InquiryController {
 
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         if (memberInfo == null) {
-            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인 후 이용해 주세요.");
+            ra.addFlashAttribute("msg", "로그인이 필요한 기능입니다. \n로그인 후 이용해 주세요.");
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
@@ -257,6 +255,8 @@ public class InquiryController {
         inquiry.setContent(content.strip());
 
         try {
+            // updateInquiry가 false를 반환하는 경우 = 대상이 없거나, 본인 것이 아니거나,
+            // 이미 답변이 달려서(WAIT 아님) 수정 조건에 안 맞는 경우 (Service 쪽에서 판단)
             boolean updated = inquiryService.updateInquiry(inquiry);
             if (!updated) {
                 return ResponseEntity.badRequest().body(Map.of("result", "ERROR",

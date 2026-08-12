@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.spendolive.common.ajax.AjaxAuthSupport;
 import com.example.spendolive.common.ajax.AjaxDuplicateGuard;
 import com.example.spendolive.common.ajax.AjaxEndpoint;
 import com.example.spendolive.common.ajax.AjaxResponse;
@@ -42,7 +41,6 @@ public class OttAjaxController {
     @PostMapping("/friends/create.do")
     public ResponseEntity<?> createFriendRoom(@ModelAttribute OttRoomDTO roomDTO, HttpSession session) {
         MemberVO member = requireLinkedMember(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
         if (!"YES".equals(member.getAccount_status())) {
             return ResponseEntity.badRequest().body(AjaxResponse.failure("ACCOUNT_REQUIRED", "OTT 기능은 계좌 연동이 필요합니다."));
         }
@@ -62,7 +60,6 @@ public class OttAjaxController {
     @PostMapping("/recruit/create.do")
     public ResponseEntity<?> createRecruitRoom(@ModelAttribute OttRoomDTO roomDTO, HttpSession session) {
         MemberVO member = requireLinkedMember(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
         if (!"YES".equals(member.getAccount_status())) {
             return ResponseEntity.badRequest().body(AjaxResponse.failure("ACCOUNT_REQUIRED", "OTT 기능은 계좌 연동이 필요합니다."));
         }
@@ -83,7 +80,6 @@ public class OttAjaxController {
     public ResponseEntity<?> quickJoin(@RequestParam(value = "ott_service_id", required = false) Long ottServiceId,
                                        HttpSession session) {
         MemberVO member = requireLinkedMember(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
         if (!"YES".equals(member.getAccount_status())) {
             return ResponseEntity.badRequest().body(AjaxResponse.failure("ACCOUNT_REQUIRED", "OTT 기능은 계좌 연동이 필요합니다."));
         }
@@ -107,8 +103,7 @@ public class OttAjaxController {
     public ResponseEntity<?> paySettlement(@RequestParam("payment_id") Long paymentId,
                                            @RequestParam(value = "returnPage", defaultValue = "recruit") String returnPage,
                                            HttpSession session) {
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         String key = "settlement-pay:" + member.getId() + ':' + paymentId;
         if (!duplicateGuard.tryAcquire(key, Duration.ofSeconds(10))) return duplicateResponse();
         try {
@@ -130,8 +125,7 @@ public class OttAjaxController {
                                        @RequestParam(value = "close_reason", required = false) String closeReason,
                                        @RequestParam(value = "returnPage", defaultValue = "friends") String returnPage,
                                        HttpSession session) {
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         String key = "room-close:" + member.getId() + ':' + roomId;
         if (!duplicateGuard.tryAcquire(key, Duration.ofSeconds(5))) return duplicateResponse();
         try {
@@ -151,10 +145,12 @@ public class OttAjaxController {
     public ResponseEntity<?> reserveLeave(@RequestParam("room_id") Long roomId,
                                           @RequestParam(value = "returnPage", defaultValue = "recruit") String returnPage,
                                           HttpSession session) {
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         try {
             String message = ottService.reserveRoomLeave(roomId, member.getId());
+            if (!message.startsWith("나가기 예약이 완료되었습니다.")) {
+                return ResponseEntity.badRequest().body(AjaxResponse.failure("LEAVE_RESERVE_REJECTED", message));
+            }
             return ResponseEntity.ok(AjaxResponse.success(message,
                     Map.of("refreshUrl", refreshRoomUrl(returnPage))));
         } catch (Exception e) {
@@ -167,10 +163,12 @@ public class OttAjaxController {
     public ResponseEntity<?> cancelLeave(@RequestParam("room_id") Long roomId,
                                          @RequestParam(value = "returnPage", defaultValue = "recruit") String returnPage,
                                          HttpSession session) {
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) return AjaxAuthSupport.unauthorized();
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         try {
             String message = ottService.cancelRoomLeave(roomId, member.getId());
+            if (!"나가기 예약이 취소되었습니다.".equals(message)) {
+                return ResponseEntity.badRequest().body(AjaxResponse.failure("LEAVE_CANCEL_REJECTED", message));
+            }
             return ResponseEntity.ok(AjaxResponse.success(message,
                     Map.of("refreshUrl", refreshRoomUrl(returnPage))));
         } catch (Exception e) {
@@ -178,13 +176,20 @@ public class OttAjaxController {
         }
     }
 
+    // [내 담당 로그인 공통화] 로그인 판정은 공통 JS에서 처리하고 AJAX 요청에서는 세션 회원정보만 사용한다.
     private MemberVO requireLinkedMember(HttpSession session) {
-        return AjaxAuthSupport.member(session);
+        return (MemberVO) session.getAttribute("memberInfo");
     }
 
     // 가족방과 외부 모집방에서 각각 돌아가야 할 부분 갱신 주소를 구분한다.
     private String refreshRoomUrl(String returnPage) {
-        return "friends".equals(returnPage) ? "/spendolive/ott/friends.do" : "/spendolive/ott/recruit.do?tab=manage";
+        if ("friends".equals(returnPage)) {
+            return "/spendolive/ott/friends.do";
+        }
+        if ("mypage".equals(returnPage)) {
+            return "/spendolive/mypage.do";
+        }
+        return "/spendolive/ott/recruit.do?tab=manage";
     }
 
     // 중복 요청은 성공처럼 처리하지 않고 HTTP 409와 공통 실패 코드를 반환한다.

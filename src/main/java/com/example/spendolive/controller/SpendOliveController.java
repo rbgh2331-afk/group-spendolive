@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -64,6 +65,11 @@ public class SpendOliveController {
         }
 
         return mav;
+    }
+    @GetMapping("/text.do")
+    public String showTextView() {
+        // /WEB-INF/views/text.jsp 파일을 열어주라는 의미입니다.
+        return "text"; 
     }
     private ModelAndView layout(String bodyPage) {
         ModelAndView mav = new ModelAndView();

@@ -20,3 +20,4 @@ public class SellerAccountVO {
     private Date reg_date;           // REG_DATE (DATE -> java.util.Date)  YYYY/mm/DD
 
 }
+// 권한 문재로 현재는 사용 X

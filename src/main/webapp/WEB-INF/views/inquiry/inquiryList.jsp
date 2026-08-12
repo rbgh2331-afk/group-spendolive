@@ -16,7 +16,7 @@
     <div class="wrap">
         <div class="board-header">
             <h2>문의 내역</h2>
-            <a class="btn btn-primary" href="${contextPath}/spendolive/inquiry/write.do">+ 새 문의 작성</a>
+            <a class="btn btn-primary" href="${contextPath}/spendolive/inquiry/write.do" onclick="return loginYn('inquiry', ${isLogOn})">+ 새 문의 작성</a>
         </div>
 
         <%-- ═══════════════════════════════════════════════════════════

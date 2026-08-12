@@ -53,5 +53,7 @@ public interface PaymentRepository {
     void updatePaymentstatusRefund(int payment_id) throws DataAccessException;
     void insertRefund(SettlementRefundVO refund) throws DataAccessException;
     boolean selectEscrowStatus(int room_id,String host_id)throws DataAccessException;
-    public String selectRefundStatus(int payment_id) throws DataAccessException;
+    String selectRefundStatus(int payment_id) throws DataAccessException;
+    void deleteCard(int card_idx,String id) throws DataAccessException;
+    void deleteAccount(int account_idx,String id) throws DataAccessException;
 }

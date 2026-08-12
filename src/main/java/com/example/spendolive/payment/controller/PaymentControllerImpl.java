@@ -73,7 +73,8 @@ public class PaymentControllerImpl implements PaymentController {
     public ModelAndView detail(
             @RequestParam("room_id") int roomId,
             HttpServletRequest request,
-            HttpServletResponse response) throws Exception {
+            HttpServletResponse response,
+            RedirectAttributes redirectAttributes) throws Exception {
 
         HttpSession session = request.getSession(false);
         MemberVO memberVO = session == null
@@ -84,7 +85,10 @@ public class PaymentControllerImpl implements PaymentController {
         if (!isLoggedIn(memberVO)) {
             return new ModelAndView("redirect:/member/loginForm.do");
         }
-
+        if (!hasLinkedCard(session)) {
+            redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 카드 등록이 필요합니다.");
+            return new ModelAndView("redirect:/spendolive/main.do");
+        }
         try {
             String paymentStatus = paymentService.getRoomPaymentStatus(memberVO.getId(), roomId);
             PaymentAmountDTO paymentAmount = paymentService.getPaymentAmount(roomId);
@@ -135,6 +139,8 @@ public class PaymentControllerImpl implements PaymentController {
             redirectAttributes.addFlashAttribute(
                     "msg",
                     "결제 카드가 정상적으로 등록되었습니다.");
+            MemberVO newmemberVO = memberService.getMemberById(memberVO.getId());
+            session.setAttribute("memberInfo", newmemberVO);
             return "redirect:/spendolive/main.do";
 
         } catch (Exception e) {
@@ -349,8 +355,7 @@ public class PaymentControllerImpl implements PaymentController {
         try{
         memberService.updatePrimaryCard(userId,card_idx);
         return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(new PaymentAjaxResponse(
+                    .ok(new PaymentAjaxResponse(
                             true,
                             "UPDATE_COMPLETED",
                             "변경에 성공하였습니다.",
@@ -368,5 +373,61 @@ public class PaymentControllerImpl implements PaymentController {
                             null,
                             null ));
         }
+    }
+    @Override
+    @PostMapping("/deleteCard.do")
+    public ResponseEntity<PaymentAjaxResponse> deleteCard(@RequestParam("card_idx") int card_idx,  HttpServletRequest request,HttpSession session) throws Exception {
+        MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
+        String id = memberVO.getId();
+        try{
+        paymentService.deleteCard(card_idx,id);
+        return ResponseEntity.ok(new PaymentAjaxResponse(
+                            true,
+                            "DELETE_COMPLETED",
+                            "삭제에 성공하였습니다.",
+                            "SUCCESS",
+                            null,
+                            "/spendolive/mypage.do"));
+        }catch(PaymentProcessException e){
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new PaymentAjaxResponse(
+                            false,
+                            "DELETE_FAILED",
+                            e.getMessage(),
+                            "FAILED",
+                            null,
+                            "/spendolive/mypage.do"));
+        }
+    }
+    @Override
+    @PostMapping("/deleteAccount.do")
+    public ResponseEntity<PaymentAjaxResponse> deleteAccount(@RequestParam("account_idx") int account_idx,  HttpServletRequest request,HttpSession session) throws Exception {
+        MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
+        String id = memberVO.getId();
+        try{
+        paymentService.deleteAccount(account_idx,id);
+        return ResponseEntity.ok(new PaymentAjaxResponse(
+                            true,
+                            "DELETE_COMPLETED",
+                            "삭제에 성공하였습니다.",
+                            "SUCCESS",
+                            null,
+                            "/spendolive/mypage.do"));
+        }catch(PaymentProcessException e){
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new PaymentAjaxResponse(
+                            false,
+                            "DELETE_FAILED",
+                            e.getMessage(),
+                            "FAILED",
+                            null,
+                            "/spendolive/mypage.do"));
+        }
+    }
+    private boolean hasLinkedCard(HttpSession session) {
+        MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
+        return memberInfo != null && "YES".equals(memberInfo.getCard_status());
     }
 }

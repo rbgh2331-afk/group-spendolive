@@ -27,3 +27,4 @@ public class TossSubMallRequestDTO {
         private String phone;         // 하이픈 없이 숫자만
     }
 }
+// 권한 문재로 현재는 사용 X

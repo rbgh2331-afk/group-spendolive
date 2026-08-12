@@ -1,6 +1,8 @@
 package com.example.spendolive.Expense.controller;
 
+import java.sql.Date;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Map;
 
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.spendolive.Expense.domain.ExpenseDTO;
 import com.example.spendolive.Expense.service.ExpenseService;
-import com.example.spendolive.common.ajax.AjaxAuthSupport;
 import com.example.spendolive.common.ajax.AjaxDuplicateGuard;
 import com.example.spendolive.common.ajax.AjaxResponse;
 import com.example.spendolive.member.domain.MemberVO;
@@ -51,10 +52,8 @@ public class ExpenseAjaxController {
                                             @RequestParam(value = "budget_amount", required = false) String budgetAmount,
                                             HttpSession session) {
 
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) {
-            return AjaxAuthSupport.unauthorized();
-        }
+        // [내 담당 로그인 공통화] 로그인 팝업/이동은 공통 JS가 처리하므로 AJAX Controller의 중복 인증 응답 검사를 제거한다.
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         try {
             int parsedBudgetAmount = Integer.parseInt(budgetAmount);
@@ -85,10 +84,7 @@ public class ExpenseAjaxController {
                                             @RequestParam(value = "yearMonth", required = false) String yearMonth,
                                             HttpSession session) {
 
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) {
-            return AjaxAuthSupport.unauthorized();
-        }
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest()
@@ -122,6 +118,9 @@ public class ExpenseAjaxController {
                             Map.of("refreshUrl", "/spendolive/expense/list.do?yearMonth=" + targetMonth)
                     )
             );
+        } catch (IllegalArgumentException exception) {
+            duplicateGuard.release(duplicateKey);
+            return ResponseEntity.badRequest().body(AjaxResponse.failure("INVALID_REQUEST", exception.getMessage()));
         } catch (Exception exception) {
             duplicateGuard.release(duplicateKey);
             return ResponseEntity.badRequest()
@@ -139,10 +138,7 @@ public class ExpenseAjaxController {
                                                @RequestParam(value = "yearMonth", required = false) String yearMonth,
                                                HttpSession session) {
 
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) {
-            return AjaxAuthSupport.unauthorized();
-        }
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest()
@@ -162,6 +158,8 @@ public class ExpenseAjaxController {
                             Map.of("refreshUrl", "/spendolive/expense/list.do?yearMonth=" + targetMonth)
                     )
             );
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(AjaxResponse.failure("INVALID_REQUEST", exception.getMessage()));
         } catch (Exception exception) {
             return ResponseEntity.badRequest()
                     .body(AjaxResponse.failure("INVALID_REQUEST", "지출 수정에 실패했습니다."));
@@ -174,10 +172,7 @@ public class ExpenseAjaxController {
                                                @RequestParam(value = "yearMonth", required = false) String yearMonth,
                                                HttpSession session) {
 
-        MemberVO member = AjaxAuthSupport.member(session);
-        if (member == null) {
-            return AjaxAuthSupport.unauthorized();
-        }
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         try {
             Long parsedExpenseId = Long.valueOf(expenseId);
@@ -221,13 +216,15 @@ public class ExpenseAjaxController {
     }
 
     private void applyRepeatSettings(ExpenseDTO expenseDTO) {
-        boolean repeatTarget = "FIXED".equals(expenseDTO.getExpense_type())
-                || "OTT".equals(expenseDTO.getExpense_type());
+        boolean repeatTarget = "FIXED".equals(expenseDTO.getExpense_type()) || "OTT".equals(expenseDTO.getExpense_type());
 
         if (!repeatTarget) {
             expenseDTO.setFixed_yn("N");
             expenseDTO.setRepeat_yn("N");
             expenseDTO.setRepeat_cycle(null);
+            // [고정지출 종료월] 변동지출에는 종료일을 저장하지 않는다.
+            expenseDTO.setRepeat_end_date(null);
+            expenseDTO.setRepeat_end_month(null);
             return;
         }
 
@@ -239,5 +236,43 @@ public class ExpenseAjaxController {
         } else {
             expenseDTO.setRepeat_yn("Y");
         }
+
+        // [고정지출 종료월] 고정 반복지출만 종료월을 날짜로 변환해 저장한다.
+        applyRepeatEndDate(expenseDTO);
+    }
+
+    // [고정지출 종료월] yyyy-MM 값을 해당 월의 마지막 날짜로 변환하고 시작월보다 빠른 값은 차단한다.
+    private void applyRepeatEndDate(ExpenseDTO expenseDTO) {
+        boolean fixedRepeatExpense = "FIXED".equals(expenseDTO.getExpense_type()) && "Y".equals(expenseDTO.getRepeat_yn());
+        String repeatEndMonth = expenseDTO.getRepeat_end_month();
+
+        if (!fixedRepeatExpense || repeatEndMonth == null || repeatEndMonth.isBlank()) {
+            expenseDTO.setRepeat_end_date(null);
+            return;
+        }
+
+        if (expenseDTO.getExpense_date() == null) {
+            throw new IllegalArgumentException("지출 날짜를 먼저 선택해주세요.");
+        }
+
+        try {
+            YearMonth startMonth = YearMonth.from(toLocalDate(expenseDTO.getExpense_date()));
+            YearMonth endMonth = YearMonth.parse(repeatEndMonth);
+
+            if (endMonth.isBefore(startMonth)) {
+                throw new IllegalArgumentException("고정지출 종료월은 지출 시작월과 같거나 이후로 선택해주세요.");
+            }
+
+            expenseDTO.setRepeat_end_date(Date.valueOf(endMonth.atEndOfMonth()));
+        } catch (IllegalArgumentException exception) {
+            if ("고정지출 종료월은 지출 시작월과 같거나 이후로 선택해주세요.".equals(exception.getMessage())) {
+                throw exception;
+            }
+            throw new IllegalArgumentException("고정지출 종료월 형식을 확인해주세요.");
+        }
+    }
+
+    private LocalDate toLocalDate(java.util.Date date) {
+        return new Date(date.getTime()).toLocalDate();
     }
 }

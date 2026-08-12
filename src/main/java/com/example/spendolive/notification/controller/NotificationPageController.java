@@ -12,17 +12,23 @@ import com.example.spendolive.member.domain.MemberVO;
 import com.example.spendolive.notification.domain.NotificationDTO;
 import com.example.spendolive.notification.service.NotificationService;
 
+/**
+ * 알림 상세를 별도 페이지(JSP)로 보여주는 컨트롤러.
+ */
 @Controller
 @RequestMapping("/spendolive/notification")
 public class NotificationPageController {
 
     private final NotificationService notificationService;
 
+    // 생성자 주입 - 스프링이 빈 등록할 때 이 생성자를 보고 NotificationService 구현체를 자동으로 넣어줌
     public NotificationPageController(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
 
     /* ─── 알림 상세 페이지 ────────────────────────────────── */
+    // GET /spendolive/notification/detail.do?notification_id=
+    // 비로그인이면 로그인 페이지로, 잘못된 번호거나 존재하지 않으면 errorMsg 담아서 같은 화면 반환
     @GetMapping("/detail.do")
     public ModelAndView notificationDetail(
             @RequestParam(value = "notification_id", defaultValue = "0") int notification_id,
@@ -56,7 +62,9 @@ public class NotificationPageController {
             return mav;
         }
 
-        // 읽음 처리
+        // 이 페이지에 직접 들어온 것 자체가 그 알림을 확인한 거라 읽음 처리.
+        // (bellIcon.js의 readNotificationFromBell()이 이동 전에 이미 read.do를 한 번
+        //  호출하긴 하지만, 여기서 또 한 번 처리해도 무해함 - 이미 읽음이면 그냥 갱신 없이 넘어감)
         try {
             notificationService.readNotification(notification_id, memberInfo.getId());
         } catch (Exception e) {

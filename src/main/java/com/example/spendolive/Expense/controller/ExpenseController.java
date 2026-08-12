@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.spendolive.Expense.domain.ExpenseDTO;
 import com.example.spendolive.Expense.service.ExpenseService;
@@ -45,15 +44,10 @@ public class ExpenseController {
     public String expenseList(@RequestParam(value = "yearMonth", required = false) String yearMonth,
                               @RequestParam(value = "date", required = false) String date,
                               Model model,
-                              RedirectAttributes redirectAttributes,
                               HttpSession session) {
 
+        // [내 담당 로그인 공통화] 화면 진입 로그인 안내는 공통 JS에서 처리하므로 Controller의 중복 redirect 검사는 제거한다.
         Long memberId = getLoginMemberId(session);
-
-        if (memberId == null) {
-            redirectAttributes.addFlashAttribute("msg", "로그인이 필요한 기능입니다. 로그인해 주세요.");
-            return "redirect:/member/loginForm.do?log=expense";
-        }
 
         String selectedDate = normalizeDate(date);
         String selectedYearMonth = normalizeYearMonth(yearMonth, selectedDate);
@@ -131,16 +125,9 @@ public class ExpenseController {
         }
     }
 
+    // [내 담당 로그인 공통화] 로그인 여부 판단은 화면 공통 함수에 맡기고 세션 회원번호만 꺼낸다.
     private Long getLoginMemberId(HttpSession session) {
-        if (session == null) {
-            return null;
-        }
-
-        Object memberInfo = session.getAttribute("memberInfo");
-        if (!(memberInfo instanceof MemberVO member)) {
-            return null;
-        }
-
+        MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         return Long.valueOf(member.getMember_id());
     }
 

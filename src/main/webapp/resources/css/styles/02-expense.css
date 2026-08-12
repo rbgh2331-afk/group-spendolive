@@ -7,10 +7,11 @@
 /* Expense page width + inline edit layout fix */
 
 #expense-form > .container {width: min(90rem, calc(100% - 4rem));}
-#expense-form .expense-layout {grid-template-columns: 22.5rem minmax(0, 1fr);gap: 1.375rem;align-items: start;}
-#expense-form .expense-form {min-width: 0;}
-#expense-form .expense-table {min-width: 0;overflow: hidden;}
-#expense-form .table-wrap {width: 100%;overflow-x: auto;}
+#expense-form .expense-layout {grid-template-columns:22.5rem minmax(0, 1fr);gap:1.375rem;align-items:stretch;}
+/* [최근 지출 높이 통일] 같은 행의 빠른 등록 카드와 최근 지출 카드를 같은 높이로 맞춘다. */
+#expense-form .expense-form,#expense-form .expense-table {min-width:0;height:100% !important;}
+#expense-form .expense-table {display:flex;flex-direction:column;overflow:hidden;}
+#expense-form .table-wrap {width:100%;overflow-x:auto;flex:1 1 auto;}
 #expense-form .expense-table table {min-width: 57.5rem;table-layout: auto;}
 #expense-form .expense-table th,#expense-form .expense-table td {padding: 0.875rem 0.5rem;}
 #expense-form .edit-mode {margin-top: 0;padding: 0.625rem 0.6875rem;border-radius: 0.75rem;min-height: 2.625rem;}
@@ -24,8 +25,9 @@
 
 @media(max-width: 65rem) {
   #expense-form > .container {width: min(100% - 2.5rem, 71.25rem);}
-  #expense-form .expense-layout {grid-template-columns: 1fr;}
-  #expense-form .expense-table table {min-width: 57.5rem;}
+  #expense-form .expense-layout {grid-template-columns:1fr;align-items:start;}
+  #expense-form .expense-form,#expense-form .expense-table {height:auto !important;}
+  #expense-form .expense-table table {min-width:57.5rem;}
 }
 /* Expense analytics section */
 
@@ -88,9 +90,53 @@
 .expense-filter-bar select {width:auto;min-width:8.75rem;margin:0;padding:0.625rem 0.75rem;}
 @media(max-width:43.75rem) {.expense-filter-bar {justify-content:stretch;}.expense-filter-bar select {flex:1;min-width:8rem;}}
 
+/* [최근 지출 페이지 처리] 공통 pagination/pg-btn 디자인을 사용하고 숫자 버튼만 한 줄로 묶는다. */
+.expense-pagination {margin-top:auto;padding-top:1.25rem;}
+.expense-page-numbers {display:flex;align-items:center;gap:0.375rem;}
+.expense-pagination .pg-btn:disabled {opacity:0.45;cursor:not-allowed;}
+
 /* JSP 인라인 스타일 분리 */
 .expense-hidden {display:none;}
 .expense-action-buttons {display:flex;gap:0.375rem;flex-wrap:wrap;}
 .expense-empty-cell {text-align:center;}
 .expense-chart-bar {height:calc(var(--bar-height, 0) * 1%);}
 .category-progress-bar {width:calc(var(--progress-width, 0) * 1%);}
+/* [생필품 가격 비교] 지출관리 하단 공공데이터 가격 비교 카드 */
+#consumer-price-compare > .container {width:min(90rem, calc(100% - 4rem));}
+#consumer-price-compare .section-title {margin-bottom:1.5rem;}
+#consumer-price-compare .section-desc {margin:0.625rem 0 0;max-width:47.5rem;}
+.consumer-price-card {display:grid;gap:1.25rem;padding:1.5rem;}
+.consumer-price-search-form {display:grid;gap:0.625rem;}
+.consumer-price-search-form > label {color:var(--olive-dark);font-weight:900;}
+.consumer-price-search-row {display:grid;grid-template-columns:minmax(0, 1fr) auto;gap:0.625rem;}
+.consumer-price-search-row input {width:100%;margin:0;}
+.consumer-price-search-row .btn {min-width:6.25rem;white-space:nowrap;}
+.consumer-price-message {margin:0;padding:0.875rem 1rem;border:1px solid var(--line);border-radius:0.875rem;background:var(--cream);color:var(--muted);font-weight:800;}
+.consumer-price-message.is-loading {color:var(--olive-dark);}
+.consumer-price-message.is-error {border-color:#e7b2a8;background:#fff6f3;color:#a54332;}
+.consumer-product-results {display:grid;gap:0.75rem;}
+.consumer-product-result-title {margin:0;color:var(--muted);font-size:0.875rem;font-weight:850;}
+.consumer-product-list {display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:0.625rem;}
+.consumer-product-button {display:grid;gap:0.25rem;width:100%;padding:0.875rem 1rem;border:1px solid var(--line);border-radius:0.875rem;background:#fff;text-align:left;cursor:pointer;transition:transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;}
+.consumer-product-button:hover {transform:translateY(-0.125rem);border-color:var(--olive);background:var(--cream);}
+.consumer-product-button strong {color:var(--olive-dark);font-size:0.9375rem;}
+.consumer-product-button small {color:var(--muted);font-size:0.75rem;}
+.consumer-price-results {display:grid;gap:1rem;padding-top:0.25rem;}
+.consumer-price-result-head {display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;}
+.consumer-price-result-head > div {display:grid;gap:0.25rem;}
+.consumer-selected-product {color:var(--olive-dark);font-size:1.125rem;font-weight:950;}
+.consumer-price-result-head strong,.consumer-price-result-head small {color:var(--muted);font-size:0.75rem;}
+.consumer-price-summary {display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:0.75rem;}
+.consumer-price-summary > div {display:grid;gap:0.375rem;padding:1rem;border:1px solid var(--line);border-radius:1rem;background:var(--cream);text-align:center;}
+.consumer-price-summary span {color:var(--muted);font-size:0.8125rem;font-weight:850;}
+.consumer-price-summary strong {color:var(--olive-dark);font-size:1.25rem;}
+.consumer-price-table-wrap {overflow-x:auto;border:1px solid var(--line);border-radius:1rem;}
+.consumer-price-table {width:100%;min-width:43.75rem;border-collapse:collapse;}
+.consumer-price-table th,.consumer-price-table td {padding:0.875rem 1rem;border-bottom:1px solid var(--line);text-align:left;}
+.consumer-price-table th {background:var(--cream);color:var(--olive-dark);font-size:0.8125rem;}
+.consumer-price-table tbody tr:last-child td {border-bottom:0;}
+.consumer-price-table td {color:var(--muted);font-size:0.8125rem;}
+.consumer-store-price {color:var(--olive-dark) !important;font-weight:950;white-space:nowrap;}
+
+@media(max-width:65rem) {#consumer-price-compare > .container {width:min(100% - 2.5rem, 71.25rem);}}
+@media(max-width:43.75rem) {.consumer-price-search-row {grid-template-columns:1fr;}.consumer-price-search-row .btn {width:100%;}.consumer-product-list {grid-template-columns:1fr;}.consumer-price-result-head {align-items:flex-start;flex-direction:column;}.consumer-price-summary {grid-template-columns:1fr;}}

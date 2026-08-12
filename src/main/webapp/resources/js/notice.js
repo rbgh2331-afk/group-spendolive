@@ -15,27 +15,8 @@ let currentNoticeFilter = "all";
      soConfirm("메시지", { title, confirmText, cancelText }).then(ok => { if (ok) ... })
    ───────────────────────────────────────────────────────────── */
 function soEnsureModal() {
-        if (document.getElementById("soLocalModalStyle") == null) {
-            var css = ""
-              + ".so-local-overlay{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(20,29,18,.48);backdrop-filter:blur(2px);}"
-              + ".so-local-overlay[hidden]{display:none;}"
-              + ".so-local-box{width:min(100%,23rem);padding:2rem 1.5rem 1.5rem;border-radius:1.25rem;background:#fff;box-shadow:0 1.5rem 4rem rgba(21,40,18,.24);text-align:center;animation:soLocalPop .18s ease-out;}"
-              + "@keyframes soLocalPop{from{transform:scale(.94);opacity:0;}to{transform:scale(1);opacity:1;}}"
-              + ".so-local-icon{display:flex;align-items:center;justify-content:center;width:2.75rem;height:2.75rem;margin:0 auto 1.125rem;border-radius:50%;background:#eef5df;color:#5f7628;font-size:1.5rem;font-weight:900;}"
-              + ".so-local-overlay[data-state='error'] .so-local-icon{background:#fff0eb;color:#c0392b;}"
-              + ".so-local-title{margin:0 0 .5rem;color:#26351f;font-size:1.125rem;font-weight:800;white-space:pre-line;line-height:1.5;}"
-              + ".so-local-msg{margin:0;color:#6f7b66;line-height:1.65;white-space:pre-line;}"
-              + ".so-local-msg[hidden]{display:none;}"
-              + ".so-local-actions{display:flex;gap:.5rem;justify-content:center;margin-top:1.5rem;}"
-              + ".so-local-btn{min-width:5rem;padding:.65rem 1.2rem;border-radius:.7rem;font-weight:700;font-size:.95rem;cursor:pointer;border:1.5px solid transparent;}"
-              + ".so-local-ok{background:#6d7f2e;color:#fff;}.so-local-ok:hover{background:#5f7628;}"
-              + ".so-local-cancel{background:#f1f4df;color:#3f4a2c;border-color:#dfe6cb;}.so-local-cancel:hover{border-color:#b9c58f;}"
-              + ".so-local-cancel[hidden]{display:none;}";
-            var st = document.createElement("style");
-            st.id = "soLocalModalStyle";
-            st.textContent = css;
-            document.head.appendChild(st);
-        }
+        // CSS는 이제 resources/css/styles/19-so-modal.css에 정적 파일로 있고
+        // styles.css가 전역으로 로드하므로, 여기선 DOM만 만들면 됨(예전엔 <style> 태그를 직접 주입했음)
         var el = document.getElementById("soLocalModalOverlay");
         if (el == null) {
             el = document.createElement("div");
@@ -104,14 +85,22 @@ function soEnsureModal() {
 
 
 
-function setBoardTab(mode, initialFilter) {
+    function loginYn(log,loginYn){
+        if (!loginYn) {
+            soAlert("로그인이 필요한 기능입니다. \n로그인을 해주세요!", { type: "error" })
+                .then(function () { location.href = "/member/loginForm.do?log="+log; });
+            return false;
+        }
+        return true;
+      }
+    
+      function setBoardTab(mode, initialFilter) {
 
-
-    if (mode === "alert" && !loginYn) {
-        soAlert("로그인이 필요한 기능입니다. 로그인을 해주세요!", { type: "error" })
-            .then(function () { location.href = "/member/loginForm.do?log=notice"; });
-        return;
-    }
+        if (mode === "alert" && !isLoggedIn) {
+            soAlert("로그인이 필요한 기능입니다. \n로그인을 해주세요!", { type: "error" })
+                .then(function () { location.href = "/member/loginForm.do?log=notice"; });
+            return;
+        }
 
     
     const eyebrow = document.getElementById("listEyebrow");
@@ -197,7 +186,7 @@ function setBoardTab(mode, initialFilter) {
         currentNoticeFilter = filter;
 
         // 비로그인 + 안 읽은 공지 필터 → 전체를 받아서 클라이언트에서 걸러냄
-        const url = (filter === "unread" && loginYn)
+        const url = (filter === "unread" && isLoggedIn)
             ? "/spendolive/notice/ajax/unreadNoticeList.do"
             : "/spendolive/notice/ajax/noticeList.do";
 
@@ -214,7 +203,7 @@ function setBoardTab(mode, initialFilter) {
             .then(data => {
 
                 // 비로그인 안 읽은 공지: localStorage 기준으로 필터링
-                if (filter === "unread" && !loginYn) {
+                if (filter === "unread" && !isLoggedIn) {
                     data = data.filter(notice =>
                         localStorage.getItem("notice_read_" + notice.notice_id) !== "Y"
                     );
@@ -254,7 +243,7 @@ function drawNoticePage() {
                 localStorage.getItem("notice_read_" + notice.notice_id) === "Y";
 
             const titleClass =
-                notice.read_yn === "Y" || (!loginYn && localRead)
+                notice.read_yn === "Y" || (!isLoggedIn && localRead)
                     ? "notice-read-title"
                     : "notice-unread-title";
 
@@ -263,7 +252,7 @@ function drawNoticePage() {
                 <td>${notice.pinned_yn === "Y" ? "📌" : currentNoticeData.length - start - index }</td>
                     <td>
                         ${
-                            loginYn
+                            isLoggedIn
                             ? `<button type="button"
                                        class="notice-list-star-btn"
                                        onclick="toggleNoticeStar(event, ${notice.notice_id}, this)">
@@ -276,7 +265,7 @@ function drawNoticePage() {
                     <td>
                         <a class="notice-title-link ${titleClass}"
                            href="/spendolive/notice/detail.do?notice_id=${notice.notice_id}&filter=${currentNoticeFilter}"
-                           onclick="saveNoticeReadLocal(${notice.notice_id})">
+                           onclick="openNoticeDetailModal(event, ${notice.notice_id})">
                             ${notice.title}
                         </a>
                     </td>
@@ -462,7 +451,7 @@ function moveNotifPage(page) {
                             `<span class="chip notice-important">중요</span>`;
                     
                         const titleClass =
-                            notice.read_yn === "Y" || (!loginYn && localStorage.getItem("notice_read_" + notice.notice_id) === "Y")
+                            notice.read_yn === "Y" || (!isLoggedIn && localStorage.getItem("notice_read_" + notice.notice_id) === "Y")
                                 ? "notice-read-title"
                                 : "notice-unread-title";
                     
@@ -471,7 +460,7 @@ function moveNotifPage(page) {
                                 <td>📌</td>
                                 <td>
                                     ${
-                                        loginYn
+                                        isLoggedIn
                                         ? `<button type="button"
                                                    class="notice-list-star-btn"
                                                    onclick="toggleNoticeStar(event, ${notice.notice_id}, this)">
@@ -485,7 +474,7 @@ function moveNotifPage(page) {
                                 <td>
                                     <a class="notice-title-link ${titleClass}"
                                        href="/spendolive/notice/detail.do?notice_id=${notice.notice_id}&filter=${currentNoticeFilter}"
-                                       onclick="saveNoticeReadLocal(${notice.notice_id})">
+                                       onclick="openNoticeDetailModal(event, ${notice.notice_id})">
                                         ${notice.title}
                                     </a>
                                 </td>
@@ -565,6 +554,121 @@ function saveNoticeReadLocal(notice_id) {
     localStorage.setItem("notice_read_" + notice_id, "Y");
 }
 
+/* 공지 상세를 모달로 보여줌 (기존엔 detail.do로 페이지 이동했음).
+   - fetch로 JSON 받아와서 문의 상세 모달과 같은 구조(.notice-detail-top/.inq-detail-section)로 채움
+   - 로그인 사용자는 서버가 이미 읽음 처리함, 비로그인은 localStorage에 기록
+   - 클릭한 <a>의 class를 그 자리에서 바로 바꿔서 새로고침 없이 색깔 반영 */
+function openNoticeDetailModal(event, notice_id) {
+    if (event) event.preventDefault();
+    const clickedLink = event ? event.currentTarget : null;
+
+    fetch("/spendolive/notice/ajax/detail.do?notice_id=" + notice_id, { credentials: "same-origin" })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result !== "OK") {
+                soAlert("공지사항을 불러오지 못했습니다.", { type: "error" });
+                return;
+            }
+
+            if (!isLoggedIn) {
+                saveNoticeReadLocal(notice_id);
+            }
+
+            // currentNoticeData 안의 값도 같이 갱신
+            // (페이지 이동 없이 필터 전환해도 읽음 상태가 유지되도록)
+            const item = currentNoticeData.find(n => n.notice_id === notice_id);
+            if (item) item.read_yn = "Y";
+
+            if (clickedLink) {
+                clickedLink.classList.remove("notice-unread-title");
+                clickedLink.classList.add("notice-read-title");
+            }
+
+            renderNoticeDetailModal(data);
+        })
+        .catch(() => soAlert("네트워크 오류가 발생했습니다.", { type: "error" }));
+}
+
+/* noticeDetail.jsp(공지 상세 페이지)와 같은 클래스(.notice-detail-top, .chip,
+   .notice-detail-title, .notice-detail-info)를 그대로 써서 디자인 통일.
+   하단 본문 박스는 문의 상세 모달과 같은 .inq-detail-section 재사용
+   (둘 다 15-faq.css에 있고 .faq-page 스코프 없이 전역으로 적용됨).
+   공지/알림이 같은 #detailModal(#detailModalBody)을 공유해서 씀. */
+function renderNoticeDetailModal(data) {
+    const body = document.getElementById("detailModalBody");
+    if (!body) return;
+
+    const chipClass = data.pinned_yn === "Y" ? "notice-important" : "notice-normal";
+    const chipLabel = data.pinned_yn === "Y" ? "중요 공지" : "공지";
+
+    body.innerHTML = `
+        <div class="notice-detail-top">
+            <span class="chip ${chipClass}">${chipLabel}</span>
+        </div>
+        <h1 class="notice-detail-title" id="detailModalTitle" style="font-size:1.25rem;margin-top:8px;margin-bottom:0.75rem"></h1>
+        <div class="notice-detail-info">
+            <span id="detailModalAuthor"></span>
+            <span id="detailModalDate"></span>
+        </div>
+        <div class="inq-detail-section">
+            <span class="inq-detail-label">공지 내용</span>
+            <div class="inq-detail-body" id="detailModalContent"></div>
+        </div>
+    `;
+
+    // 제목/작성자/날짜/내용은 textContent로 넣음 (관리자 작성 텍스트 그대로 표시, HTML로 해석 안 함)
+    document.getElementById("detailModalTitle").textContent = data.title || "";
+    document.getElementById("detailModalAuthor").textContent = "작성자 " + (data.admin_id || "관리자");
+    document.getElementById("detailModalDate").textContent = "등록일 " + (data.created_at || "");
+    document.getElementById("detailModalContent").textContent = data.content || "";
+
+    document.getElementById("detailModal").classList.add("show");
+}
+
+/* 알림 상세도 같은 구조/같은 모달(#detailModal)로 표시.
+   (구) soConfirm/soAlert 방식은 이걸로 대체됨.
+   알림은 작성자 개념이 없어서 등록일만 표시, notification_type을 상단 칩에 씀.
+   link_url이 있으면 하단에 "해당 게시글로 이동" 버튼을 추가로 붙임. */
+function renderNotificationDetailModal(data) {
+    const body = document.getElementById("detailModalBody");
+    if (!body) return;
+
+    body.innerHTML = `
+        <div class="notice-detail-top">
+            <span class="chip notice-normal" id="detailModalType"></span>
+        </div>
+        <h1 class="notice-detail-title" id="detailModalTitle" style="font-size:1.25rem;margin-top:8px;margin-bottom:0.75rem"></h1>
+        <div class="notice-detail-info">
+            <span id="detailModalDate"></span>
+        </div>
+        <div class="inq-detail-section">
+            <span class="inq-detail-label">알림 내용</span>
+            <div class="inq-detail-body" id="detailModalContent"></div>
+        </div>
+        <div class="notice-detail-actions" id="detailModalActions" style="margin-top:1.25rem;display:none"></div>
+    `;
+
+    document.getElementById("detailModalType").textContent = data.notification_type || "알림";
+    document.getElementById("detailModalTitle").textContent = data.title || "";
+    document.getElementById("detailModalDate").textContent = "등록일 " + (data.created_at || "");
+    document.getElementById("detailModalContent").textContent = data.message || "";
+
+    if (data.link_url) {
+        const actions = document.getElementById("detailModalActions");
+        actions.style.display = "";
+        actions.innerHTML = `<button type="button" class="btn btn-primary" id="detailModalMoveBtn">해당 게시글로 이동</button>`;
+        document.getElementById("detailModalMoveBtn").onclick = function () {
+            location.href = data.link_url;
+        };
+    }
+
+    document.getElementById("detailModal").classList.add("show");
+}
+
+function closeDetailModal(e) {
+    document.getElementById("detailModal").classList.remove("show");
+}
+
 /* =========================================================
    공지 찜(star) 토글 - 목록(notice.js)과 상세(noticeDetail.js) 공용
    서버에 POST해서 토글 요청만 보내고 결과(JSON)를 그대로 반환함.
@@ -591,7 +695,7 @@ function toggleNoticeStar(event, notice_id, button) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (!loginYn) {
+    if (!isLoggedIn) {
         return;
     }
 
@@ -646,24 +750,5 @@ function showNotificationModal(notificationId){
 
     if(!notification) return;
 
-    // 사이트 공통 모달 규격(soConfirm/soAlert)으로 표시.
-    // 링크가 있으면 "해당 게시글로 이동 / 닫기" 확인창, 없으면 단순 알림.
-    if (notification.link_url) {
-        soConfirm(notification.message || "", {
-            title: notification.title,
-            confirmText: "해당 게시글로 이동",
-            cancelText: "닫기"
-        }).then(function (ok) {
-            if (ok) location.href = notification.link_url;
-        });
-    } else {
-        soAlert(notification.message || "", { title: notification.title });
-    }
-}
-
-// (구) 별도 알림 모달은 이제 soConfirm/soAlert로 대체됨.
-// noticeCenter.jsp의 #notificationModal 마크업과 이 함수는 더 이상 쓰이지 않음(삭제해도 무방).
-function closeNotificationModal(){
-    var el = document.getElementById("notificationModal");
-    if (el) el.classList.remove("show");
+    renderNotificationDetailModal(notification);
 }

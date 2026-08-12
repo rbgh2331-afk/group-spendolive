@@ -85,6 +85,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void addMember(MemberVO memberVO) throws Exception {
         String rawPassword = memberVO.getPassword();
+        if(rawPassword == null || rawPassword.equals("")){
+            throw new RuntimeException("비밀번호를 입력해 주세요");
+        }
         String encodedPassword = passwordEncoder.encode(rawPassword);
         memberVO.setPassword(encodedPassword);
         memberRepository.insertNewMember(memberVO);
@@ -104,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
 
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("chung100302@gmail.com");
+        message.setFrom("rbgh2331@gmail.com");
         message.setTo(toEmail);
         message.setSubject("[SpendOlive] 회원가입 인증번호 안내");
         message.setText(
@@ -131,7 +134,7 @@ public class MemberServiceImpl implements MemberService {
 
         DefaultMessageService messageService =  SolapiClient.INSTANCE.createInstance(solapiapikey, solapisecretkey);
         Message message = new Message();
-        message.setFrom("01024414631");
+        message.setFrom("01023310468");
         message.setTo(toNumber);
         message.setText("★ 발송 메세지: [SpendOlive] 가입 인증번호는 [" + verificationCode + "] 입니다.");
 
@@ -468,17 +471,20 @@ public class MemberServiceImpl implements MemberService {
             ResponseEntity<Map> response = restTemplate.exchange(accountUrl, HttpMethod.GET, entity, Map.class);
 
         if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-            throw new RuntimeException("거래내역 조회에 실패했습니다.");
+            throw new MemberProcessException("SELECT_FAILED", "거래내역 조회에 실패했습니다.");
         }
         response.getBody().get("res_list");
         String rsp_code = (String) response.getBody().get("rsp_code");
+        }catch (Exception e) {
+            throw new MemberProcessException("CONNECTION_FAILED", "서버 연결 실패했습니다.");
+
+        }
          /*                        
          권한 문제로 임시데이터로 처리
         List<Map<String, Object>> resList = (List<Map<String, Object>>) response.getBody().get("res_list");
    
         if (resList == null || resList.isEmpty()) {
-            System.out.println("ℹ️ 해당 기간 내에 거래 내역이 존재하지 않습니다. (핀테크번호: " + fintech_use_num + ")"+rsp_code);
-            return; // 에러 터뜨리지 말고 안전하게 리턴!
+            return; // 결제내역 없음
         }
         for(Map<String, Object> account : resList){
         String tran_date = (String) account.get("tran_date");
@@ -488,9 +494,9 @@ public class MemberServiceImpl implements MemberService {
         String print_content = (String) account.get("print_content");
         String tran_amt = (String) account.get("tran_amt");
         String after_balance_amt = (String) account.get("after_balance_amt");
-        System.out.println("👉 잔액: " + after_balance_amt +tran_date);
         }
         */
+        try {
         String[] inout_type = {"출금", "입금"};
         int[] tran_amt = {10000,20000,30000,40000,5000,7000,7500,100000,150000,2000000};
         int amt_number = new java.util.Random().nextInt(10);
@@ -521,7 +527,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.updatebalance(signedAmount, idx);
         accountVO.setBalance(balanceAfter);
         }catch (Exception e) {
-            System.out.println("오류" + e);
+            throw new MemberProcessException("INSERT_FAILED", "서버 오류.");
 
         }
 
@@ -545,5 +551,16 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void updatePasswordById(String id, String newPassword) throws Exception {
         memberRepository.updatePasswordById(id, newPassword);
+    }
+    @Override
+    public void deleteCard(int card_idx,String id) throws Exception {
+        try{
+        memberRepository.deleteCard(card_idx, id);
+        }catch(Exception e){
+            throw new MemberProcessException(
+                    "DELETE_FAILED",
+                    "카드 삭제에 실패하였습니다.",
+                    e);
+        }
     }
 }

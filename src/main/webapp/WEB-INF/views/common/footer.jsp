@@ -31,13 +31,13 @@
             <h3>
                 고객센터
             </h3>
-            <a href="#">
+            <a href="${contextPath}/spendolive/text.do" target="_blank">
                 서비스 이용약관
             </a>
-            <a href="#">
+            <a href="${contextPath}/spendolive/text.do" target="_blank">
                 개인정보 처리방침
             </a>
-            <a href="#">
+            <a href="${contextPath}/spendolive/text.do"target="_blank">
                 위치기반 서비스 이용약관
             </a>
         </div>

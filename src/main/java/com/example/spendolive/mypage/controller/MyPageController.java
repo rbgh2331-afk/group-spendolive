@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.spendolive.member.domain.MemberAccountVO;
 import com.example.spendolive.member.domain.MemberTranVO;
@@ -99,12 +100,7 @@ public class MyPageController {
     public ModelAndView mypage(HttpSession session) throws Exception {
         MemberVO sessionMember = (MemberVO) session.getAttribute("memberInfo");
 
-        if (sessionMember == null || sessionMember.getId() == null || sessionMember.getId().isBlank()) {
-            ModelAndView loginMav = new ModelAndView();
-            loginMav.setViewName("redirect:/member/loginForm.do?log=mypage");
-            return loginMav;
-        }
-
+        
         MyPageDTO myPage = myPageService.getMyPage(sessionMember.getId());
         MemberVO memberInfo = myPage.getMemberInfo();
         if (memberInfo == null) {
@@ -151,17 +147,13 @@ public class MyPageController {
                                      @RequestParam(value = "passwordChecked", required = false) String passwordChecked,
                                      HttpSession session) {
         ModelAndView mav = new ModelAndView();
+        // [내 담당 로그인 공통화] 화면 진입 로그인 안내는 공통 JS에서 처리하므로 Controller의 중복 로그인 redirect 검사는 제거한다.
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
-
-        if (loginMember == null || loginMember.getId() == null || loginMember.getId().isBlank()) {
-            mav.setViewName("redirect:/member/loginForm.do");
-            return mav;
-        }
 
         try {
             MemberVO savedMember = memberService.getMemberById(loginMember.getId());
             if (savedMember == null) {
-                mav.setViewName("redirect:/member/loginForm.do");
+                mav.setViewName("redirect:/spendolive/mypage.do?profileError=memberNotFound#profile-edit");
                 return mav;
             }
 
@@ -224,11 +216,6 @@ public class MyPageController {
         ModelAndView mav = new ModelAndView();
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
 
-        if (loginMember == null || loginMember.getId() == null || loginMember.getId().isBlank()) {
-            mav.setViewName("redirect:/member/loginForm.do");
-            return mav;
-        }
-
         String safeAccountName = accountName == null ? "" : accountName.trim();
         if (safeAccountName.isBlank() || safeAccountName.length() > 20) {
             mav.setViewName("redirect:/spendolive/mypage.do?assetError=invalidAccountName#asset-manage");
@@ -255,11 +242,6 @@ public class MyPageController {
         ModelAndView mav = new ModelAndView();
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
 
-        if (loginMember == null || loginMember.getId() == null || loginMember.getId().isBlank()) {
-            mav.setViewName("redirect:/member/loginForm.do");
-            return mav;
-        }
-
         String safeCardName = cardName == null ? "" : cardName.trim();
         if (safeCardName.isBlank() || safeCardName.length() > 30) {
             mav.setViewName("redirect:/spendolive/mypage.do?assetError=invalidCardName#asset-manage");
@@ -282,11 +264,6 @@ public class MyPageController {
         ModelAndView mav = new ModelAndView();
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
 
-        if (loginMember == null || loginMember.getId() == null || loginMember.getId().isBlank()) {
-            mav.setViewName("redirect:/member/loginForm.do");
-            return mav;
-        }
-
         try {
             memberService.updatePrimaryAccount(loginMember.getId(), accountIdx);
             mav.setViewName("redirect:/spendolive/mypage.do?primaryAccountUpdated=Y#asset-manage");
@@ -303,10 +280,6 @@ public class MyPageController {
     public ModelAndView updatePrimaryCard(@RequestParam("cardIdx") int cardIdx, HttpSession session) {
         ModelAndView mav = new ModelAndView();
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
-        if (loginMember == null || loginMember.getId() == null || loginMember.getId().isBlank()) {
-            mav.setViewName("redirect:/member/loginForm.do");
-            return mav;
-        }
         try {
             memberService.updatePrimaryCard(loginMember.getId(), cardIdx);
             mav.setViewName("redirect:/spendolive/mypage.do?primaryCardUpdated=Y#asset-manage");
@@ -327,12 +300,6 @@ public class MyPageController {
                                                      HttpSession session) {
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
 
-        if (loginMember == null || loginMember.getId() == null || loginMember.getId().isBlank()) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "로그인이 필요합니다."));
-        }
-
         try {
             List<MemberTranVO> transactionList =
                     memberService.getTransactionsByAccount(loginMember.getId(), accountIdx);
@@ -347,14 +314,10 @@ public class MyPageController {
 
     @PostMapping("/mypage/withdraw.do")
     public ModelAndView withdrawMember(@RequestParam(value = "withdrawConfirm", required = false) String withdrawConfirm,
-                                       HttpSession session) {
+                                       HttpSession session,
+                                       RedirectAttributes redirectAttributes) {
         ModelAndView mav = new ModelAndView();
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
-
-        if (loginMember == null || loginMember.getId() == null || loginMember.getId().isBlank()) {
-            mav.setViewName("redirect:/member/loginForm.do");
-            return mav;
-        }
 
         if (withdrawConfirm == null || !"탈퇴합니다".equals(withdrawConfirm.trim())) {
             mav.setViewName("redirect:/spendolive/mypage.do?withdrawError=confirmRequired#withdraw-section");
@@ -362,7 +325,20 @@ public class MyPageController {
         }
 
         try {
-            myPageService.withdrawMember(loginMember.getId());
+            // [회원탈퇴 개선] 본인 탈퇴 전용 서비스에서 방·참여·환불 조건을 먼저 확인한다.
+            MyPageDTO result = myPageService.withdrawSelfMember(loginMember.getId());
+
+            // [회원탈퇴 개선] 탈퇴 불가 사유를 한 번에 표시할 수 있도록 건수를 Flash Attribute로 전달한다.
+            if (!result.isWithdrawEligible()) {
+                redirectAttributes.addFlashAttribute("withdrawBlocked", true);
+                redirectAttributes.addFlashAttribute("ownedRoomCount", result.getOwnedRoomCount());
+                redirectAttributes.addFlashAttribute("joinedRoomCount", result.getJoinedRoomCount());
+                redirectAttributes.addFlashAttribute("pendingRefundCount", result.getPendingRefundCount());
+                mav.setViewName("redirect:/spendolive/mypage.do#withdraw-section");
+                return mav;
+            }
+
+            // [회원탈퇴 개선] 모든 조건을 통과하고 익명화가 완료된 경우에만 현재 세션을 종료한다.
             session.invalidate();
             mav.setViewName("redirect:/member/loginForm.do?withdraw=Y");
         } catch (Exception e) {

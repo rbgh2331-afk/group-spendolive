@@ -110,7 +110,9 @@ public class PaymentRepositoryImpl implements PaymentRepository{
     public PaymentRepositoryImpl(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
-
+    //delete
+    private static final String deleteCard = "DELETE FROM member_card_tb WHERE card_idx = ? AND id = ?";
+    private static final String deleteAccount = "DELETE FROM member_account_tb WHERE account_idx = ? AND id = ?";
     //Select
     @Override
     public void updatePaymentStatus(SettlementPaymentVO paymentInfo) {
@@ -362,5 +364,12 @@ public List<SettlementPaymentVO> selectsettlement_paymentAll() throws DataAccess
         public void updatePaymentstatusRefund(int payment_id) {
             jdbcTemplate.update(updatePaymentstatusRefund, "REFUNDED", payment_id);
         }
-        
+        @Override
+        public void deleteCard(int card_idx,String id) {
+            jdbcTemplate.update(deleteCard, card_idx, id);
+        }
+        @Override
+        public void deleteAccount(int account_idx,String id) {
+            jdbcTemplate.update(deleteAccount, account_idx, id);
+        }
 }

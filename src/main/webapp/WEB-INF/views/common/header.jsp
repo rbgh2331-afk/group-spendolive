@@ -42,6 +42,25 @@
             </a>
 
             <nav class="nav">
+                    <div class="header-weather-wrap">
+            <button type="button"
+                id="weatherToggleBtn"
+                class="header-bell"
+                onclick="toggleWeatherDropdown(event)">
+                <span class="bell-icon">🌞</span>
+            </button>
+
+            <div id="weatherDropdown" class="notif-dropdown">
+                <div class="notif-dropdown-header">
+                    <strong>날씨</strong>
+                    <select id="weatherPageRegionSelect" class="weather-select-mini" onchange="loadWeatherPage()">
+                    </select>
+                </div>
+        <div id="weatherPageResult" class="weather-dropdown-body">
+            <span class="weather-page-loading">불러오는 중...</span>
+        </div>
+    </div>
+</div>
                 <div class="header-bell-wrap">
                     <button type="button"
                         id="bellToggleBtn"
@@ -61,7 +80,7 @@
                     <div id="notifDropdown" class="notif-dropdown">
                         <div class="notif-dropdown-header">
                             <strong>알림</strong>
-                            <a href="${contextPath}/spendolive/notice/center.do?tab=alert">전체보기</a>
+                            <a href="${contextPath}/spendolive/notice/center.do?tab=alert" onclick="return loginYn('notice', ${isLogOn})">전체보기</a>
                         </div>
                         <div id="notifDropdownList" class="notif-dropdown-list">
                             <div class="notif-dropdown-empty">불러오는 중...</div>
@@ -105,7 +124,7 @@
                         <!-- 지출관리 -->
                         <li class="so-menu-item has-submenu">
                             <a class="so-menu-link ${fn:contains(requestURI, '/expense') or fn:contains(requestURI, '/calendar') ? 'active' : ''}"
-                            href="${contextPath}/spendolive/expense/list.do">
+                            href="${contextPath}/spendolive/expense/list.do" onclick="return loginYn('expense', ${isLogOn})">
                                 <strong>지출관리</strong>
                                 <span class="so-menu-arrow">◂</span>
                             </a>
@@ -123,7 +142,7 @@
                         <!-- OTT 관리 -->
                         <li class="so-menu-item has-submenu">
                             <a class="so-menu-link ${fn:contains(requestURI, '/ott') ? 'active' : ''}"
-                            href="${contextPath}/spendolive/ott.do">
+                            href="${contextPath}/spendolive/ott.do" onclick="return loginYn('ott', ${isLogOn})">
                                 <strong>OTT관리</strong>
                                 <span class="so-menu-arrow">◂</span>
                             </a>
@@ -131,19 +150,19 @@
                             <ul class="so-submenu">
                                 <li>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/spendolive/ott/friends.do">
+                                    href="${contextPath}/spendolive/ott/friends.do" onclick="return loginYn('ott', ${isLogOn})">
                                         가족 공유방
                                     </a>
                                 </li>
                                 <li>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/spendolive/ott/recruit.do">
+                                    href="${contextPath}/spendolive/ott/recruit.do" onclick="return loginYn('ott', ${isLogOn})">
                                         외부 공유방
                                     </a>
                                 </li>
                                 <li>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/spendolive/ott/recruit.do?tab=manage">
+                                    href="${contextPath}/spendolive/ott/recruit.do?tab=manage" onclick="return loginYn('ott', ${isLogOn})">
                                         참여방 관리
                                     </a>
                                 </li>
@@ -161,7 +180,7 @@
                             <ul class="so-submenu">
                                 <li>
                                     <a class="so-menu-link ${fn:contains(requestURI, '/inquiry') ? 'active' : ''}"
-                                    href="${contextPath}/spendolive/inquiry/list.do">
+                                    href="${contextPath}/spendolive/inquiry/list.do" onclick="return loginYn('mypage', ${isLogOn})">
                                         문의하기
                                     </a>
                                 </li>
@@ -178,7 +197,7 @@
                         <!-- 마이페이지 -->
                         <li class="so-menu-item has-submenu">
                             <a class="so-menu-link ${fn:contains(requestURI, '/mypage') ? 'active' : ''}"
-                            href="${contextPath}/spendolive/mypage.do">
+                            href="${contextPath}/spendolive/mypage.do" onclick="return loginYn('mypage', ${isLogOn})">
                                 <strong>마이페이지</strong>
                                 <span class="so-menu-arrow">◂</span>
                             </a>
@@ -190,7 +209,7 @@
                                         통합 계좌 연동
                                     </a>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/member/openBankingAuth.do">
+                                    href="${contextPath}/member/openBankingAuth.do">    
                                         계좌 연동
                                     </a>
                                 </li>
@@ -233,7 +252,7 @@
             }); 
         }
     })();
-        const clientKey = "test_ck_yZqmkKeP8gBgMeYDwNpprbQRxB9l";
+        const clientKey = "test_ck_4yKeq5bgrp29GNZ7765L3GX0lzW6";
         const customerKey = "${memberInfo.id}";
         const tossPayments = TossPayments(clientKey);
        

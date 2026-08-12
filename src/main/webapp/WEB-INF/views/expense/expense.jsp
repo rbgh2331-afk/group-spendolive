@@ -85,6 +85,7 @@
                             <fmt:formatNumber value="${expenseTypeSummary.OTT}" pattern="#,###" />원
                         </strong>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -160,6 +161,13 @@
                             </select>
                         </label>
 
+                        <%-- [고정지출 종료월] 고정 분류에서만 선택형 종료월을 표시한다. --%>
+                        <label id="repeatEndMonthArea" class="expense-hidden">
+                            고정지출 종료월
+                            <input type="month" id="repeat_end_month" name="repeat_end_month">
+                            <small>반복 주기를 선택한 경우 적용되며, 비워두면 계속 반복됩니다.</small>
+                        </label>
+
                         <label>
                             메모
                             <input type="text" name="memo" placeholder="선택 입력">
@@ -175,7 +183,8 @@
                     <div class="row-title">
                         <div>
                             <h3>최근 지출 내역</h3>
-                            <p class="card-desc">선택한 달의 지출만 표시됩니다.</p>
+                            <%-- [최근 지출 페이지 처리] 선택한 달의 지출을 한 페이지에 10개씩 표시한다. --%>
+                            <p class="card-desc">선택한 달의 지출을 한 페이지에 10개씩 표시합니다.</p>
                         </div>
 
                         <%-- [공통 AJAX 로딩 적용] 사용자가 조회 월을 바꿀 때 본문만 갱신하고 지정 문구를 공통 팝업에 표시한다. --%>
@@ -227,6 +236,8 @@
                             <tbody id="expenseRows">
                                 <c:forEach var="expense" items="${expenseList}" varStatus="status">
                                     <fmt:formatDate var="expenseDateValue" value="${expense.expense_date}" pattern="yyyy-MM-dd" />
+                                    <%-- [고정지출 종료월] 수정 입력창에 사용할 yyyy-MM 값을 만든다. --%>
+                                    <fmt:formatDate var="repeatEndMonthValue" value="${expense.repeat_end_date}" pattern="yyyy-MM" />
 
                                     <%--
                                         자동 반복 내역은 같은 원본 expense_id를 공유할 수 있으므로
@@ -248,7 +259,7 @@
                                             <span class="view-mode">
                                                 <fmt:formatDate value="${expense.expense_date}" pattern="yyyy.MM.dd" />
                                             </span>
-                                            <input class="edit-mode expense-hidden" form="editForm${expense.expense_id}" type="date" name="expense_date" value="${expenseDateValue}" required>
+                                            <input class="edit-mode edit-expense-date expense-hidden" form="editForm${expense.expense_id}" type="date" name="expense_date" value="${expenseDateValue}" onchange="syncEditRepeatEndMonthMin(this)" required>
                                         </td>
 
                                         <td>
@@ -324,6 +335,10 @@
                                                     <c:when test="${expense.repeat_cycle == 'YEARLY'}">매년</c:when>
                                                     <c:otherwise>-</c:otherwise>
                                                 </c:choose>
+                                                <%-- [고정지출 종료월] 종료월이 있으면 반복 정보 아래에 함께 표시한다. --%>
+                                                <c:if test="${expense.expense_type == 'FIXED' and not empty expense.repeat_end_date}">
+                                                    <br><small>종료 ${repeatEndMonthValue}</small>
+                                                </c:if>
                                             </span>
                                             <select class="edit-mode edit-repeat-cycle expense-hidden" form="editForm${expense.expense_id}" name="repeat_cycle" data-row-id="${expense.expense_id}" onchange="changeEditRepeatYnFromSelect(this)">
                                                 <option value="" ${empty expense.repeat_cycle ? 'selected' : ''}>반복 없음</option>
@@ -331,12 +346,17 @@
                                                 <option value="WEEKLY" ${expense.repeat_cycle == 'WEEKLY' ? 'selected' : ''}>매주</option>
                                                 <option value="YEARLY" ${expense.repeat_cycle == 'YEARLY' ? 'selected' : ''}>매년</option>
                                             </select>
+                                            <%-- [고정지출 종료월] 수정 모드에서 기존 종료월을 변경하거나 비울 수 있다. --%>
+                                            <div class="edit-mode edit-repeat-end-area expense-hidden">
+                                                <input type="month" class="edit-repeat-end-month" form="editForm${expense.expense_id}" name="repeat_end_month" value="${repeatEndMonthValue}">
+                                            </div>
                                         </td>
 
                                         <td>
                                             <c:choose>
                                                 <c:when test="${expense.auto_generated_yn == 'Y'}">
-                                                    <span class="tag">원본달에서 삭제</span>
+                                                    <%-- [고정지출 종료월] 자동 생성 행은 원본 등록월에서 종료월을 수정하도록 안내한다. --%>
+                                                    <span class="tag">원본 등록월에서 수정</span>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <form id="editForm${expense.expense_id}" action="${contextPath}/spendolive/expense/modify.do" method="post" data-ajax-form data-loading-message="지출을 수정하고 있습니다.">
@@ -378,6 +398,25 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <%-- [최근 지출 페이지 처리]
+                         분류·카테고리·금액 정렬 결과를 기준으로 JavaScript가 페이지 버튼을 구성한다.
+                         기존 월별 전체 목록은 유지하므로 차트·요약 계산에는 영향을 주지 않는다.
+                    --%>
+                    <div id="expensePagination"
+                         class="pagination expense-pagination expense-hidden"
+                         aria-label="최근 지출 내역 페이지">
+                        <button type="button"
+                                class="pg-btn"
+                                data-expense-page-direction="prev"
+                                aria-label="이전 페이지">‹</button>
+
+                        <div id="expensePageNumbers" class="expense-page-numbers"></div>
+
+                        <button type="button"
+                                class="pg-btn"
+                                data-expense-page-direction="next"
+                                aria-label="다음 페이지">›</button>
                     </div>
                 </div>
             </div>
@@ -477,6 +516,65 @@
                             </ol>
                         </c:otherwise>
                     </c:choose>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%-- [생필품 가격 비교] 한국소비자원 OpenAPI 조회 기능을 지출관리 하단에 별도 카드로 배치한다. --%>
+    <section id="consumer-price-compare" class="section compact" data-context-path="${contextPath}">
+        <div class="container">
+            <div class="section-title">
+                <p class="eyebrow">PUBLIC PRICE DATA</p>
+                <h2>생필품 가격 비교</h2>
+                <p class="section-desc">한국소비자원 조사자료를 기준으로 상품별 판매점 가격을 비교합니다.</p>
+            </div>
+
+            <div class="consumer-price-card card">
+                <%-- [생필품 가격 비교] 상품명 검색 후 사용자가 정확한 상품을 선택한다. --%>
+                <form id="consumerPriceSearchForm" class="consumer-price-search-form">
+                    <label for="consumerProductKeyword">상품명 검색</label>
+                    <div class="consumer-price-search-row">
+                        <input type="search" id="consumerProductKeyword" placeholder="예: 우유, 라면, 세제" autocomplete="off" required>
+                        <button type="submit" id="consumerProductSearchButton" class="btn btn-primary">조회</button>
+                    </div>
+                </form>
+
+                <%-- [생필품 가격 비교] 조회 상태와 공공 API 오류를 같은 위치에서 안내한다. --%>
+                <p id="consumerPriceMessage" class="consumer-price-message">상품명을 입력한 뒤 조회해주세요.</p>
+
+                <%-- [생필품 가격 비교] 같은 검색어에 여러 상품이 있을 수 있어 선택 목록을 먼저 표시한다. --%>
+                <div id="consumerProductResults" class="consumer-product-results expense-hidden" aria-live="polite"></div>
+
+                <%-- [생필품 가격 비교] 선택 상품의 최저·평균·최고가와 판매점별 가격을 표시한다. --%>
+                <div id="consumerPriceResults" class="consumer-price-results expense-hidden" aria-live="polite">
+                    <div class="consumer-price-result-head">
+                        <div>
+                            <span id="consumerSelectedProduct" class="consumer-selected-product"></span>
+                            <strong id="consumerInspectDay"></strong>
+                        </div>
+                        <small>자료 제공: 한국소비자원 참가격</small>
+                    </div>
+
+                    <div class="consumer-price-summary">
+                        <div><span>최저가</span><strong id="consumerLowestPrice">-</strong></div>
+                        <div><span>평균가</span><strong id="consumerAveragePrice">-</strong></div>
+                        <div><span>최고가</span><strong id="consumerHighestPrice">-</strong></div>
+                    </div>
+
+                    <div class="consumer-price-table-wrap">
+                        <table class="consumer-price-table">
+                            <thead>
+                                <tr>
+                                    <th>판매점</th>
+                                    <th>주소</th>
+                                    <th>행사</th>
+                                    <th>가격</th>
+                                </tr>
+                            </thead>
+                            <tbody id="consumerStorePriceRows"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
