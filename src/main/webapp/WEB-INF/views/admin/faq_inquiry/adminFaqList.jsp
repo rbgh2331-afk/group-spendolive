@@ -3,18 +3,18 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="admin-main" data-admin-page="faq">
-    <div class="hero">
-        <div>
-            <p class="hero-kicker">ADMIN</p>
-            <h1>FAQ 관리</h1>
-            <p>사용자 화면(자주 묻는 질문)에 노출되는 FAQ를 추가·수정·삭제합니다.</p>
-        </div>
-    </div>
-
-    <c:if test="${not empty msg}"><div class="flash-ok">${msg}</div></c:if>
-    <c:if test="${not empty errorMsg}"><div class="flash-err">⚠ ${errorMsg}</div></c:if>
-
     <div id="adminBoardArea">
+        <div class="hero">
+            <div>
+                <p class="hero-kicker">ADMIN</p>
+                <h1>FAQ 관리</h1>
+                <p>사용자 화면(자주 묻는 질문)에 노출되는 FAQ를 추가·수정·삭제합니다.</p>
+            </div>
+        </div>
+
+        <c:if test="${not empty msg}"><div class="flash-ok">${msg}</div></c:if>
+        <c:if test="${not empty errorMsg}"><div class="flash-err">⚠ ${errorMsg}</div></c:if>
+
         <div class="admin-board-tabs">
             <a href="${contextPath}/admin/inquiry/list.do" class="admin-board-tab">문의사항</a>
             <a href="${contextPath}/spendolive/admin/faq/list.do" class="admin-board-tab active">자주 묻는 질문</a>

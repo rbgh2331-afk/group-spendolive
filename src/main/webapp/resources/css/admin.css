@@ -143,7 +143,23 @@ html,body {overflow-x:hidden;}
 .admin-empty-filter {margin-top:14px;padding:28px;border:1px dashed #d9dfbd;border-radius:var(--radius-md);background:#fffef8;color:var(--muted);text-align:center;font-weight:800;}
 .admin-form-note {margin:0 0 18px;padding:12px 15px;border-radius:var(--radius-md);background:var(--olive-100);color:var(--olive-800);font-size:13px;font-weight:800;}
 .modal-admin-inquiry {width:min(720px,100%);max-height:calc(100vh - 40px);overflow-y:auto;}
-.admin-inquiry-image {width:64px;height:64px;object-fit:cover;border:1px solid #eef0e1;border-radius:12px;}
+/* 문의 상세 모달 안 첨부 이미지: 클릭하면 새 탭 대신 라이트박스(확대 팝업)로 열림 */
+.admin-inquiry-image {width:64px;height:64px;object-fit:cover;border:1px solid #eef0e1;border-radius:12px;cursor:pointer;transition:.2s;}
+.admin-inquiry-image:hover {border-color:var(--olive-700);transform:translateY(-1px);}
+/* 문의 목록 테이블: 제목 칸은 넓게(colgroup에서 폭 미지정=자동으로 남는 공간 차지),
+   나머지 칸(첨부/작성자/상태/등록일)은 폭을 좁게 고정해서 오른쪽으로 붙게 함 */
+/* 관리자 목록 테이블 공통: table-layout:fixed로 컬럼 폭을 colgroup 지정값대로 고정.
+   제목/질문처럼 긴 텍스트가 들어가는 칸만 폭을 지정 안 해서 남는 공간을 다 가져가게 하고,
+   나머지 칸(번호/작성자/상태/등록일 등)은 좁게 고정해 오른쪽으로 붙어 보이게 함.
+   문의관리·공지사항 관리 목록에서 공통으로 사용. */
+.admin-table-fixed {table-layout:fixed;}
+.admin-attach-cell {text-align:center;}
+.admin-attach-check {font-size:15px;}
+/* 관리자 페이지에서 쓰는 사진 확대 라이트박스 (faq.js의 .faq-page .modal-photo와 동일한 스타일, admin-main 범위로 재정의) */
+.admin-main .modal-photo {position:relative;width:auto;max-width:92vw;padding:0;background:transparent;box-shadow:none;border-radius:16px;}
+.admin-main .modal-photo img {display:block;max-width:92vw;max-height:88vh;border-radius:16px;box-shadow:0 26px 80px rgba(0,0,0,.4);}
+.admin-main .modal-photo .modal-close {top:-46px;right:0;background:rgba(255,255,255,.18);color:#fff;}
+.admin-main .modal-photo .modal-close:hover {background:rgba(255,255,255,.3);}
 
 /* OTT 관리 카드 */
 .ott-cell {display:flex;align-items:center;gap:12px;}

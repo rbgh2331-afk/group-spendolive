@@ -32,6 +32,19 @@
 .faq-page .upload-area {border: 0.125rem dashed var(--line); border-radius: 0.875rem; padding: 1.75rem;text-align: center; cursor: pointer; background: var(--cream); transition: .2s; display: block;}.faq-page .upload-area:hover { border-color: var(--sage); background: var(--olive-soft); }.faq-page .upload-icon { font-size: 2rem; margin-bottom: 0.5rem; color: var(--sage); }.faq-page .upload-area p { color: var(--muted); font-size: 0.8125rem; line-height: 1.65; margin: 0; }.faq-page .upload-area strong { color: var(--olive-dark); }
 /* 선택한 파일명 목록 (드롭존 아래 표시) */
 .faq-page .upload-filenames { margin-top: 0.625rem; font-size: 0.75rem; color: var(--olive-dark); line-height: 1.8; word-break: break-all; }
+/* 선택된 파일 개수 표시 (예: "선택된 파일 (2/5)") */
+.faq-page .upload-file-count { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.5rem; }
+/* 파일 칩들을 가로로 나열, 넘치면 다음 줄로 */
+.faq-page .upload-file-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+/* 파일 1개당 박스(칩): 썸네일 + 파일명 + 삭제(×) 버튼을 한 줄에 담음 */
+.faq-page .upload-file-chip { display: inline-flex; align-items: center; gap: 0.375rem; background: var(--cream); border: 0.0625rem solid var(--line); border-radius: 0.625rem; padding: 0.25rem 0.5rem; max-width: 100%; }
+/* 이미지 파일일 때만 표시되는 작은 미리보기 썸네일 (faq.js에서 URL.createObjectURL로 생성) */
+.faq-page .upload-file-thumb { width: 1.75rem; height: 1.75rem; border-radius: 0.375rem; object-fit: cover; flex-shrink: 0; }
+/* 파일명이 길면 말줄임(...) 처리해서 칩 크기가 커지지 않게 함 */
+.faq-page .upload-file-name { max-width: 9.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 개별 파일 삭제(×) 버튼 */
+.faq-page .upload-file-remove { color: var(--muted); font-weight: 900; text-decoration: none; padding: 0 0.125rem; }
+.faq-page .upload-file-remove:hover { color: #c0564a; }
 /* 개인정보 수집 동의 안내 박스 */
 .faq-page .privacy-box { background: var(--cream); border: 0.0625rem solid var(--line); border-radius: 0.875rem; padding: 1rem 1.125rem; margin: 1.25rem 0; }.faq-page .privacy-box h4 { font-size: 0.8125rem; font-weight: 900; margin-bottom: 0.5rem; color: var(--olive-dark); }.faq-page .privacy-box p { font-size: 0.75rem; color: var(--muted); line-height: 1.7; }.faq-page .check-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; cursor: pointer; }.faq-page .check-row input { width: 1rem; height: 1rem; accent-color: var(--olive); cursor: pointer; margin: 0; }.faq-page .check-row span { font-size: 0.8125rem; color: var(--muted); }.faq-page .check-row a { color: var(--olive-dark); font-weight: 900; text-decoration: underline; }
 /* "자세히 보기" 눌러야 펼쳐지는 개인정보 수집 항목 표(기본 숨김) */

@@ -179,24 +179,48 @@ function syncInquiryFileInput(input) {
     input.files = dt.files;
 }
 
-/* 선택된 파일 목록을 화면에 그림. 파일마다 × 버튼으로 개별 삭제 가능 */
+/* 선택된 파일마다 만들어둔 미리보기 URL(URL.createObjectURL 결과).
+   렌더링할 때마다 재사용하고, 파일이 목록에서 빠지면 메모리 해제를 위해 revoke함. */
+let inqPreviewUrls = [];
+
+/* 이미지 확장자 여부 (서버 InquiryFileVO.isImage()와 기준 통일) */
+function isImageFile(file) {
+    return /\.(png|jpe?g|gif)$/i.test(file.name);
+}
+
+/* 선택된 파일 목록을 화면에 그림. 이미지면 작은 썸네일, 아니면 파일명만.
+   파일마다 × 버튼으로 개별 삭제 가능 */
 function renderInquiryFileList() {
     const list = document.getElementById('uploadFileNames');
     if (!list) return;
+
+    // 이전에 만들어둔 미리보기 URL은 다시 그리기 전에 정리(메모리 누수 방지)
+    inqPreviewUrls.forEach(url => { if (url) URL.revokeObjectURL(url); });
+    inqPreviewUrls = [];
 
     if (inqSelectedFiles.length === 0) {
         list.innerHTML = '';
         return;
     }
 
-    const chips = inqSelectedFiles.map((file, idx) =>
-        '<span class="upload-file-chip">' +
-            file.name +
-            ' <a href="javascript:void(0)" class="upload-file-remove" onclick="removeInquiryFile(' + idx + ')" aria-label="파일 삭제">×</a>' +
-        '</span>'
-    ).join('');
+    const chips = inqSelectedFiles.map((file, idx) => {
+        let thumbHtml = '';
+        if (isImageFile(file)) {
+            const url = URL.createObjectURL(file);
+            inqPreviewUrls[idx] = url;
+            thumbHtml = '<img src="' + url + '" alt="' + file.name + '" class="upload-file-thumb">';
+        }
+        return (
+            '<span class="upload-file-chip">' +
+                thumbHtml +
+                '<span class="upload-file-name">' + file.name + '</span>' +
+                ' <a href="javascript:void(0)" class="upload-file-remove" onclick="removeInquiryFile(' + idx + ')" aria-label="파일 삭제">×</a>' +
+            '</span>'
+        );
+    }).join('');
 
-    list.innerHTML = '선택된 파일 (' + inqSelectedFiles.length + '/' + INQ_MAX_FILES + ')<br>' + chips;
+    list.innerHTML = '<div class="upload-file-count">선택된 파일 (' + inqSelectedFiles.length + '/' + INQ_MAX_FILES + ')</div>' +
+        '<div class="upload-file-list">' + chips + '</div>';
 }
 
 /* × 버튼 클릭 시 해당 파일만 목록/실제 input에서 제거 */
