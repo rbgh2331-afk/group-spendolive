@@ -94,6 +94,22 @@ function soOpenModal(message, opts, isConfirm) {
 function soAlert(message, opts) { return soOpenModal(message, opts, false); }
 function soConfirm(message, opts) { return soOpenModal(message, opts, true); }
 
+/* ── 첨부 사진 확대보기(라이트박스) ──
+   - 상세 모달 안 이미지, 목록 테이블의 미리보기 썸네일 둘 다 여기서 처리
+   - faq.js의 openInqLightbox와 동일한 방식이지만, 관리자 페이지엔 faq.js가 로드되지 않으므로
+     별도 함수/모달(#adminInqLightbox)로 둠 (id 충돌 방지) */
+function openAdminInquiryLightbox(src, name) {
+    document.getElementById("adminInqLightboxImg").src = src;
+    document.getElementById("adminInqLightboxImg").alt = name || "";
+    document.getElementById("adminInqLightbox").classList.add("show");
+}
+function closeAdminInquiryLightbox(e) {
+    document.getElementById("adminInqLightbox").classList.remove("show");
+}
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeAdminInquiryLightbox();
+});
+
    (function () {
     "use strict";
 
