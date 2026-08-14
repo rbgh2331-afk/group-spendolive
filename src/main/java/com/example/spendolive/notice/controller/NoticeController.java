@@ -43,7 +43,7 @@ public class NoticeController {
 
         // 알림 탭은 로그인 필요
         if ("alert".equals(tab) && memberInfo == null) {
-            redirectAttributes.addFlashAttribute("msg", "로그인이 필요한 기능 입니다. 로그인을 해주세요 !");
+            redirectAttributes.addFlashAttribute("msg", "로그인이 필요한 기능 입니다. \n로그인을 해주세요 !");
             return "redirect:/member/loginForm.do?log=notice";
         }
 

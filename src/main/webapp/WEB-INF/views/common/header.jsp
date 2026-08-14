@@ -131,7 +131,7 @@
                             <ul class="so-submenu">
                                 <li>
                                     <a class="so-menu-link ${fn:contains(requestURI, '/calendar') ? 'active' : ''}"
-                                    href="${contextPath}/spendolive/calendar.do">
+                                    href="${contextPath}/spendolive/calendar/main.do">
                                         캘린더
                                     </a>
                                 </li>

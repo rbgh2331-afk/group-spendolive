@@ -243,7 +243,22 @@
         }
         currentArea.innerHTML = nextArea.innerHTML;
         replayMotion(currentArea, 'admin-motion-section');
+
+        // #adminBoardArea 안쪽만 교체되고 바깥의 .admin-main[data-admin-page]는 그대로 남아있어서,
+        // 문의관리 ↔ FAQ관리 탭 전환 후에도 사이드바 활성 표시가 안 바뀌는 문제가 있었음.
+        // 새로 받아온 응답에서 data-admin-page 값을 읽어와 현재 .admin-main에도 반영한다.
+        const nextRoot = documentFromResponse.querySelector('.admin-main[data-admin-page]');
+        const currentRoot = document.querySelector('.admin-main[data-admin-page]');
+        if (nextRoot && currentRoot) {
+            currentRoot.dataset.adminPage = nextRoot.dataset.adminPage;
+        }
+
+        // pushState로 주소를 먼저 갱신한 뒤 initSidebar()를 호출해야 함.
+        // updateSidebarSubmenuActive()가 window.location.pathname을 읽어서 "같은 주소인지"도
+        // 같이 판단하는데, 순서가 바뀌면 아직 안 바뀐 옛 주소 때문에 이전 메뉴도 활성으로
+        // 착각해서 두 메뉴가 동시에 활성 표시되는 문제가 있었음.
         if (pushUrl) history.pushState({ boardUrl: pushUrl }, '', pushUrl);
+        initSidebar();
     }
 
     function loadBoard(url, push) {
