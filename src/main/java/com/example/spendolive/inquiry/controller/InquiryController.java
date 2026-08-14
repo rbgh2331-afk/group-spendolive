@@ -1,5 +1,7 @@
 package com.example.spendolive.inquiry.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,6 +36,7 @@ import com.example.spendolive.notification.service.NotificationService;
 @Controller
 @RequestMapping("/spendolive/inquiry")
 public class InquiryController {
+    private static final Logger log = LoggerFactory.getLogger(InquiryController.class);
 
     private final InquiryService inquiryService;
     private final NotificationService notificationService;
@@ -55,7 +58,6 @@ public class InquiryController {
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
-       
         ModelAndView mav = new ModelAndView("common/layout");
         mav.addObject("body_page", "/WEB-INF/views/inquiry/inquiryList.jsp");
 
@@ -72,7 +74,7 @@ public class InquiryController {
             mav.addObject("totalPages", totalPages);
             mav.addObject("currentStatus", status.toLowerCase()); // 필터 버튼 active 표시 + 페이지네이션 링크 유지용
         } catch (Exception e) {
-            System.err.println("[InquiryController.inquiryList] 목록 로드 실패: " + e.getMessage());
+            log.error("{}", "[InquiryController.inquiryList] 목록 로드 실패: " + e.getMessage(), e);
             mav.addObject("inquiryList", List.of());
             mav.addObject("currentPage", 1);
             mav.addObject("totalPages", 1);
@@ -107,7 +109,6 @@ public class InquiryController {
         return mav;
     }
 
-
     /* ─── 문의 상세 ───────────────────────────────────────── */
     @GetMapping("/detail.do")
     public ModelAndView inquiryDetail(
@@ -124,7 +125,7 @@ public class InquiryController {
         try {
             inquiry = inquiryService.getInquiryDetail(inquiryNo);
         } catch (Exception e) {
-            System.err.println("[InquiryController.inquiryDetail] 조회 실패: " + e.getMessage());
+            log.error("{}", "[InquiryController.inquiryDetail] 조회 실패: " + e.getMessage(), e);
         }
 
         // 존재하지 않거나 본인 문의가 아니면 목록으로
@@ -133,12 +134,12 @@ public class InquiryController {
             return new ModelAndView("redirect:/spendolive/inquiry/list.do");
         }
 
-        // TODO: 상세 페이지 JSP(inquiryDetail.jsp)
+        // 문의 상세 화면 구성
         ModelAndView mav = new ModelAndView("common/layout");
         mav.addObject("body_page", "/WEB-INF/views/inquiry/inquiryDetail.jsp");
         mav.addObject("inquiry", inquiry);
         return mav;
-        
+
     }
 
     /* ─── 문의 수정 폼 ─────────────────────────────────────── */
@@ -166,8 +167,6 @@ public class InquiryController {
         mav.addObject("inquiry", inquiry);
         return mav;
     }
-
-
 
     /* ════════════════════════════════════════════════════════════
        AJAX 전용 엔드포인트 (페이지 이동 없이 JSON으로 결과만 반환)
@@ -216,7 +215,7 @@ public class InquiryController {
             // 첨부파일 검증 실패(용량/확장자/개수 초과 등)
             return ResponseEntity.badRequest().body(Map.of("result", "ERROR", "message", e.getMessage()));
         } catch (Exception e) {
-            System.err.println("[InquiryController.ajaxWrite] 등록 실패: " + e.getMessage());
+            log.error("{}", "[InquiryController.ajaxWrite] 등록 실패: " + e.getMessage(), e);
             return ResponseEntity.internalServerError()
                     .body(Map.of("result", "ERROR", "message", "문의 접수 중 오류가 발생했습니다. 다시 시도해 주세요."));
         }
@@ -264,7 +263,7 @@ public class InquiryController {
             }
             return ResponseEntity.ok(Map.of("result", "OK", "message", "문의가 수정되었습니다."));
         } catch (Exception e) {
-            System.err.println("[InquiryController.ajaxEdit] 수정 실패: " + e.getMessage());
+            log.error("{}", "[InquiryController.ajaxEdit] 수정 실패: " + e.getMessage(), e);
             return ResponseEntity.internalServerError()
                     .body(Map.of("result", "ERROR", "message", "수정 중 오류가 발생했습니다."));
         }
@@ -291,7 +290,7 @@ public class InquiryController {
             }
             return ResponseEntity.ok(Map.of("result", "OK", "message", "문의가 삭제되었습니다."));
         } catch (Exception e) {
-            System.err.println("[InquiryController.ajaxDelete] 삭제 실패: " + e.getMessage());
+            log.error("{}", "[InquiryController.ajaxDelete] 삭제 실패: " + e.getMessage(), e);
             return ResponseEntity.internalServerError()
                     .body(Map.of("result", "ERROR", "message", "삭제 중 오류가 발생했습니다."));
         }
@@ -331,7 +330,7 @@ public class InquiryController {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getOrigin_name() + "\"")
                     .body(resource);
         } catch (IOException e) {
-            System.err.println("[InquiryController.viewInquiryFile] 파일 읽기 실패: " + e.getMessage());
+            log.error("{}", "[InquiryController.viewInquiryFile] 파일 읽기 실패: " + e.getMessage(), e);
             return ResponseEntity.internalServerError().build();
         }
     }

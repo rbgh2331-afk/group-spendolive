@@ -1,5 +1,5 @@
 /* =========================================================
-   03. OTT 통합 SQL - 공유방 / 모집글 / 채팅 / 정산 / 기본 OTT 데이터
+   03. OTT 통합 SQL - 공유방 / 모집글 / 채팅 / 정산
    =========================================================
    이 파일 하나로 처리하는 내용:
    1) OTT 서비스 기준 테이블 생성
@@ -9,14 +9,13 @@
    5) 월별 정산 요청 테이블 생성
    6) 참여자별 결제 상태 테이블 생성
    7) 방 삭제 요청 시 환불 기록 테이블 생성
-   8) Netflix, Disney+, TVING, Wavve, Watcha, Laftel 기본 데이터 입력
 
    실행 순서:
    1) 00_reset_all_objects.sql          -- 전체 초기화가 필요할 때만 실행
    2) 01_member_schema.sql              -- member_tb가 먼저 있어야 함
    3) 02_expense_calendar_schema.sql    -- 지출/캘린더가 필요하면 실행
    4) 03_ott_schema.sql                 -- 현재 파일
-   5) 04_notice_inquiry_alert_schema.sql -- OTT 신청/정산 알림까지 테스트할 때 실행
+   5) 04_notice_notification_inquiry_faq.sql -- 공지/문의/FAQ/알림까지 사용할 때 실행
 
    기존 OTT 관련 파일 정리:
    - 예전에는 03_ott_schema.sql, 08_seed_ott_services.sql,
@@ -24,7 +23,7 @@
      14_patch_ott_login_id_column_names.sql을 따로 관리했습니다.
    - 이제 새 DB를 만드는 기준에서는 이 03번 파일 하나만 실행하면 됩니다.
    - 12/13/14 패치 내용은 최신 CREATE TABLE 구조에 이미 반영했습니다.
-   - 08번 OTT 서비스 기본 데이터도 이 파일 아래쪽에 통합했습니다.
+   - OTT 서비스 기본 데이터는 08_seed_ott_services.sql 또는 10_seed_all_default_data.sql에서 입력합니다.
 
    현재 지원 OTT:
    - Netflix
@@ -177,6 +176,11 @@ CREATE TABLE ott_room_member_tb (
     kicked_at      DATE,                               -- 추방일
     kicked_reason  VARCHAR2(500),                      -- 추방 사유
     left_at        DATE,                               -- 탈퇴일
+    leave_reserved_yn    CHAR(1) DEFAULT 'N' NOT NULL, -- 나가기 예약 여부
+    leave_requested_at   DATE,                         -- 나가기 예약 요청일
+    leave_scheduled_date DATE,                         -- 실제 나가기 예정일
+    leave_cancelled_at   DATE,                         -- 예약 취소일
+    leave_reason         VARCHAR2(500),                -- 나가기 사유
 
     CONSTRAINT pk_ott_room_member PRIMARY KEY (room_member_id),
     CONSTRAINT fk_room_member_room FOREIGN KEY (room_id) REFERENCES ott_room_tb(room_id),
@@ -184,6 +188,7 @@ CREATE TABLE ott_room_member_tb (
     CONSTRAINT uk_room_member UNIQUE (room_id, member_login_id),
     CONSTRAINT ck_room_member_role CHECK (member_role IN ('HOST', 'MEMBER')),
     CONSTRAINT ck_room_member_status CHECK (status IN ('APPLIED', 'ACTIVE', 'REJECTED', 'OUT', 'KICKED')),
+    CONSTRAINT ck_room_member_leave_reserved CHECK (leave_reserved_yn IN ('Y', 'N')),
     CONSTRAINT ck_room_member_amount CHECK (share_amount >= 0),
     CONSTRAINT ck_room_member_fee_rate CHECK (fee_rate >= 0),
     CONSTRAINT ck_room_member_fee_amount CHECK (fee_amount >= 0),
@@ -293,7 +298,7 @@ CREATE TABLE settlement_tb (
             'READY',              -- 정산 생성 전/준비 필요 없
             'REQUESTED',          -- 방장이 정산 요청함 필요 없
             'DONE',               -- 기존 호환용 완료
-            'PAYMENT_OPEN',       -- 결제 가능 기간 
+            'PAYMENT_OPEN',       -- 결제 가능 기간
             'REPLACE_RECRUITING', -- 미결제자 추방 후 대체 모집
             'CONFIRMED',          -- 정산 확정
             'CANCELLED',          -- 정산 취소
@@ -341,61 +346,7 @@ CREATE INDEX idx_settlement_service ON settlement_tb(status, service_start_date,
    03_ott_schema.sql 실행 직후 03-1_payment.sql을 실행하세요.
    ========================================================= */
 
-/* =========================================================
-   14. OTT 참여자 나가기 예약 컬럼 추가 패치
-   ---------------------------------------------------------
-   목적:
-   - 가족방/외부 모집방의 일반 참여자가 나가기 예약을 할 수 있도록
-     ott_room_member_tb에 예약 관련 컬럼을 추가한다.
-
-   실행 시점:
-   - 기존 DB에는 1회 실행
-   - 새 DB를 만들 때는 03_ott_schema.sql, 03-1_payment.sql 실행 후 실행
-   ========================================================= */
-
-SET DEFINE OFF;
-
-DECLARE
-    v_count NUMBER;
-BEGIN
-    SELECT COUNT(*)
-    INTO v_count
-    FROM user_tab_columns
-    WHERE table_name = 'OTT_ROOM_MEMBER_TB'
-      AND column_name = 'LEAVE_RESERVED_YN';
-
-    IF v_count = 0 THEN
-        EXECUTE IMMEDIATE '
-            ALTER TABLE ott_room_member_tb ADD (
-                leave_reserved_yn    CHAR(1) DEFAULT ''N'' NOT NULL,
-                leave_requested_at   DATE,
-                leave_scheduled_date DATE,
-                leave_cancelled_at   DATE,
-                leave_reason         VARCHAR2(500),
-                CONSTRAINT ck_room_member_leave_reserved CHECK (leave_reserved_yn IN (''Y'', ''N''))
-            )
-        ';
-    END IF;
-END;
-/
-
-UPDATE ott_room_member_tb
-SET leave_reserved_yn = 'N'
-WHERE leave_reserved_yn IS NULL;
-
-COMMIT;
-
-SELECT column_name, data_type, nullable
-FROM user_tab_columns
-WHERE table_name = 'OTT_ROOM_MEMBER_TB'
-  AND column_name IN (
-      'LEAVE_RESERVED_YN',
-      'LEAVE_REQUESTED_AT',
-      'LEAVE_SCHEDULED_DATE',
-      'LEAVE_CANCELLED_AT',
-      'LEAVE_REASON'
-  )
-ORDER BY column_id;
+/* 기존 DB의 나가기 예약 컬럼 추가는 patch/14_ott_leave_reservation_patch.sql을 사용합니다. */
 
 /* =========================================================
    정산/결제 구현 기준 요약

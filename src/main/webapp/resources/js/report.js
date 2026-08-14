@@ -16,11 +16,11 @@ if (reportActionBtn) {
 }
 // 신고 처리
 (function () {
-  
+
     document.addEventListener('click', async function (event) {
         const reportButton = event.target.closest('.reportSubmitButton');
         if (!reportButton) return;
-    
+
         const room_id = reportButton.dataset.room_id;
         const reported_member_id = reportButton.dataset.reported_member_id;
         const chat_text = reportButton.dataset.chat_text;
@@ -45,23 +45,27 @@ if (reportActionBtn) {
             fallbackErrorMessage: '신고 결과를 확인하지 못했습니다. 다시 시도해주세요.'
         },'report');
     });
-    // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
-    
+    // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시
+
   })();
   // 경고 처리
   (function () {
-  
+
     document.addEventListener('click', async function (event) {
         const waringButton = event.target.closest('.waringSubmitButton');
         if (!waringButton) return;
-    
-        const report_id = $('#formReportId').val().trim();
-        const reported_member_id = $('#formReportMemberId').val().trim();
-        const admin_comment = $('#adminComment').val().trim();
-        const result = $('#reportResult').val().trim();
+
+        const reportIdInput = document.getElementById('formReportId');
+        const reportedMemberInput = document.getElementById('formReportMemberId');
+        const adminCommentInput = document.getElementById('adminComment');
+        const reportResultInput = document.getElementById('reportResult');
+        const report_id = reportIdInput ? reportIdInput.value.trim() : '';
+        const reported_member_id = reportedMemberInput ? reportedMemberInput.value.trim() : '';
+        const admin_comment = adminCommentInput ? adminCommentInput.value.trim() : '';
+        const result = reportResultInput ? reportResultInput.value.trim() : '';
         if (!admin_comment) {
             alert('처리 결과를 입력해주세요.');
-            $('#adminComment').focus();
+            if (adminCommentInput) adminCommentInput.focus();
             return;
         }
         if (!report_id || !reported_member_id || !admin_comment) {
@@ -87,8 +91,8 @@ if (reportActionBtn) {
             fallbackErrorMessage: '신고 결과를 확인하지 못했습니다. 다시 시도해주세요.'
         },'report');
     });
-    // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시합니다.
-    
+    // 결제 중 새로고침이나 창 닫기를 시도하면 브라우저 기본 경고를 표시
+
   })();
 
 

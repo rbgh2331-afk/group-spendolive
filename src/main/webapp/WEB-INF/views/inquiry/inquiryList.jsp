@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
@@ -26,7 +27,7 @@
         <div id="inqBoardArea">
 
         <div class="filters">
-            <%-- a href → data-status 버튼으로 변경. inquiry.js가 클릭을 가로채 AJAX 처리 --%>
+            <%-- 상태 필터는 data-status 값을 기준으로 inquiry.js에서 AJAX 처리 --%>
             <button type="button" class="filter-btn ${currentStatus == 'all' ? 'active' : ''}" data-status="all">전체</button>
             <button type="button" class="filter-btn ${currentStatus == 'wait' ? 'active' : ''}" data-status="wait">답변 대기</button>
             <button type="button" class="filter-btn ${currentStatus == 'done' ? 'active' : ''}" data-status="done">답변 완료</button>
@@ -38,26 +39,26 @@
                 <c:forEach var="inq" items="${inquiryList}">
                     <div class="inq-card" onclick="openInqDetailModal('${inq.inquiry_id}')">
                         <div class="inq-top">
-                            <span class="inq-category">${inq.category}</span>
+                            <span class="inq-category"><c:out value="${inq.category}" /></span>
                             <div class="inq-meta">
-                                <span class="badge ${inq.statusCode}">${inq.statusLabel}</span>
-                                <span class="inq-date">${inq.reg_date}</span>
+                                <span class="badge ${inq.statusCode}"><c:out value="${inq.statusLabel}" /></span>
+                                <span class="inq-date"><c:out value="${inq.reg_date}" /></span>
                             </div>
                         </div>
-                        <div class="inq-title">${inq.title}</div>
-                        <div class="inq-preview">${inq.preview}</div>
+                        <div class="inq-title"><c:out value="${inq.title}" /></div>
+                        <div class="inq-preview"><c:out value="${inq.preview}" /></div>
                         <c:if test="${not empty inq.files}">
                             <div class="inq-attachments" onclick="event.stopPropagation()">
                                 <c:forEach var="file" items="${inq.files}">
                                     <c:choose>
                                         <c:when test="${file.image}">
                                             <img src="${contextPath}/spendolive/inquiry/file/${file.file_id}"
-                                                alt="${file.origin_name}" class="inq-thumb"
-                                                onclick="event.stopPropagation(); openInqLightbox(this.src, '${file.origin_name}')">
+                                                alt="${fn:escapeXml(file.origin_name)}" class="inq-thumb"
+                                                onclick="event.stopPropagation(); openInqLightbox(this.src, this.alt)">
                                         </c:when>
                                         <c:otherwise>
                                             <a href="${contextPath}/spendolive/inquiry/file/${file.file_id}"
-                                            target="_blank" class="inq-file-link">📎 ${file.origin_name}</a>
+                                            target="_blank" class="inq-file-link">📎 <c:out value="${file.origin_name}" /></a>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:forEach>
@@ -77,21 +78,21 @@
                     </div>
 
                     <%-- 이 카드 클릭 시 위 정보를 모달에 그대로 복사해서 보여줄 숨김 템플릿 --%>
-                    <div class="inq-detail-tpl" id="inqDetailTpl${inq.inquiry_id}" style="display:none">
+                    <div class="inq-detail-tpl" id="inqDetailTpl${inq.inquiry_id}">
                         <div class="inq-detail-header">
                             <div class="inq-top">
-                                <span class="inq-category">${inq.categoryLabel} · ${inq.inquiryTypeLabel}</span>
+                                <span class="inq-category"><c:out value="${inq.categoryLabel}" /> · <c:out value="${inq.inquiryTypeLabel}" /></span>
                                 <div class="inq-meta">
-                                    <span class="badge ${inq.statusCode}">${inq.statusLabel}</span>
-                                    <span class="inq-date">${inq.reg_date}</span>
+                                    <span class="badge ${inq.statusCode}"><c:out value="${inq.statusLabel}" /></span>
+                                    <span class="inq-date"><c:out value="${inq.reg_date}" /></span>
                                 </div>
                             </div>
-                            <div class="inq-title" style="font-size:18px;margin-top:8px">${inq.title}</div>
+                            <div class="inq-title inq-title-detail"><c:out value="${inq.title}" /></div>
                         </div>
 
                         <div class="inq-detail-section">
                             <span class="inq-detail-label">문의 내용</span>
-                            <div class="inq-detail-body">${inq.content}</div>
+                            <div class="inq-detail-body"><c:out value="${inq.content}" /></div>
                         </div>
 
                         <c:if test="${not empty inq.files}">
@@ -102,12 +103,12 @@
                                         <c:choose>
                                             <c:when test="${file.image}">
                                                 <img src="${contextPath}/spendolive/inquiry/file/${file.file_id}"
-                                                    alt="${file.origin_name}" class="inq-thumb"
-                                                    onclick="openInqLightbox(this.src, '${file.origin_name}')">
+                                                    alt="${fn:escapeXml(file.origin_name)}" class="inq-thumb"
+                                                    onclick="openInqLightbox(this.src, this.alt)">
                                             </c:when>
                                             <c:otherwise>
                                                 <a href="${contextPath}/spendolive/inquiry/file/${file.file_id}"
-                                                target="_blank" class="inq-file-link">📎 ${file.origin_name}</a>
+                                                target="_blank" class="inq-file-link">📎 <c:out value="${file.origin_name}" /></a>
                                             </c:otherwise>
                                         </c:choose>
                                     </c:forEach>
@@ -123,11 +124,11 @@
                                             <strong>관리자 답변</strong>
                                             <span class="inq-date">${inq.reply_date}</span>
                                         </div>
-                                        <div class="inq-reply-text">${inq.reply_content}</div>
+                                        <div class="inq-reply-text"><c:out value="${inq.reply_content}" /></div>
                                     </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="empty-box" style="margin-top:0">
+                                    <div class="empty-box empty-box-no-margin">
                                         <p>아직 답변이 등록되지 않았습니다.</p>
                                     </div>
                                 </c:otherwise>
@@ -137,10 +138,10 @@
                         <%-- 답변 대기 상태(관리자 답변 전)인 문의만 수정/삭제 가능.
                              이미 답변이 달린 문의는 내용을 바꾸면 답변과 안 맞아질 수 있어서 막음. --%>
                         <c:if test="${inq.status == 'WAIT'}">
-                            <div class="inq-detail-actions" style="display:flex;gap:8px;margin-top:16px">
-                                <a class="btn btn-outline" style="flex:1;text-align:center"
+                            <div class="inq-detail-actions inq-detail-actions-inline">
+                                <a class="btn btn-outline inq-action-flex"
                                    href="${contextPath}/spendolive/inquiry/edit.do?inquiryNo=${inq.inquiry_id}">수정</a>
-                                <button type="button" class="btn btn-danger-outline" style="flex:1"
+                                <button type="button" class="btn btn-danger-outline inq-action-flex"
                                         onclick="event.stopPropagation(); deleteInquiry(${inq.inquiry_id})">삭제</button>
                             </div>
                         </c:if>

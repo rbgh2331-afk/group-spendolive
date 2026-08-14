@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%-- 관리자 결제 관리 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="admin-main" data-admin-page="settlement" data-admin-title="정산관리">
@@ -71,12 +72,12 @@
                                             <div class="table-actions">
                                                 <button type="button"
                                                      class="btn btn-primary adminpaymentSubmitButton"
-                                                      data-room_id="${member.room_id}" 
-                                                      data-member_login_id="${member.member_login_id}">정산금 받기</button> 
-   
+                                                      data-room_id="${member.room_id}"
+                                                      data-member_login_id="${member.member_login_id}">정산금 받기</button>
+
                                                  <button type="button"
                                                        class="btn btn-primary adminlateSubmitButton"
-                                                       data-room_id="${member.room_id}" 
+                                                       data-room_id="${member.room_id}"
                                                        data-pay_late_day="${member.pay_late_day}"
                                                        data-member_login_id="${member.member_login_id}">하루 연기</button>
                                             </div>
@@ -93,4 +94,8 @@
         </c:choose>
     </section>
 </div>
-   
+
+
+<jsp:include page="/WEB-INF/views/payment/popup.jsp" />
+<script src="${contextPath}/resources/js/app.js"></script>
+<script src="${contextPath}/resources/js/payment.js"></script>

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import com.example.spendolive.mypage.domain.MyPageReportDTO;
 
+/**
+ * 마이페이지 신고 내역 조회 저장소
+ */
 @Repository
 public class MyPageReportRepository {
 

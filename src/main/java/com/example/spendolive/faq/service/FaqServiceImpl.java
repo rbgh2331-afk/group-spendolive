@@ -18,7 +18,7 @@ import com.example.spendolive.faq.repository.FaqRepository;
 @Service
 public class FaqServiceImpl implements FaqService {
 
-    // faqList.jsp에 보여줄 카테고리 고정 순서. 여기 없는 카테고리 값이 들어오면 그냥 안 보임(방어적으로 무시).
+    // faqList.jsp에 보여줄 카테고리 고정 순서. 여기 없는 카테고리 값이 들어오면 그냥 안 보임(방어적으로 무시)
     private static final String[] CATEGORY_ORDER = {"account", "expense", "ott", "notice", "etc"};
 
     private final FaqRepository faqRepository;
@@ -96,7 +96,6 @@ public class FaqServiceImpl implements FaqService {
         return grouped;
     }
 
-
     /**
      * 같은 카테고리 안에서 FAQ 하나를 한 칸 위(up=true) 또는 아래(up=false)로 이동시킴.
      *
@@ -113,10 +112,10 @@ public class FaqServiceImpl implements FaqService {
         FaqVO target = faqRepository.findById(faq_id);
         if (target == null) return;
         String category = target.getCategory();
-    
+
         // 2) 해당 카테고리 안의 FAQ만 조회 (범위를 좁혀서 조회)
         List<FaqVO> sameCat = faqRepository.findByCategory(category);
-    
+
         int idx = -1;
         for (int i = 0; i < sameCat.size(); i++) {
             if (sameCat.get(i).getFaq_id() == faq_id) { idx = i; break; }

@@ -11,7 +11,6 @@
    - OTT 수정: styles/03~07번 파일
    - 마이페이지 수정: styles/08~09번 파일
    ========================================================= */
-
 @import url("./styles/01-foundation.css");
 @import url("./styles/02-expense.css");
 @import url("./styles/03-ott-base-chat.css");
@@ -31,4 +30,3 @@
 @import url("./styles/18-weather.css");
 @import url("./styles/19-so-modal.css");
 @import url("./styles/99-ui-unified-overrides.css");
-

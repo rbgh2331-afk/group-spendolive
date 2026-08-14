@@ -20,7 +20,7 @@ public class MyPageRepository {
 
     /**
      * 마이페이지 지출 요약 전용 조회.
-     * 회원/신고/OTT 조회는 각각 MemberRepository, MyPageReportRepository, OttRepository 쪽에서 처리한다.
+     * 회원/신고/OTT 조회는 각각 MemberRepository, MyPageReportRepository, OttRepository 쪽에서 처리
      */
     public int selectThisMonthExpenseTotal(int member_id) {
         YearMonth currentMonth = YearMonth.now();
@@ -65,7 +65,7 @@ public class MyPageRepository {
         return jdbcTemplate.update(sql, loginId);
     }
 
-    // [회원탈퇴 개선] 자진탈퇴 대상 회원 행을 잠가 중복 요청을 막고 기존 member_id를 조회한다.
+    // 자진탈퇴 대상 회원 행을 잠가 중복 요청을 막고 기존 member_id를 조회
     public int selectActiveMemberIdForUpdate(String loginId) {
         String sql = "SELECT member_id FROM member_tb WHERE id = ? AND status = 'ACTIVE' FOR UPDATE";
         try {
@@ -79,20 +79,20 @@ public class MyPageRepository {
         }
     }
 
-    // [회원탈퇴 개선] REQUESTED 상태의 환불만 아직 처리 중인 환불로 계산한다.
+    // REQUESTED 상태의 환불만 아직 처리 중인 환불로 계산
     public int selectPendingRefundCount(String loginId) {
         String sql = "SELECT COUNT(*) FROM settlement_refund_tb WHERE member_login_id = ? AND refund_status = 'REQUESTED'";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, loginId);
         return count == null ? 0 : count;
     }
 
-    // [회원탈퇴 정책 변경] 탈퇴 전에 삭제할 문의 번호를 조회해 DB 삭제 후 실제 첨부파일 폴더까지 정리할 수 있게 한다.
+    // 탈퇴 전에 삭제할 문의 번호를 조회해 DB 삭제 후 실제 첨부파일 폴더까지 정리할 수 있게 한다
     public List<Integer> selectInquiryIds(String loginId) {
         String sql = "SELECT inquiry_id FROM inquiry_tb WHERE id = ? ORDER BY inquiry_id";
         return jdbcTemplate.queryForList(sql, Integer.class, loginId);
     }
 
-    // [회원탈퇴 개선] 개인 데이터 삭제와 보존 데이터 익명 아이디 이동을 한 트랜잭션 안에서 순서대로 수행한다.
+    // 개인 데이터 삭제와 보존 데이터 익명 아이디 이동을 한 트랜잭션 안에서 순서대로 수행한다
     public void withdrawSelfMember(int memberId, String loginId, String temporaryId, String anonymousId, String anonymousEmail) {
         insertTemporaryMember(loginId, temporaryId);
         deletePrivateData(memberId, loginId);
@@ -102,7 +102,7 @@ public class MyPageRepository {
         deleteTemporaryMember(temporaryId);
     }
 
-    // [회원탈퇴 개선] 외래키가 잠시 참조할 임시 부모 회원을 기존 회원의 필수 가입정보 기준으로 생성한다.
+    // 외래키가 잠시 참조할 임시 부모 회원을 기존 회원의 필수 가입정보 기준으로 생성
     private void insertTemporaryMember(String loginId, String temporaryId) {
         String sql = """
                 INSERT INTO member_tb (id, email, password, member_name, nickname, phone, login_type, verify_type, role, status, warning_count, created_at, updated_at, account_status, card_status)
@@ -118,7 +118,7 @@ public class MyPageRepository {
         }
     }
 
-    // [회원탈퇴 정책 변경] 개인 데이터와 과거 OTT 참여 이력, 문의 내역은 보존하지 않고 실제 행을 삭제한다.
+    // 개인 데이터와 과거 OTT 참여 이력, 문의 내역은 보존하지 않고 실제 행을 삭제
     private void deletePrivateData(int memberId, String loginId) {
         jdbcTemplate.update("DELETE FROM expense_tb WHERE member_id = ?", memberId);
         jdbcTemplate.update("DELETE FROM monthly_budget_tb WHERE member_id = ?", memberId);
@@ -131,34 +131,34 @@ public class MyPageRepository {
         jdbcTemplate.update("DELETE FROM notice_read_tb WHERE id = ?", loginId);
         jdbcTemplate.update("DELETE FROM notice_favorite_tb WHERE id = ?", loginId);
 
-        // [회원탈퇴 정책 변경] 종료된 방의 과거 참여 행은 결제·정산 기록과 독립되어 있으므로 삭제한다.
+        // 종료된 방의 과거 참여 행은 결제·정산 기록과 독립되어 있으므로 삭제
         jdbcTemplate.update("DELETE FROM ott_room_member_tb WHERE member_login_id = ?", loginId);
 
-        // [회원탈퇴 정책 변경] 문의 본문과 DB 첨부파일 행은 삭제한다. inquiry_file_tb는 ON DELETE CASCADE로 함께 삭제된다.
+        // 문의 본문과 DB 첨부파일 행은 삭제한다. inquiry_file_tb는 ON DELETE CASCADE로 함께 삭제
         jdbcTemplate.update("DELETE FROM inquiry_tb WHERE id = ?", loginId);
     }
 
-    // [회원탈퇴 정책 변경] 결제·정산·환불·채팅·신고 이력만 동일한 탈퇴 아이디로 연결해 보존한다.
+    // 결제·정산·환불·채팅·신고 이력만 동일한 탈퇴 아이디로 연결해 보존한다
     private void movePreservedMemberReferences(String beforeId, String afterId) {
-        // [회원탈퇴 정책 변경] 종료된 방의 방장 정보와 채팅 발신자 이력은 유지한다. 과거 참여 행은 이미 삭제했다.
+        // 종료된 방의 방장 정보와 채팅 발신자 이력은 유지한다. 과거 참여 행은 이미 삭제했다
         jdbcTemplate.update("UPDATE ott_room_tb SET host_login_id = ? WHERE host_login_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE ott_chat_message_tb SET sender_id = ? WHERE sender_id = ?", afterId, beforeId);
 
-        // [회원탈퇴 개선] 결제, 환불, 에스크로, 플랫폼 수익 이력을 유지한다.
+        // 결제, 환불, 에스크로, 플랫폼 수익 이력을 유지
         jdbcTemplate.update("UPDATE settlement_payment_tb SET id = ? WHERE id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE settlement_refund_tb SET member_login_id = ? WHERE member_login_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE escrow_payout_tb SET payer_id = ? WHERE payer_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE escrow_payout_tb SET host_id = ? WHERE host_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE platform_revenue_tb SET payer_id = ? WHERE payer_id = ?", afterId, beforeId);
 
-        // [회원탈퇴 정책 변경] 신고·경고와 관리자 공지 작성 이력은 유지한다. 문의 내역은 삭제 대상이다.
+        // 신고·경고와 관리자 공지 작성 이력은 유지한다. 문의 내역은 삭제 대상이다
         jdbcTemplate.update("UPDATE report_tb SET reporter_id = ? WHERE reporter_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE report_tb SET reported_member_id = ? WHERE reported_member_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE warning_tb SET member_id = ? WHERE member_id = ?", afterId, beforeId);
         jdbcTemplate.update("UPDATE notice_tb SET admin_id = ? WHERE admin_id = ?", afterId, beforeId);
     }
 
-    // [회원탈퇴 개선] 기존 member_id 행은 유지하고 로그인·개인 식별 정보만 익명값으로 변경한다.
+    // 기존 member_id 행은 유지하고 로그인·개인 식별 정보만 익명값으로 변경
     private void anonymizeMember(String loginId, String anonymousId, String anonymousEmail) {
         String sql = """
                 UPDATE member_tb
@@ -184,7 +184,7 @@ public class MyPageRepository {
         }
     }
 
-    // [회원탈퇴 개선] 보존 데이터가 최종 익명 아이디로 이동한 뒤 임시 회원 행만 삭제한다.
+    // 보존 데이터가 최종 익명 아이디로 이동한 뒤 임시 회원 행만 삭제
     private void deleteTemporaryMember(String temporaryId) {
         int deletedCount = jdbcTemplate.update("DELETE FROM member_tb WHERE id = ? AND status = 'LEAVE'", temporaryId);
         if (deletedCount != 1) {

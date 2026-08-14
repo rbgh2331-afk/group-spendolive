@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%-- 관리자 정산 관리 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="admin-main" data-admin-page="settlement" data-admin-title="정산관리">
@@ -70,7 +71,7 @@
                                         <c:otherwise>
                                             <button type="button"
                                                 class="btn btn-primary adminsettlementSubmitButton"
-                                                data-room_id="${room.room_id}" data-member_login_id="${room.host_login_id}">정산금 보내기</button>
+                                                data-room_id="${room.room_id}" data-host_id="${room.host_login_id}">정산금 보내기</button>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
@@ -84,3 +85,7 @@
         </c:choose>
     </section>
 </div>
+
+<jsp:include page="/WEB-INF/views/payment/popup.jsp" />
+<script src="${contextPath}/resources/js/app.js"></script>
+<script src="${contextPath}/resources/js/payment.js"></script>

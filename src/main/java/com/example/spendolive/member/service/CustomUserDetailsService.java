@@ -1,6 +1,5 @@
 package com.example.spendolive.member.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,12 +12,15 @@ import com.example.spendolive.member.repository.MemberRepository;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private MemberRepository memberRepository; // 작성해두신 DAO 주입
+    private final MemberRepository memberRepository; // 작성해두신 DAO 주입
+
+    public CustomUserDetailsService(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        
+
         // 1. DB에서 ID로 회원 조회 (비밀번호 비교 X)
         MemberVO member = memberRepository.selectMemberById(id);
 

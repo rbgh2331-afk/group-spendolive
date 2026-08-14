@@ -12,9 +12,9 @@ public class AdminDashboardRepositoryImpl implements AdminDashboardRepository {
 
     /**
      * 관리자 대시보드에 필요한 다섯 개 통계를 한 번의 DB 조회로 가져온다.
-     * - 전체 회원 수는 회원 상태와 권한에 관계없이 member_tb 전체를 계산한다.
-     * - 공개 모집 중 파티는 외부 모집방 중 현재 모집 가능한 상태만 계산한다.
-     * - 신고와 문의는 WAIT 상태만 처리 대기로 계산한다.
+     * - 전체 회원 수는 회원 상태와 권한에 관계없이 member_tb 전체를 계산
+     * - 공개 모집 중 파티는 외부 모집방 중 현재 모집 가능한 상태만 계산
+     * - 신고와 문의는 WAIT 상태만 처리 대기로 계산
      */
     private static final String SELECT_DASHBOARD_SUMMARY = """
             SELECT (SELECT COUNT(*)

@@ -14,27 +14,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
-<style>
-    /* =========================================================
-       [추가 UI] 로그인/아이디 찾기/비밀번호 찾기 폼 전환용 CSS
-       ---------------------------------------------------------
-       기존 로그인 카드 안에서 화면 이동 없이 폼만 바꾸기 위해 사용한다.
-       .auth-switch-panel은 기본 숨김이고, .active가 붙은 패널만 보인다.
-       ========================================================= */
-    .auth-switch-panel { display: none; }
-    .auth-switch-panel.active { display: block; }
-    .auth-find-links { display: flex; align-items: center; gap: 8px; }
-    .auth-find-links a { color: var(--olive-dark); font-weight: 800; text-decoration: none; }
-    .auth-find-links a:hover { text-decoration: underline; }
-    .auth-back-login { margin-top: 12px; }
-    .auth-reset-box { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
-</style>
 </head>
 <body class="auth-body">
     <div class="auth-wrap">
         <aside class="auth-brand-panel">
         <a href="${contextPath}/spendolive/main.do" class="auth-logo">
-            <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+            <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" class="brand-logo-img">
             <span>
                 SpendOlive
             </span>
@@ -96,7 +81,7 @@
             </div>
             <div class="auth-divider">또는 일반 로그인</div>
 
-            <form action="${contextPath}/member/login.do" method="post"onsubmit="return checkKakaoPassword()">
+            <form action="${contextPath}/member/login.do" method="post" onsubmit="return checkKakaoPassword()">
                 <div class="auth-form-group">
                     <label for="loginId">아이디 또는 이메일</label>
                     <input id="loginId" type="text" name="id" placeholder="아이디 또는 이메일을 입력하세요" required>
@@ -111,10 +96,10 @@
                         로그인 상태 유지
                     </label>
                     <div class="auth-find-links">
-                        <%-- [추가 기능] 페이지 이동 없이 로그인 카드 내부를 아이디 찾기 폼으로 전환 --%>
+                        <%-- 아이디 찾기 폼 전환 --%>
                         <a href="#" onclick="showAuthPanel('findId'); return false;">아이디 찾기</a>
                         <span>|</span>
-                        <%-- [추가 기능] 페이지 이동 없이 로그인 카드 내부를 비밀번호 찾기 폼으로 전환 --%>
+                        <%-- 비밀번호 찾기 폼 전환 --%>
                         <a href="#" onclick="showAuthPanel('findPw'); return false;">비밀번호 찾기</a>
                     </div>
                 </div>
@@ -127,7 +112,7 @@
         </div>
 
         <%-- =========================================================
-             [추가 폼] 아이디 찾기 영역
+             아이디 찾기 영역
              ---------------------------------------------------------
              흐름:
              1) 가입한 휴대폰 번호 입력
@@ -157,7 +142,7 @@
         </div>
 
         <%-- =========================================================
-             [추가 폼] 비밀번호 찾기 영역
+             비밀번호 찾기 영역
              ---------------------------------------------------------
              흐름:
              1) 아이디 + 가입한 휴대폰 번호 입력
@@ -189,7 +174,7 @@
                 </div>
             </div>
 
-            <div id="findPwStepReset" class="auth-reset-box" style="display:none;">
+            <div id="findPwStepReset" class="auth-reset-box is-hidden">
                 <div class="auth-form-group">
                     <label for="newPassword">새 비밀번호</label>
                     <input id="newPassword" type="password" placeholder="새 비밀번호를 입력하세요">
@@ -214,7 +199,7 @@
                     aria-describedby="loginStatusMessage"
                     hidden>
                     <div class="status-box">
-                    
+
                     <div id="loginStatusSpinner"
                             class="status-spinner"
                             aria-hidden="true"></div>
@@ -262,7 +247,7 @@
     }
 
     /* =========================================================
-       [추가 JS] 로그인/아이디 찾기/비밀번호 찾기 패널 전환
+       로그인/아이디 찾기/비밀번호 찾기 패널 전환
        ---------------------------------------------------------
        기존 로그인 페이지 안에서 URL 이동 없이 카드 내용만 바꿔 보여준다.
        type = 'login'  -> 로그인 폼
@@ -309,7 +294,7 @@
     }
 
     /* =========================================================
-       [추가 JS] 공통 AJAX POST 함수
+       공통 AJAX POST 함수
        ---------------------------------------------------------
        아이디/비밀번호 찾기 버튼들은 form submit이 아니라 fetch를 사용한다.
        서버에서는 Map<String,Object>를 JSON으로 반환하고,
@@ -332,7 +317,7 @@
         });
     }
 
-    // [추가 JS] 아이디 찾기 1단계: 휴대폰 번호로 인증번호 발급 요청
+    // 아이디 찾기 1단계: 휴대폰 인증번호 발급 요청
     function sendFindIdSms() {
         var phone = document.getElementById('findIdPhone').value.trim();
         if (!phone) {
@@ -349,7 +334,7 @@
             });
     }
 
-    // [추가 JS] 아이디 찾기 2단계: 인증번호 확인 후 아이디 출력
+    // 아이디 찾기 2단계: 인증번호 확인 후 아이디 출력
     function verifyFindIdSms() {
         var code = document.getElementById('findIdCode').value.trim();
         if (!code) {
@@ -366,7 +351,7 @@
             });
     }
 
-    // [추가 JS] 비밀번호 찾기 1단계: 아이디/휴대폰 확인 후 인증번호 발급 요청
+    // 비밀번호 찾기 1단계: 아이디와 휴대폰 확인 후 인증번호 발급 요청
     function sendFindPwSms() {
         var id = document.getElementById('findPwId').value.trim();
         var phone = document.getElementById('findPwPhone').value.trim();
@@ -384,7 +369,7 @@
             });
     }
 
-    // [추가 JS] 비밀번호 찾기 2단계: 인증번호 확인 후 새 비밀번호 입력 영역 표시
+    // 비밀번호 찾기 2단계: 인증번호 확인 후 새 비밀번호 입력 영역 표시
     function verifyFindPwSms() {
         var code = document.getElementById('findPwCode').value.trim();
         if (!code) {
@@ -405,7 +390,7 @@
             });
     }
 
-    // [추가 JS] 비밀번호 찾기 3단계: 새 비밀번호와 확인값을 서버로 보내 비밀번호 변경
+    // 비밀번호 찾기 3단계: 새 비밀번호 저장
     function resetPassword() {
         var newPassword = document.getElementById('newPassword').value.trim();
         var newPasswordConfirm = document.getElementById('newPasswordConfirm').value.trim();

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
       initialView: 'dayGridMonth',
       locale: 'ko',
       height: 'auto',
-      
+
       headerToolbar: false,
       fixedWeekCount: 1,
       dayMaxEvents: 2, // 날짜 칸당 최대 2개까지만 표시, 넘으면 "+N개" 링크로 숨김 (칸 높이 고정)
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         location.href = `/spendolive/expense/list.do?date=${info.dateStr}#expense-list`;
         },
-      
+
       eventContent: function(arg) {
         const amount = arg.event.extendedProps.amount;
         const category_name = arg.event.extendedProps.category_name;
@@ -60,8 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
     calendar.render()
 
 
-    loadTodayTodo();  
-  
+    loadTodayTodo();
+
 
   function changeMonth(direction) {
     if (direction === -1) calendar.prev();

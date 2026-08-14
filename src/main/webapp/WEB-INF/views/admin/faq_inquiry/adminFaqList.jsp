@@ -89,7 +89,7 @@
                     <label for="faqCreateQuestion">질문 (필수)</label>
                     <input type="text" id="faqCreateQuestion" name="question" class="form-input" placeholder="질문을 입력하세요" required>
                 </div>
-
+                <br>
                 <div class="form-field">
                     <label for="faqCreateAnswer">답변 (필수)</label>
                     <textarea id="faqCreateAnswer" name="answer" class="form-textarea" placeholder="답변 내용을 입력하세요" required></textarea>

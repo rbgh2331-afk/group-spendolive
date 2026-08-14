@@ -99,7 +99,7 @@ public class AdminOttServiceImpl implements AdminOttService {
         }
 
         /*
-         * 최종 기준금액을 입력하지 않았으면 자동 계산합니다.
+         * 최종 기준금액을 입력하지 않았으면 자동 계산
          * base_price + extra_member_fee * extra_member_count
          */
         if (dto.getDefault_price() <= 0) {

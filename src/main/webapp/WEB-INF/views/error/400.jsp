@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- 400 오류 안내 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
@@ -9,8 +11,8 @@
     <title>400 - 잘못된 요청</title>
 </head>
 <body class="auth-body">
-<header class="site-header" style="position: absolute; top: 1.5rem; left: 1.5rem;">
-    <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" style="width:62px; height:62px; border-radius:50%; object-fit:cover;">
+<header class="site-header error-site-header">
+    <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" class="error-site-logo">
 </header>
     <div class="error-container">
         <div class="error-code">400</div>

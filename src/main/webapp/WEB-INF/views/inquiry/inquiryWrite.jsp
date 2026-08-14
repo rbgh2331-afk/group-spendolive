@@ -71,13 +71,13 @@
             </div>
 
             <div class="field">
-                <label>파일 첨부 <span style="color:var(--muted)">선택 · 최대 5개 / 5MB</span></label>
+                <label>파일 첨부 <span class="field-note">선택 · 최대 5개 / 5MB</span></label>
                 <label class="upload-area" for="attachmentInput">
                     <div class="upload-icon">📎</div>
                     <p><strong>파일을 드래그하거나 클릭해서 업로드</strong><br>PNG, JPG, GIF, PDF · 파일당 최대 5MB</p>
                 </label>
                 <input type="file" id="attachmentInput" name="attachments" multiple
-                       accept=".png,.jpg,.jpeg,.gif,.pdf" style="display:none"
+                       accept=".png,.jpg,.jpeg,.gif,.pdf" class="is-hidden"
                        onchange="handleFileSelect(this)">
                 <div class="upload-filenames" id="uploadFileNames"></div>
             </div>
@@ -108,8 +108,8 @@
             </div>
 
             <div class="form-actions">
-                <a class="btn btn-danger-outline" style="flex:1;height:50px" href="${contextPath}/spendolive/inquiry/list.do">취소</a>
-                <button type="button" id="inquirySubmitBtn" class="btn btn-primary" style="flex:2;height:50px;font-size:15px;">문의 제출하기</button>
+                <a class="btn btn-danger-outline form-action-cancel" href="${contextPath}/spendolive/inquiry/list.do">취소</a>
+                <button type="button" id="inquirySubmitBtn" class="btn btn-primary form-action-submit">문의 제출하기</button>
             </div>
         </form>
     </div>

@@ -14,11 +14,11 @@ import com.example.spendolive.notification.service.NotificationService;
 /**
  * (캘린더) 지출 결제일 임박 알림.
  * 매일 정해진 시각에 고정/반복 지출(expense_tb.fixed_yn='Y' or repeat_yn='Y')을 훑어서
- * 다음 결제 예정일이 REMINDER_DAYS일 이내로 다가온 건에 대해 알림을 1건 생성한다.
+ * 다음 결제 예정일이 REMINDER_DAYS일 이내로 다가온 건에 대해 알림을 1건 생성
  * 같은 지출로 같은 날 중복 발송은 하지 않는다 (link_url + 오늘 날짜 기준으로 체크).
  *
  * Expense 패키지의 기존 조회 로직(ExpenseRepositoryImpl.selectExpenseList 등)을 건드리지 않기 위해
- * 이 스케줄러 안에서 필요한 조회만 별도 SQL로 직접 처리한다.
+ * 이 스케줄러 안에서 필요한 조회만 별도 SQL로 직접 처리
  */
 @Component
 public class ExpenseDueNotificationScheduler {

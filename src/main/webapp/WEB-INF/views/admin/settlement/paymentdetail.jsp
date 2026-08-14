@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%-- 관리자 결제 상세 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="admin-main" data-admin-page="settlement" data-admin-title="정산관리">
@@ -64,7 +65,7 @@
                                     <c:choose>
                                         <c:when test="${payment.payment_status eq 'CANCELED' or payment.payment_status eq 'REFUNDED'}"><span class="badge gray">취소 완료</span></c:when>
                                         <c:otherwise>
-                                            <button type="button" 
+                                            <button type="button"
                                                     class="mini-btn warning adminrefundSubmitButton"
                                                     data-payment-key="${payment.paymentKey}"
                                                     data-payment-id="${payment.payment_id}"
@@ -86,3 +87,7 @@
         </c:choose>
     </section>
 </div>
+
+<jsp:include page="/WEB-INF/views/payment/popup.jsp" />
+<script src="${contextPath}/resources/js/app.js"></script>
+<script src="${contextPath}/resources/js/payment.js"></script>

@@ -5,17 +5,17 @@ import java.util.List;
 
 public class ConsumerPriceComparisonDTO {
 
-    // [생필품 가격 비교] 선택한 상품과 실제 가격 조사일을 화면에 전달한다.
+    // 선택한 상품과 실제 가격 조사일을 화면에 전달
     private String goodId;
     private String goodName;
     private String inspectDay;
 
-    // [생필품 가격 비교] 판매점 가격을 기준으로 계산한 요약값이다.
+    // 판매점 가격을 기준으로 계산한 요약값이다
     private int lowestPrice;
     private int averagePrice;
     private int highestPrice;
 
-    // [생필품 가격 비교] 낮은 가격순으로 정렬한 판매점 목록이다.
+    // 낮은 가격순으로 정렬한 판매점 목록이다
     private List<StorePrice> stores = new ArrayList<>();
 
     public ConsumerPriceComparisonDTO() {}
@@ -47,20 +47,24 @@ public class ConsumerPriceComparisonDTO {
 
     public static class StorePrice {
 
-        // [생필품 가격 비교] 판매점별 가격과 할인 여부를 화면에 표시한다.
+        // 판매점별 가격과 할인 여부를 화면에 표시
         private String entpId;
         private String storeName;
         private String roadAddress;
+        private String xMapCoord;
+        private String yMapCoord;
         private int price;
         private String plusOneYn;
         private String discountYn;
 
         public StorePrice() {}
 
-        public StorePrice(String entpId, String storeName, String roadAddress, int price, String plusOneYn, String discountYn) {
+        public StorePrice(String entpId, String storeName, String roadAddress, String xMapCoord, String yMapCoord, int price, String plusOneYn, String discountYn) {
             this.entpId = entpId;
             this.storeName = storeName;
             this.roadAddress = roadAddress;
+            this.xMapCoord = xMapCoord;
+            this.yMapCoord = yMapCoord;
             this.price = price;
             this.plusOneYn = plusOneYn;
             this.discountYn = discountYn;
@@ -72,6 +76,10 @@ public class ConsumerPriceComparisonDTO {
         public void setStoreName(String storeName) { this.storeName = storeName; }
         public String getRoadAddress() { return roadAddress; }
         public void setRoadAddress(String roadAddress) { this.roadAddress = roadAddress; }
+        public String getXMapCoord() { return xMapCoord; }
+        public void setXMapCoord(String xMapCoord) { this.xMapCoord = xMapCoord; }
+        public String getYMapCoord() { return yMapCoord; }
+        public void setYMapCoord(String yMapCoord) { this.yMapCoord = yMapCoord; }
         public int getPrice() { return price; }
         public void setPrice(int price) { this.price = price; }
         public String getPlusOneYn() { return plusOneYn; }

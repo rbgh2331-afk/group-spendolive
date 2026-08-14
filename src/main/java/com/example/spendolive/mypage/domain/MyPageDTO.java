@@ -31,7 +31,7 @@ public class MyPageDTO {
        ========================================================= */
     private List<MemberAccountVO> accountList;
     private List<MemberCardVO> cardList;
-    
+
     private int warning_count;
     private int myReportCount;
     private List<MyPageReportDTO> myReportList;
@@ -39,12 +39,12 @@ public class MyPageDTO {
     private List<OttRoomDTO> hostedRecruitRoomList;
     private List<OttRoomDTO> joinedRecruitRoomList;
 
-    /* [회원탈퇴 개선] 운영 중인 방, 참여 중인 방, 처리 중인 환불 건수를 한 번에 전달한다. */
+    /* 운영 중인 방, 참여 중인 방, 처리 중인 환불 건수를 한 번에 전달한다. */
     private int ownedRoomCount;
     private int joinedRoomCount;
     private int pendingRefundCount;
 
-    /* [회원탈퇴 개선] 세 가지 제한 조건이 모두 없을 때만 자진탈퇴를 허용한다. */
+    /* 세 가지 제한 조건이 모두 없을 때만 자진탈퇴를 허용한다. */
     public boolean isWithdrawEligible() {
         return ownedRoomCount == 0 && joinedRoomCount == 0 && pendingRefundCount == 0;
     }

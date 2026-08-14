@@ -1,5 +1,7 @@
 package com.example.spendolive.notification.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import com.example.spendolive.notification.service.NotificationService;
 @Controller
 @RequestMapping("/spendolive/notification")
 public class NotificationPageController {
+    private static final Logger log = LoggerFactory.getLogger(NotificationPageController.class);
 
     private final NotificationService notificationService;
 
@@ -52,7 +55,7 @@ public class NotificationPageController {
         try {
             notification = notificationService.getNotificationDetail(notification_id, memberInfo.getId());
         } catch (Exception e) {
-            System.err.println("[NotificationPageController.detail] 조회 실패: " + e.getMessage());
+            log.error("{}", "[NotificationPageController.detail] 조회 실패: " + e.getMessage(), e);
         }
 
         if (notification == null) {
@@ -62,13 +65,13 @@ public class NotificationPageController {
             return mav;
         }
 
-        // 이 페이지에 직접 들어온 것 자체가 그 알림을 확인한 거라 읽음 처리.
+        // 이 페이지에 직접 들어온 것 자체가 그 알림을 확인한 거라 읽음 처리
         // (bellIcon.js의 readNotificationFromBell()이 이동 전에 이미 read.do를 한 번
         //  호출하긴 하지만, 여기서 또 한 번 처리해도 무해함 - 이미 읽음이면 그냥 갱신 없이 넘어감)
         try {
             notificationService.readNotification(notification_id, memberInfo.getId());
         } catch (Exception e) {
-            System.err.println("[NotificationPageController.detail] 읽음 처리 실패: " + e.getMessage());
+            log.error("{}", "[NotificationPageController.detail] 읽음 처리 실패: " + e.getMessage(), e);
         }
 
         ModelAndView mav = new ModelAndView("common/layout");

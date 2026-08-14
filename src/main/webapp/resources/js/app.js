@@ -1,8 +1,69 @@
 /* SpendOlive Complete Fixed JS */
 const contextPath = window.contextPath;
 let currentMonth = 6;
-let isEmailVerified = false; 
+let isEmailVerified = false;
 let isPhoneVerified = false;
+
+function ensureCommonAlertModal() {
+  let overlay = document.getElementById('soCommonAlertOverlay');
+  if (overlay) return overlay;
+
+  overlay = document.createElement('div');
+  overlay.id = 'soCommonAlertOverlay';
+  overlay.className = 'so-local-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.hidden = true;
+  overlay.innerHTML =
+      '<div class="so-local-box">'
+    +   '<div class="so-local-icon" aria-hidden="true">!</div>'
+    +   '<h3 class="so-local-title"></h3>'
+    +   '<div class="so-local-actions">'
+    +     '<button type="button" class="so-local-btn so-local-ok">확인</button>'
+    +   '</div>'
+    + '</div>';
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
+function commonAlert(message, options) {
+  const settings = options || {};
+  const overlay = ensureCommonAlertModal();
+  const title = overlay.querySelector('.so-local-title');
+  const okButton = overlay.querySelector('.so-local-ok');
+  overlay.dataset.state = settings.type === 'error' ? 'error' : 'success';
+  title.textContent = message || '';
+  overlay.hidden = false;
+
+  return new Promise(function (resolve) {
+    function close() {
+      overlay.hidden = true;
+      okButton.onclick = null;
+      overlay.onclick = null;
+      document.removeEventListener('keydown', onKey);
+      resolve(true);
+    }
+    function onKey(event) {
+      if (event.key === 'Enter' || event.key === 'Escape') close();
+    }
+    okButton.onclick = close;
+    overlay.onclick = function (event) { if (event.target === overlay) close(); };
+    document.addEventListener('keydown', onKey);
+    okButton.focus();
+  });
+}
+
+// 공통 로그인 필요 메뉴 처리: 비로그인 상태에서는 안내 후 로그인 화면으로 이동
+window.loginYn = function (log, isLoggedIn) {
+  if (isLoggedIn) return true;
+
+  const alertFunc = typeof window.soAlert === 'function' ? window.soAlert : commonAlert;
+  alertFunc('로그인이 필요한 기능입니다.\n로그인을 해주세요!', { type: 'error' })
+      .then(function () {
+        window.location.href = contextPath + '/member/loginForm.do?log=' + encodeURIComponent(log || '');
+      });
+  return false;
+};
 
 function openModal(id){const el=document.getElementById(id);if(el)el.classList.add("show")}
 function closeModal(id){const el=document.getElementById(id);if(el)el.classList.remove("show")}
@@ -24,10 +85,6 @@ function changeMonth(diff){
   const title=document.getElementById("calendarTitle");
   if(title) title.textContent=`2026년 ${currentMonth}월`;
 }
-
-function kakaoLogin(){alert("카카오톡 로그인 연동 예정입니다.")}
-function authLogin(){alert("로그인 처리 예정입니다.")}
-function authSignup(){alert("회원가입 처리 예정입니다.")}
 
 function setAuthMessage(id,message,type){
   const el=document.getElementById(id);
@@ -111,7 +168,7 @@ function verifySms() {
 function joinCheck() {
 if(!isEmailVerified) {
     alert("이메일 인증을 완료해야 회원가입이 가능합니다.");
-    return false;    
+    return false;
 }
 if (!isPhoneVerified) {
   alert('전화번호 인증을 완료해 주세요.');
@@ -130,7 +187,7 @@ return true;
 function joinCheckKakao() {
   if(!isEmailVerified) {
       alert("이메일 인증을 완료해야 회원가입이 가능합니다.");
-      return false;    
+      return false;
   }
   if (!isPhoneVerified) {
     alert('전화번호 인증을 완료해 주세요.');
@@ -138,7 +195,7 @@ function joinCheckKakao() {
   }
   return true;
 }
-// 3. 최종 회원가입 서브밋 전 벨리데이션 체크 (joinCheck 함수가 있다면 추가)
+// 최종 회원가입 제출 전 유효성 검사
 
 /* =========================================================
  OTT 고정 최고 멤버십 자동 계산
@@ -193,7 +250,7 @@ function updateFixedPlanForm(form) {
   const displayShareAmount = member_limit > 0 ? Math.floor(displayTotalPrice / member_limit) : 0;
   const displayFeeAmount = Math.floor(displayShareAmount * 0.03);
   const displayPersonAmount = displayShareAmount + displayFeeAmount;
-  
+
   const extraText = isFriendRoom
     ? '가족/지인 공유방은 추가 IP 비용을 제외합니다.'
     : (extraFee > 0 && extraCount > 0
@@ -290,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-  
+
   // ==========================================
   // 2. 글자 크기 및 폰트 설정 기능
   // ==========================================
@@ -306,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
       max: 30
   };
 
-  // [요청하신 Jua 폰트 추가]
   const FONT_MAP = {
       'system': "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       'jua': '"Jua", sans-serif', // <-- Jua 폰트 반영
@@ -330,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // --- B. 폰트 종류 적용 ---
   function applyFontFamily(fontKey) {
     const selectedFont = FONT_MAP[fontKey] || FONT_MAP['system'];
-    
+
     // <html> 태그와 <body> 태그 모두에 폰트를 인라인으로 강제 적용
     htmlTag.style.setProperty('font-family', selectedFont, 'important');
     if (document.body) {
@@ -462,7 +518,8 @@ window.executeRequest = async function(options,prefix) {
       confirmMessage,   // confirm 창 메시지
       requestUrl,       // 요청 API 경로
       bodyData,         // URLSearchParams 객체
-      checkStatusFunc,  // 예외 발생 시 실행할 폴링 함수 () => checkPaymentStatus(id)
+      checkStatusFunc,  // 예외 발생 시 실행할 상태 확인 함수 () => checkPaymentStatus(id)
+      fallbackErrorMessage = '처리 결과를 확인하지 못했습니다. 잠시 후 다시 시도해주세요.',
       modalTitle = '결제를 처리하고 있습니다.',
       modalDesc = '창을 닫거나 새로고침하지 말아주세요.'
   } = options;
@@ -508,25 +565,33 @@ window.executeRequest = async function(options,prefix) {
       showFailure(button, result, prefix);
 
   } catch (error) {
-      // Network or Timeout Exception -> Fallback Check
-      showStatusModal(
-        prefix,
-          'processing',
-          '송금 결과를 확인하고 있습니다.',
-          '통신이 잠시 끊겨 실제 결제 상태를 다시 확인합니다.'
-      );
+      // 네트워크 오류나 타임아웃이 발생했을 때 상태 확인 함수가 있으면 실제 처리 결과를 다시 확인
+      if (typeof checkStatusFunc === 'function') {
+          showStatusModal(
+              prefix,
+              'processing',
+              '처리 결과를 확인하고 있습니다.',
+              '통신이 잠시 끊겨 실제 처리 상태를 다시 확인합니다.'
+          );
 
-      const statusResult = await checkStatusFunc();
+          try {
+              const statusResult = await checkStatusFunc();
 
-      if (statusResult && statusResult.success) {
-          isProcessing = false;
-          moveAfterSuccess(statusResult,prefix);
+              if (statusResult && statusResult.success) {
+                  isProcessing = false;
+                  moveAfterSuccess(statusResult, prefix);
+                  return;
+              }
+
+              showFailure(button, statusResult || { message: fallbackErrorMessage }, prefix);
+          } catch (statusError) {
+              showFailure(button, { message: fallbackErrorMessage }, prefix);
+          }
           return;
       }
 
-      showFailure(button, statusResult || {
-          message: '송금 결과를 확인하지 못했습니다. 송금 내역을 확인한 뒤 다시 시도해주세요.'
-      });
+      // 상태 확인 API가 없는 일반 요청은 추가 함수를 호출하지 않고 요청별 안내 문구를 표시
+      showFailure(button, { message: fallbackErrorMessage }, prefix);
 
   } finally {
       window.clearTimeout(timeoutId);
@@ -565,7 +630,7 @@ function showFailure(targetButton, result, prefix = 'payment') {
       targetButton.disabled = false;
   }
 
-  if (result && result.code === 'LOGIN_REQUIRED') {
+  if (result && (result.code === 'LOGIN_REQUIRED' || result.code === 'SESSION_EXPIRED')) {
       showStatusModal(prefix, 'error', '로그인이 필요합니다.', result.message || '다시 로그인해주세요.', {
           actionText: '로그인 화면으로',
           onAction: () => {
@@ -592,11 +657,7 @@ function showFailure(targetButton, result, prefix = 'payment') {
     showStatusModal(prefix, 'error', '이미 신고가 완료된 건 입니다.', result.message || '이미 완료된 건 입니다.', {
         actionText: '메인 화면으로',
         onAction: () => {
-            if (typeof window.requestBillingAuth === 'function') {
-                window.requestBillingAuth();
-            } else {
-                window.location.href = contextPath + '/spendolive/main.do';
-            }
+            window.location.href = contextPath + '/spendolive/main.do';
         }
     });
     return;

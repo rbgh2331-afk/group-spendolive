@@ -1,92 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
+<%-- 텍스트 화면 --%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SpendOlive - 이용약관 및 개인정보 처리방침</title>
-<style>
-  body {
-    font-family: 'Pretendard', -apple-system, sans-serif;
-    color: #333;
-    line-height: 1.6;
-    background-color: #f9fafb;
-    margin: 0;
-    padding: 40px 20px;
-  }
-  .policy-container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  }
-  .tabs {
-    display: flex;
-    border-bottom: 2px solid #e5e7eb;
-    margin-bottom: 30px;
-  }
-  .tab {
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #6b7280;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    transition: all 0.2s;
-  }
-  .tab:hover {
-    color: #111827;
-  }
-  .tab.active {
-    color: #111827;
-    border-bottom-color: #111827;
-  }
-  .policy-section {
-    display: none; /* 기본적으로 숨김, JS로 제어 */
-  }
-  .policy-section.active {
-    display: block; /* 활성화된 탭만 보임 */
-  }
-  .policy-section h3 {
-    font-size: 18px;
-    margin-top: 35px;
-    margin-bottom: 10px;
-    color: #111827;
-  }
-  .policy-section p {
-    font-size: 15px;
-    color: #4b5563;
-    margin-bottom: 10px;
-  }
-  .policy-section ul {
-    font-size: 15px;
-    color: #4b5563;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    padding-left: 24px;
-  }
-  .policy-section li {
-    margin-bottom: 4px;
-  }
-  .date-info {
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid #e5e7eb;
-    font-size: 14px;
-    color: #9ca3af;
-  }
-  .intro-text {
-    font-size: 15px;
-    color: #4b5563;
-    background-color: #f3f4f6;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-</style>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/styles/20-legal.css">
 </head>
 <body>
 
@@ -101,7 +21,7 @@
   <div id="terms" class="policy-section active">
     <h3>제1조 (목적)</h3>
     <p>본 약관은 SpendOlive(이하 '서비스')가 제공하는 지출 관리 및 OTT 구독 관리 서비스의 이용과 관련하여 서비스와 이용자 간의 권리, 의무 및 책임 사항, 기타 필요한 사항을 규정함을 목적으로 합니다.</p>
-    
+
     <h3>제2조 (용어의 정의)</h3>
     <p>본 약관에서 사용하는 용어의 정의는 다음과 같습니다.</p>
     <ul>
@@ -113,13 +33,13 @@
         <li>"구독방장"이란 OTT 공동 구독 그룹을 개설하고 실제 요금을 납부하는 대표 회원을 의미합니다.</li>
         <li>"구독참여자"란 구독방장이 개설한 공동 구독 그룹에 참여하여 서비스를 이용하는 회원을 의미합니다.</li>
     </ul>
-         
+
     <h3>제3조 (약관의 효력 및 변경)</h3>
     <p>① 본 약관은 서비스를 이용하고자 하는 모든 이용자에게 적용됩니다.<br>
        ② 서비스는 필요한 경우 관련 법령을 위반하지 않는 범위 내에서 본 약관을 변경할 수 있습니다.<br>
        ③ 약관이 변경될 경우 서비스는 변경 사유 및 변경 내용을 시행일로부터 최소 7일 전에 서비스 공지사항을 통해 공지합니다. 다만, 이용자에게 불리한 변경의 경우 30일 전에 공지합니다.<br>
        ④ 이용자가 변경된 약관에 동의하지 않을 경우 서비스 이용을 중단하고 탈퇴할 수 있습니다. 변경 약관 시행일 이후에도 계속 서비스를 이용하면 변경 약관에 동의한 것으로 간주합니다.</p>
-         
+
     <h3>제4조 (서비스의 제공 및 변경)</h3>
     <p>① 서비스는 다음 각 호의 서비스를 제공합니다.</p>
     <ul>
@@ -132,7 +52,7 @@
     </ul>
     <p>② 서비스는 서비스 품질 개선, 기술적 필요 또는 운영상의 사유로 제공하는 서비스의 내용을 변경할 수 있으며, 이 경우 변경 내용과 적용 일자를 공지합니다.<br>
        ③ 서비스는 무료로 제공되는 서비스의 일부 또는 전부를 변경하거나 유료로 전환할 수 있으며, 이 경우 최소 30일 전에 사전 공지합니다.</p>
-             
+
     <h3>제5조 (서비스 이용계약의 성립)</h3>
     <p>① 이용계약은 이용자가 약관에 동의한 후 가입 신청을 하고, 서비스가 이를 승낙함으로써 성립합니다.<br>
        ② 서비스는 다음 각 호에 해당하는 경우 가입 신청을 거절하거나 추후 이용계약을 해지할 수 있습니다.</p>
@@ -142,12 +62,12 @@
         <li>이전에 서비스 이용약관 위반으로 이용이 제한된 이력이 있는 경우</li>
         <li>기타 서비스의 기술상 또는 운영상 지장이 있다고 판단되는 경우</li>
     </ul>
-             
+
     <h3>제6조 (회원의 아이디 및 비밀번호 관리)</h3>
     <p>① 회원은 자신의 아이디 및 비밀번호를 타인에게 공개하거나 양도, 대여할 수 없으며, 이에 대한 관리 책임은 전적으로 회원 본인에게 있습니다.<br>
        ② 회원은 자신의 아이디 및 비밀번호가 도용되거나 제3자가 사용하고 있음을 인지한 경우 즉시 서비스에 통보하고 서비스의 안내에 따라야 합니다.<br>
        ③ 서비스는 회원이 본 조 제2항에 따라 통보하지 않거나, 서비스의 안내에 따르지 않아 발생한 불이익에 대하여 책임을 지지 않습니다.</p>
-             
+
     <h3>제7조 (이용자의 의무)</h3>
     <p>이용자는 다음 각 호의 행위를 하여서는 안 됩니다.</p>
     <ul>
@@ -158,7 +78,7 @@
         <li>서비스를 이용하여 법령 또는 공서양속에 반하는 행위</li>
         <li>기타 서비스의 정상적인 운영을 방해하는 일체의 행위</li>
     </ul>
-             
+
     <h3>제8조 (OTT 공동 구독 수수료)</h3>
     <p>① 서비스는 OTT 공동 구독 기능을 통해 구독참여자가 구독방장에게 구독료를 정산할 때 중개 서비스를 제공합니다.<br>
        ② 서비스는 구독참여자가 납부하는 구독 분담금에 대해 아래와 같이 서비스 이용 수수료를 부과합니다.<br>

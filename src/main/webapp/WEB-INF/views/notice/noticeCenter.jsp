@@ -58,12 +58,12 @@
                 <div class="table-wrap">
                     <table>
                         <colgroup>
-                                <col style="width:55px">     <!-- 번호 -->
-                                <col style="width:45px">     <!-- 찜 -->
-                                <col style="width:110px">     <!-- 구분 -->
+                                <col class="notice-col-no">     <!-- 번호 -->
+                                <col class="notice-col-star">     <!-- 찜 -->
+                                <col class="notice-col-category">     <!-- 구분 -->
                                 <col>                        <!-- 제목(남는 공간 전부) -->
-                                <col style="width:90px">    <!-- 작성자 -->
-                                <col style="width:120px">    <!-- 등록일 -->
+                                <col class="notice-col-author">    <!-- 작성자 -->
+                                <col class="notice-col-date">    <!-- 등록일 -->
                             </colgroup>
 
 
@@ -79,8 +79,8 @@
                         </thead>
 
                         <tbody id="noticeTableBody">
-                            
-                                  
+
+
                         </tbody>
                     </table>
                     </div>

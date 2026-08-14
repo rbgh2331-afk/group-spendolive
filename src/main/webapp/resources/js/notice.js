@@ -16,7 +16,7 @@ let currentNoticeFilter = "all";
    ───────────────────────────────────────────────────────────── */
 function soEnsureModal() {
         // CSS는 이제 resources/css/styles/19-so-modal.css에 정적 파일로 있고
-        // styles.css가 전역으로 로드하므로, 여기선 DOM만 만들면 됨(예전엔 <style> 태그를 직접 주입했음)
+        // 전역 styles.css를 사용하므로 필요한 DOM 요소만 생성
         var el = document.getElementById("soLocalModalOverlay");
         if (el == null) {
             el = document.createElement("div");
@@ -93,7 +93,7 @@ function soEnsureModal() {
         }
         return true;
       }
-    
+
       function setBoardTab(mode, initialFilter) {
 
         if (mode === "alert" && !isLoggedIn) {
@@ -102,7 +102,7 @@ function soEnsureModal() {
             return;
         }
 
-    
+
     const eyebrow = document.getElementById("listEyebrow");
     const title = document.getElementById("listTitle");
     const header = document.getElementById("writerTypeHeader");
@@ -129,7 +129,7 @@ function soEnsureModal() {
                 안 읽은 알림
             </button>
         `;
-        
+
 
         loadNotificationList("all");
 
@@ -158,7 +158,7 @@ function soEnsureModal() {
         `;
 
         // 상세 페이지에서 "목록으로"를 눌러 filter=unread/important를 달고 돌아온 경우,
-        // 그 필터 버튼을 활성화하고 그 필터 그대로 목록을 불러옴. 없으면 기본값(전체).
+        // 그 필터 버튼을 활성화하고 그 필터 그대로 목록을 불러옴. 없으면 기본값(전체)
         const filterButtons = boardFilter.querySelectorAll(".notification-filter-btn");
         if (initialFilter === "unread") {
             filterButtons[1].classList.add("active");
@@ -449,12 +449,12 @@ function moveNotifPage(page) {
 
                         const pinnedBadge =
                             `<span class="chip notice-important">중요</span>`;
-                    
+
                         const titleClass =
                             notice.read_yn === "Y" || (!isLoggedIn && localStorage.getItem("notice_read_" + notice.notice_id) === "Y")
                                 ? "notice-read-title"
                                 : "notice-unread-title";
-                    
+
                         html += `
                             <tr>
                                 <td>📌</td>
@@ -470,7 +470,7 @@ function moveNotifPage(page) {
                                     }
                                 </td>
                                 <td>${pinnedBadge}</td>
-                    
+
                                 <td>
                                     <a class="notice-title-link ${titleClass}"
                                        href="/spendolive/notice/detail.do?notice_id=${notice.notice_id}&filter=${currentNoticeFilter}"
@@ -478,7 +478,7 @@ function moveNotifPage(page) {
                                         ${notice.title}
                                     </a>
                                 </td>
-                    
+
                                 <td>${notice.admin_id}</td>
                                 <td>${notice.created_at}</td>
                             </tr>
@@ -518,8 +518,8 @@ function readNotification(event, notification_id) {
             // 헤더 배지 갱신
             if (typeof loadNotificationBadge === "function") loadNotificationBadge();
 
-            // showNotificationModal은 notification_id(숫자)를 받아 내부에서 데이터를 찾음.
-            // (예전엔 객체를 넘겨서 find가 못 찾아 모달이 안 떴음 → id로 넘기도록 수정)
+            // showNotificationModal은 notification_id(숫자)를 받아 내부에서 데이터를 찾음
+            // 알림 ID를 기준으로 대상 알림을 찾아 상세 모달 표시
             showNotificationModal(notification_id);
 
         } else if (data.result === "LOGIN_REQUIRED") {
@@ -532,13 +532,13 @@ function readNotification(event, notification_id) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    // 이 페이지에 공지/알림 탭 UI 자체가 없으면(=noticeCenter.jsp가 아니면) 아무것도 안 함.
+    // 이 페이지에 공지/알림 탭 UI 자체가 없으면(=noticeCenter.jsp가 아니면) 아무것도 안 함
     // notice.js를 공지 상세 페이지(noticeDetail.jsp)에서도 찜하기 공용 함수 때문에
     // 같이 불러오게 되면서, 탭 관련 요소가 없는 페이지에서 setBoardTab이 에러 없이
-    // 조용히 무시되도록 가드를 추가함.
+    // 대상 알림이 없으면 별도 처리 없이 종료
     if (document.getElementById("noticeTabBtn")) {
         const params = new URLSearchParams(location.search);
-        // ?tab=alert 이면 알림 탭으로 시작 (헤더 종모양의 '전체보기'가 이 링크로 연결됨).
+        // ?tab=alert 이면 알림 탭으로 시작 (헤더 종모양의 '전체보기'가 이 링크로 연결됨)
         // 그 외에는 기존대로 공지 탭. (공지 상세에서 filter=unread/important 달고 돌아온 경우 반영)
         if (params.get("tab") === "alert") {
             setBoardTab("alert");
@@ -703,7 +703,7 @@ function toggleNoticeStar(event, notice_id, button) {
         if (data.result === "OK") {
             var nowStar = button.textContent.trim() === "★";
             button.textContent = nowStar ? "☆" : "★";
-            // 페이지 이동/필터로 재렌더될 때 별이 되돌아가지 않도록 데이터도 같이 갱신.
+            // 페이지 이동/필터로 재렌더될 때 별이 되돌아가지 않도록 데이터도 같이 갱신
             // (star_yn은 서버 정렬 기준이라, 다음 목록 로드 시 찜한 공지가 상단에 고정됨)
             var item = currentNoticeData.find(n => n.notice_id === notice_id);
             if (item) item.star_yn = nowStar ? "N" : "Y";

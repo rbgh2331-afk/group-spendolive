@@ -1,4 +1,4 @@
-package com.example.spendolive.report.domain; 
+package com.example.spendolive.report.domain;
 
 import lombok.Data;
 import java.time.LocalDateTime;

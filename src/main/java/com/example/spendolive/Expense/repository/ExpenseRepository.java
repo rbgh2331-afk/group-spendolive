@@ -1,9 +1,9 @@
-package com.example.spendolive.Expense.repository;
+package com.example.spendolive.expense.repository;
 
 import java.util.List;
 
-import com.example.spendolive.Expense.domain.ExpenseCategoryDTO;
-import com.example.spendolive.Expense.domain.ExpenseDTO;
+import com.example.spendolive.expense.domain.ExpenseCategoryDTO;
+import com.example.spendolive.expense.domain.ExpenseDTO;
 
 public interface ExpenseRepository {
 

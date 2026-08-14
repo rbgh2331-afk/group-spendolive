@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class EscrowPayoutVO {
- 
+
     private int escrow_payout_id;    // PK
     private int settlement_id;      // 정산 마스터 외래키
     private int room_id;            // 방 번호 외래키
@@ -17,4 +17,3 @@ public class EscrowPayoutVO {
     private LocalDate payout_due_date; // 방장 정산 예정일 (이용 기간 끝나고 몇 일 뒤) YYYY/mm/DD
     private LocalDateTime payout_at;  // 방장 계좌로 입금이체(or 포인트) 쏴준 시점 YYYY/mm/DD HH:MM
 }
-//

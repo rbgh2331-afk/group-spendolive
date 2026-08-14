@@ -27,5 +27,5 @@ public class SettlementPaymentVO {
     private LocalDateTime expired_at;    // 안 내고 버티다 추방된 시점  YYYY/mm/DD HH:MM
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime cancelled_at;  // 환불/취소 완료 시점  YYYY/mm/DD HH:MM
-    private String memo;                // 환불 사유 등 비고란 
+    private String memo;                // 환불 사유 등 비고란
 }

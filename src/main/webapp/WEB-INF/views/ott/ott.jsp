@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%-- OTT 사용자 메인 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <section class="page-hero">

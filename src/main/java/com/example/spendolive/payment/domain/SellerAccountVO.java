@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder             // 빌더 패턴 지원 (토스 API나 서비스단에서 객체 생성할 때 개편함)
 public class SellerAccountVO {
 
-
     private Long seller_idx;         // SELLER_IDX (NUMBER -> 자바에서는 Long이 정석!)
     private String member_id;        // MEMBER_ID (VARCHAR2)
     private String bank_name;        // BANK_NAME (VARCHAR2)

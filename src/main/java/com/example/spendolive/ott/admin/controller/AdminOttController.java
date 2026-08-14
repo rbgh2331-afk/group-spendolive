@@ -31,7 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  *
  * 주의:
  * - SQL은 Controller에 작성하지 않습니다.
- * - DB 처리는 Repository에서 담당합니다.
+ * - DB 처리는 Repository에서 담당
  */
 @Controller
 @RequestMapping({"/admin/ott", "/spendolive/admin/ott"})

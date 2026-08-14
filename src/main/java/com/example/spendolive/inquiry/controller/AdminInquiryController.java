@@ -1,5 +1,7 @@
 package com.example.spendolive.inquiry.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ import com.example.spendolive.member.domain.MemberVO;
 @Controller
 @RequestMapping("/admin/inquiry")
 public class AdminInquiryController {
+    private static final Logger log = LoggerFactory.getLogger(AdminInquiryController.class);
 
     private final InquiryService inquiryService;
 
@@ -39,8 +42,7 @@ public class AdminInquiryController {
         this.inquiryService = inquiryService;
     }
 
-
-    // 세션에 저장된 memberInfo가 있고, role이 "ADMIN"인지 확인.
+    // 세션에 저장된 memberInfo가 있고, role이 "ADMIN"인지 확인
     // 아래 모든 요청 처리 메서드가 맨 앞에서 이걸로 관리자인지부터 검사함
     private boolean isAdmin(HttpSession session) {
         MemberVO m = (MemberVO) session.getAttribute("memberInfo");
@@ -60,7 +62,7 @@ public class AdminInquiryController {
 
     /* ─── 전체 문의 목록 ──────────────────────────────────── */
     // GET /admin/inquiry/list.do?page=&status=
-    // 페이지네이션 + 상태 필터(전체/대기/완료/검토중)를 같이 처리.
+    // 페이지네이션 + 상태 필터(전체/대기/완료/검토중)를 같이 처리
     // startNumber 계산이 핵심: 목록이 최신순(내림차순)으로 나오는데 번호는
     // "오래된 문의부터 1번"으로 매기고 싶어서, 전체 개수에서 거꾸로 세어 내려가는 방식으로 구함
     // (예: 전체 20건, 1페이지(최신 10건)면 맨 위 줄이 20번, 아래로 내려갈수록 감소)
@@ -90,7 +92,7 @@ public class AdminInquiryController {
             // 목록은 최신순(내림차순)이라, 화면 맨 위 줄이 startNumber, 그 아래로 1씩 감소하며 매김 (오래된 문의=1)
             mav.addObject("startNumber", totalCount - (currentPage - 1) * pageSize);
         } catch (Exception e) {
-            System.err.println("[AdminInquiryController.list] 목록 로드 실패: " + e.getMessage());
+            log.error("{}", "[AdminInquiryController.list] 목록 로드 실패: " + e.getMessage(), e);
             mav.addObject("inquiryList", List.of());
             mav.addObject("currentPage", 1);
             mav.addObject("totalPages", 1);
@@ -117,7 +119,7 @@ public class AdminInquiryController {
         try {
             inquiry = inquiryService.getInquiryDetail(inquiryNo);
         } catch (Exception e) {
-            System.err.println("[AdminInquiryController.detail] 조회 실패: " + e.getMessage());
+            log.error("{}", "[AdminInquiryController.detail] 조회 실패: " + e.getMessage(), e);
         }
 
         if (inquiry == null) {
@@ -164,7 +166,7 @@ public class AdminInquiryController {
             inquiryService.replyToInquiry(inquiry_id, reply_content.strip(), status);
             return ResponseEntity.ok(Map.of("result", "OK", "message", "답변이 등록되었습니다."));
         } catch (DataAccessException e) {
-            System.err.println("[AdminInquiryController.ajaxReply] 답변 등록 실패: " + e.getMessage());
+            log.error("{}", "[AdminInquiryController.ajaxReply] 답변 등록 실패: " + e.getMessage(), e);
             return ResponseEntity.internalServerError()
                     .body(Map.of("result", "ERROR", "message", "답변 등록 중 오류가 발생했습니다."));
         }

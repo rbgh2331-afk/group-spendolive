@@ -60,10 +60,17 @@ document.addEventListener("visibilitychange", function () {
      공지/캘린더 페이지에만 로드됨), 읽음처리+이동 로직은 notice.js에 기대지 않고
      여기서 독립적으로 처리함.
    ========================================================= */
-function toggleNotifDropdown(event) {
+   function toggleNotifDropdown(event) {
     event.stopPropagation();
+
     const dropdown = document.getElementById("notifDropdown");
     if (!dropdown) return;
+
+    // 날씨 드롭다운 닫기
+    const weatherDropdown = document.getElementById("weatherDropdown");
+    if (weatherDropdown) {
+        weatherDropdown.classList.remove("show");
+    }
 
     const willShow = !dropdown.classList.contains("show");
     dropdown.classList.toggle("show", willShow);
@@ -81,6 +88,15 @@ document.addEventListener("click", function (e) {
     if (dropdown.contains(e.target) || (toggleBtn && toggleBtn.contains(e.target))) return;
     dropdown.classList.remove("show");
 });
+
+function escapeNotificationHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
 
 function loadNotifDropdownList() {
     const list = document.getElementById("notifDropdownList");
@@ -106,10 +122,12 @@ function loadNotifDropdownList() {
             }
             list.innerHTML = data.map(n => `
                 <a href="javascript:void(0)" class="notif-dropdown-item unread"
-                   onclick="readNotificationFromBell(${n.notification_id}, '${(n.link_url || '').replace(/'/g, "\\'")}')">
-                    <strong>${n.title}</strong>
-                    <span>${n.message}</span>
-                    <small>${n.created_at}</small>
+                   data-notification-id="${Number(n.notification_id)}"
+                   data-link-url="${escapeNotificationHtml(n.link_url || "")}"
+                   onclick="readNotificationFromBell(Number(this.dataset.notificationId), this.dataset.linkUrl)">
+                    <strong>${escapeNotificationHtml(n.title)}</strong>
+                    <span>${escapeNotificationHtml(n.message)}</span>
+                    <small>${escapeNotificationHtml(n.created_at)}</small>
                 </a>
             `).join("");
         })

@@ -156,7 +156,7 @@ CREATE TABLE member_tb (
     CONSTRAINT ck_member_verify_type CHECK (verify_type IN ('EMAIL', 'PHONE')),
     CONSTRAINT ck_member_role CHECK (role IN ('USER', 'HOST', 'ADMIN')),
     CONSTRAINT ck_member_status CHECK (status IN ('ACTIVE', 'LEAVE', 'BLOCK', 'PERM_BLOCK')),
-    CONSTRAINT ck_member_warning_count CHECK (warning_count BETWEEN 0 AND 3)
+    CONSTRAINT ck_member_warning_count CHECK (warning_count >= 0)
 );
 
 CREATE SEQUENCE seq_member START WITH 1 INCREMENT BY 1 NOCACHE;
@@ -631,8 +631,7 @@ CREATE TABLE settlement_refund_tb (
     refund_id       NUMBER NOT NULL,
     payment_id      NUMBER NOT NULL,
     settlement_id   NUMBER NOT NULL,
-    room_id         NUMBER NOT NULL,
-    id              VARCHAR2(20) NOT NULL,
+    member_login_id VARCHAR2(20) NOT NULL,
     refund_amount   NUMBER NOT NULL,
     refund_reason   VARCHAR2(30) DEFAULT 'ROOM_CLOSE' NOT NULL,
     refund_status   VARCHAR2(30) DEFAULT 'REQUESTED' NOT NULL,
@@ -643,8 +642,7 @@ CREATE TABLE settlement_refund_tb (
     CONSTRAINT pk_settlement_refund PRIMARY KEY (refund_id),
     CONSTRAINT fk_refund_payment FOREIGN KEY (payment_id) REFERENCES settlement_payment_tb(payment_id),
     CONSTRAINT fk_refund_settlement FOREIGN KEY (settlement_id) REFERENCES settlement_tb(settlement_id),
-    CONSTRAINT fk_refund_room FOREIGN KEY (room_id) REFERENCES ott_room_tb(room_id),
-    CONSTRAINT fk_refund_member FOREIGN KEY (id) REFERENCES member_tb(id),
+    CONSTRAINT fk_refund_member FOREIGN KEY (member_login_id) REFERENCES member_tb(id),
     CONSTRAINT uk_refund_payment UNIQUE (payment_id),
     CONSTRAINT ck_refund_amount CHECK (refund_amount >= 0),
     CONSTRAINT ck_refund_reason CHECK (refund_reason IN ('ROOM_CLOSE', 'PAYMENT_CANCEL', 'ADMIN_CANCEL', 'ETC')),
@@ -663,9 +661,7 @@ END;
 /
 
 CREATE INDEX idx_refund_payment ON settlement_refund_tb(payment_id);
-CREATE INDEX idx_refund_member ON settlement_refund_tb(id, refund_status);
-CREATE INDEX idx_refund_room ON settlement_refund_tb(room_id, refund_status);
-
+CREATE INDEX idx_refund_member ON settlement_refund_tb(member_login_id, refund_status);
 /* =========================================================
    13. [팀 원본 사용] 홈페이지 보관금 테이블
    ========================================================= */

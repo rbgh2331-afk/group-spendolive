@@ -1,5 +1,7 @@
 package com.example.spendolive.inquiry.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +27,7 @@ import com.example.spendolive.inquiry.domain.InquiryFileVO;
  */
 @Service
 public class FileStorageService {
+    private static final Logger log = LoggerFactory.getLogger(FileStorageService.class);
 
     private static final List<String> ALLOWED_EXT = List.of("png", "jpg", "jpeg", "gif", "pdf");
     private static final long MAX_FILE_SIZE = 5L * 1024 * 1024; // 5MB, inquiryWrite.jsp 안내 문구와 동일
@@ -37,8 +40,8 @@ public class FileStorageService {
     }
 
     /**
-     * 첨부파일들을 디스크에 저장하고, DB insert에 쓸 InquiryFileVO 목록을 만들어 반환한다.
-     * DB insert 자체는 호출부(InquiryService)에서 트랜잭션 안에서 처리한다.
+     * 첨부파일들을 디스크에 저장하고, DB insert에 쓸 InquiryFileVO 목록을 만들어 반환
+     * DB insert 자체는 호출부(InquiryService)에서 트랜잭션 안에서 처리
      *
      * @param inquiry_id  이미 생성된 문의 번호 (inquiry_tb PK)
      * @param attachments 폼에서 넘어온 첨부파일 배열 (null/빈 파일 섞여 있어도 됨)
@@ -111,11 +114,11 @@ public class FileStorageService {
                      try {
                          Files.deleteIfExists(p);
                      } catch (IOException e) {
-                         System.err.println("[FileStorageService.deleteInquiryFiles] 파일 삭제 실패: " + p + " - " + e.getMessage());
+                         log.error("{}", "[FileStorageService.deleteInquiryFiles] 파일 삭제 실패: " + p + " - " + e.getMessage(), e);
                      }
                  });
         } catch (IOException e) {
-            System.err.println("[FileStorageService.deleteInquiryFiles] 디렉토리 정리 실패: inquiry_id=" + inquiry_id + " - " + e.getMessage());
+            log.error("{}", "[FileStorageService.deleteInquiryFiles] 디렉토리 정리 실패: inquiry_id=" + inquiry_id + " - " + e.getMessage(), e);
         }
     }
 

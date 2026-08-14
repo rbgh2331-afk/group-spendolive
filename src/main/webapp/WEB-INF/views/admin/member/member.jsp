@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- 관리자 회원 관리 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="admin-main" data-admin-page="member" data-admin-title="회원관리">
@@ -75,7 +76,7 @@
                                 </td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${member.status eq 'ACTIVE'}"><span class="badge green">ACTIVE</span><td><button type="button" 
+                                        <c:when test="${member.status eq 'ACTIVE'}"><span class="badge green">ACTIVE</span><td><button type="button"
                                                     class="mini-btn warning adminmemberSubmitButton"
                                                     data-id="${member.id}">
                                                 탈퇴
@@ -95,3 +96,6 @@
         </c:choose>
     </section>
 </div>
+
+<jsp:include page="/WEB-INF/views/member/popup.jsp" />
+<script src="${contextPath}/resources/js/signup.js"></script>

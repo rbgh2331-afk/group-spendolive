@@ -1,6 +1,6 @@
-/* [AJAX 변경 주석]
- * 회원정보·계좌·카드 AJAX 폼과 기존 거래내역 요청을 공통 로딩 시스템에 연결한다.
- * 기존 Controller/Service URL과 파라미터는 특별한 문제가 없는 한 그대로 유지한다.
+/* AJAX 처리
+ * 회원정보·계좌·카드 AJAX 폼과 기존 거래내역 요청을 공통 로딩 시스템에 연결
+ * 기존 Controller/Service URL과 파라미터는 특별한 문제가 없는 한 그대로 유지
  */
 /* JSP에서 전달한 컨텍스트 경로를 페이지 data 속성에서 읽는다. */
 function getMyPageContextPath() {
@@ -8,7 +8,7 @@ function getMyPageContextPath() {
     return page ? (page.dataset.contextPath || '') : '';
 }
 
-// 거래내역은 전체 데이터를 유지한 채 화면 출력만 10건씩 나눈다.
+// 거래내역은 전체 데이터를 유지한 채 화면 출력만 10건씩 나눈다
 var ACCOUNT_TRANSACTION_PAGE_SIZE = 10;
 var accountTransactionList = [];
 var accountTransactionCurrentPage = 1;
@@ -17,7 +17,7 @@ var accountTransactionCurrentPage = 1;
    [마이페이지 계좌·카드 연결 JavaScript 추가 시작]
    화면 전환, 계좌 제목 수정, 계좌·카드 4개 단위 페이지 처리를 담당한다.
    ========================================================= */
-// 상단 버튼을 누른 경우에만 회원정보·신고내역·계좌카드 영역을 표시한다.
+// 상단 버튼을 누른 경우에만 회원정보·신고내역·계좌카드 영역을 표시
 function showMyPagePanel(panelId) {
     document.querySelectorAll('.mypage-toggle-panel').forEach(function (panel) {
         panel.classList.add('is-hidden');
@@ -33,7 +33,7 @@ function showMyPagePanel(panelId) {
     window.history.replaceState(null, '', '#' + panelId);
 }
 
-// 계좌 제목은 처음에는 읽기 전용으로 표시하고, 수정 버튼을 누르면 입력과 저장이 가능해진다.
+// 계좌 제목은 처음에는 읽기 전용으로 표시하고, 수정 버튼을 누르면 입력과 저장이 가능해진다
 function toggleAccountNameEdit(button) {
     const form = button.closest('.mypage-asset-title-form');
     const input = form ? form.querySelector('input[name="accountName"]') : null;
@@ -58,7 +58,7 @@ function toggleAccountNameEdit(button) {
     form.requestSubmit();
 }
 
-// 카드 이름도 계좌 제목과 같은 방식으로 읽기 전용 상태에서 수정 모드로 전환한다.
+// 카드 이름도 계좌 제목과 같은 방식으로 읽기 전용 상태에서 수정 모드로 전환한다
 function toggleCardNameEdit(button) {
     const form = button.closest('.mypage-asset-title-form');
     const input = form ? form.querySelector('input[name="cardName"]') : null;
@@ -86,11 +86,11 @@ function toggleCardNameEdit(button) {
         return;
     }
 
-    // submit 이벤트를 발생시켜 pageAjax.js의 공통 AJAX 처리와 버튼 잠금을 그대로 사용한다.
+    // submit 이벤트를 발생시켜 pageAjax.js의 공통 AJAX 처리와 버튼 잠금을 그대로 사용
     form.requestSubmit();
 }
 
-// 계좌와 카드 목록은 4개 단위로 보이며, 부족한 칸은 빈 정보 카드로 채운다.
+// 계좌와 카드 목록은 4개 단위로 보이며, 부족한 칸은 빈 정보 카드로 채운다
 function initializeAssetPager(listId) {
     const list = document.getElementById(listId);
     const pager = document.querySelector('[data-pager-for="' + listId + '"]');
@@ -151,7 +151,7 @@ function initializeMyPageAssets() {
     initializeAssetPager('accountAssetList');
     initializeAssetPager('cardAssetList');
 
-    // 거래내역 버튼마다 선택한 계좌 번호를 Ajax 조회 함수로 전달한다.
+    // 거래내역 버튼마다 선택한 계좌 번호를 Ajax 조회 함수로 전달
     document.querySelectorAll('.transaction-history-btn').forEach(function (button) {
         button.addEventListener('click', function () {
             loadAccountTransactions(button);
@@ -169,7 +169,7 @@ function initializeMyPageAssets() {
 initializeMyPageAssets();
 
 /* 선택한 계좌의 거래내역을 Ajax로 조회한다. */
-// [공통 AJAX 로딩 적용] 거래내역 조회 버튼을 전달해 요청 중 중복 클릭을 막고 완료 후 복구한다.
+// 거래내역 조회 버튼을 전달해 요청 중 중복 클릭을 막고 완료 후 복구한다
 function loadAccountTransactions(button) {
     const accountIdx = button.dataset.accountIdx;
     const panel = document.getElementById('accountTransactionPanel');
@@ -188,7 +188,7 @@ function loadAccountTransactions(button) {
     accountTransactionList = [];
     accountTransactionCurrentPage = 1;
     setAccountTransactionPagerVisible(false);
-    // mypage-form-section의 display:grid가 hidden 표시를 덮어쓰지 않도록 숨김 클래스도 함께 제거한다.
+    // mypage-form-section의 display:grid가 hidden 표시를 덮어쓰지 않도록 숨김 클래스도 함께 제거한다
     panel.classList.remove('is-hidden');
     panel.hidden = false;
 
@@ -242,7 +242,7 @@ function renderAccountTransactions(transactionList, currentBalance) {
         return;
     }
 
-    // 최초 잔액은 현재 페이지 10건이 아니라 전체 거래내역의 가장 오래된 거래를 기준으로 계산한다.
+    // 최초 잔액은 현재 페이지 10건이 아니라 전체 거래내역의 가장 오래된 거래를 기준으로 계산
     const oldestTransaction = accountTransactionList[accountTransactionList.length - 1];
     if (oldestTransaction.balance_after === null || oldestTransaction.balance_after === undefined) {
         initialBalanceTarget.textContent = '기록 없음';
@@ -398,14 +398,14 @@ function closeAccountTransactions() {
         return;
     }
 
-    // mypage-form-section의 display:grid보다 우선하는 공통 숨김 클래스로 거래내역 영역을 닫는다.
+    // mypage-form-section의 display:grid보다 우선하는 공통 숨김 클래스로 거래내역 영역을 닫는다
     panel.classList.add('is-hidden');
     panel.hidden = true;
     accountTransactionList = [];
     accountTransactionCurrentPage = 1;
     setAccountTransactionPagerVisible(false);
 }
-/* [마이페이지 계좌·카드 연결 JavaScript 추가 끝] */
+/* 계좌·카드 관리 JavaScript 영역 끝 */
 
 (function () {
     const emailInput = document.getElementById('mypageEmail');
@@ -463,7 +463,7 @@ function closeAccountTransactions() {
     }
 })();
 
-// [공통 AJAX 로딩 적용] 마이페이지 인증 POST의 버튼·문구 전달 방식을 한 곳으로 규격화한다.
+// 마이페이지 인증 POST의 버튼·문구 전달 방식을 한 곳으로 규격화한다
 function postForm(url, data, options) {
     const settings = options || {};
     return window.fetchWithLoading(url, {
@@ -489,7 +489,7 @@ function setMessage(id, message, type) {
     }
 }
 
-// [이메일 인증 AJAX] JSP에서 전달한 버튼을 요청 중에만 잠그고 공통 팝업 문구를 표시한다.
+// JSP에서 전달한 버튼을 요청 중에만 잠그고 공통 팝업 문구를 표시
 function sendMyPageEmailCode(button) {
     const email = document.getElementById('mypageEmail').value.trim();
     if (!email) {
@@ -536,7 +536,7 @@ function verifyMyPageEmailCode(button) {
         });
 }
 
-// [휴대전화 인증 AJAX] 이메일 인증과 같은 공통 팝업·버튼 잠금 규격을 사용한다.
+// 이메일 인증과 같은 공통 팝업·버튼 잠금 규격을 사용
 function sendMyPagePhoneCode(button) {
     const phone = document.getElementById('mypagePhone').value.trim();
     if (!phone) {
@@ -588,7 +588,7 @@ function verifyMyPagePhoneCode(button) {
 
 
 
-// [회원탈퇴 불가 팝업] 탈퇴 제한 안내 팝업을 닫는다.
+// 탈퇴 제한 안내 팝업을 닫는다
 function closeWithdrawBlockedModal() {
     const modal = document.getElementById('withdrawBlockedModal');
     if (!modal) return;
@@ -617,7 +617,7 @@ function submitWithdrawForm() {
 }
 
 if (!window.__mypageWithdrawClickBound) {
-    // [회원탈퇴 불가 팝업] 기존 탈퇴 팝업과 탈퇴 불가 팝업 모두 배경 클릭으로 닫는다.
+    // 기존 탈퇴 팝업과 탈퇴 불가 팝업 모두 배경 클릭으로 닫는다
     document.addEventListener('click', function (event) {
         const withdrawModal = document.getElementById('withdrawModal');
         const blockedModal = document.getElementById('withdrawBlockedModal');
@@ -626,7 +626,7 @@ if (!window.__mypageWithdrawClickBound) {
         if (blockedModal && event.target === blockedModal) closeWithdrawBlockedModal();
     });
 
-    // [회원탈퇴 불가 팝업] ESC 키로 열려 있는 회원탈퇴 관련 팝업을 닫는다.
+    // ESC 키로 열려 있는 회원탈퇴 관련 팝업을 닫는다
     document.addEventListener('keydown', function (event) {
         if (event.key !== 'Escape') return;
 
