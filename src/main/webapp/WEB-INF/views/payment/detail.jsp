@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%-- 결제 상세 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <section class="page-hero payment-detail-page">
@@ -36,8 +37,8 @@
         주 카드
         </c:when>
             <c:otherwise>
-                        <button type="button" 
-                                class="btn btn-primary btn-mini btn-change-card" 
+                        <button type="button"
+                                class="btn btn-primary btn-mini btn-change-card"
                                 data-card-idx="${card.card_idx}">
                                 결제 카드 변경</button>
 
@@ -50,13 +51,13 @@
                                value="${fn:escapeXml(empty card.card_name or card.card_name eq card.card_company ? cardCompanyDisplayName : card.card_name)}" />
                              <td>
                                 <strong>
-                                  
+
                                <c:out value="${cardDisplayName}" />
                                 </strong>
                             </td>
-                            <td>                                  
+                            <td>
                                <c:out value="${cardCompanyDisplayName}" />
-                                
+
                             </td>
                             <td><strong>${card.card_number}</strong></td>
                         </tr>
@@ -135,7 +136,7 @@
                     aria-describedby="cardStatusMessage"
                     hidden>
                     <div class="status-box">
-                    
+
                     <div id="cardStatusSpinner"
                             class="status-spinner"
                             aria-hidden="true"></div>

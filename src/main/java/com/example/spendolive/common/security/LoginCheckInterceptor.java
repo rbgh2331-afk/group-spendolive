@@ -12,8 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
- * 로그인 필수 URL의 서버 측 세션 검사를 한 곳에서 처리한다.
- * 화면 요청은 로그인 페이지로 이동시키고, AJAX/JSON 요청은 401 JSON을 반환한다.
+ * 로그인 필수 URL의 서버 측 세션 검사를 한 곳에서 처리
+ * 화면 요청은 로그인 페이지로 이동시키고, AJAX/JSON 요청은 401 JSON을 반환
  */
 @Component
 public class LoginCheckInterceptor implements HandlerInterceptor {

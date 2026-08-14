@@ -32,7 +32,7 @@ public class FaqController {
     }
 
     // GET /spendolive/faq/list.do
-    // 카테고리별로 묶은 FAQ 목록(faqGroups)을 faqList.jsp에 넘겨줌.
+    // 카테고리별로 묶은 FAQ 목록(faqGroups)을 faqList.jsp에 넘겨줌
     // 조회 실패해도 에러 페이지로 안 보내고 빈 목록 + 안내 메시지로 화면은 정상 렌더링함
     @GetMapping("/list.do")
     public ModelAndView faqList() {

@@ -3,120 +3,120 @@
    마이페이지 리뉴얼, 신고/차단, 회원정보 수정
    ========================================================= */
 /* MyPage renewal */
-.mypage-page {padding-top: 3.25rem;}
-.mypage-top-grid {display: grid;grid-template-columns: 1.05fr 1.12fr 1.12fr 1fr;gap: 1.125rem;align-items: stretch;margin-bottom: 1.375rem;}
-.mypage-profile-card,.mypage-stat-card,.mypage-bank-card,.mypage-report-card,.mypage-panel {padding: 1.625rem;}
-.mypage-profile-card {display: grid;gap: 0.875rem;}
-.mypage-profile-card h3,.mypage-stat-card h3,.mypage-bank-card h3,.mypage-report-card h3,.mypage-panel h2 {margin: 0;letter-spacing: -.035em;}
-.mypage-stat-card strong {display: block;margin: 1rem 0 0.5rem;color: var(--olive-dark);font-size: 2.125rem;letter-spacing: -.04em;}
-.mypage-muted {color: var(--muted);line-height: 1.65;}
-.mypage-account-box,.mypage-report-summary {display: grid;gap: 0.625rem;margin: 1.125rem 0;padding: 0.9375rem;border: 1px solid var(--line);border-radius: 1rem;background: var(--cream);}
-.mypage-account-box span,.mypage-report-summary span {color: var(--muted);font-size: 0.8125rem;font-weight: 900;}
-.mypage-account-box strong,.mypage-report-summary strong {color: var(--olive-dark);font-size: 1.125rem;}
-.mypage-report-summary {grid-template-columns: 1fr;gap: 0.5rem;}
-.mypage-report-summary > div {display: flex;align-items: center;gap: 0.5rem;white-space: nowrap;}
-.mypage-report-summary > div span,.mypage-report-summary > div strong {display: inline-block;}
-.mypage-panel {margin-top: 1.375rem;}
-.mypage-panel-head {display: flex;justify-content: space-between;align-items: flex-end;gap: 1.125rem;margin-bottom: 1.25rem;}
-.mypage-panel-head span {color: var(--muted);font-weight: 800;font-size: 0.875rem;line-height: 1.6;}
-.mypage-edit-form {display: grid;grid-template-columns: 1fr;gap: 1.125rem;}
-.mypage-form-actions {grid-column: 1 / -1;display: flex;justify-content: flex-end;gap: 0.625rem;margin-top: 0.25rem;}
-.mypage-table small,.mypage-room-card small {display: block;margin-top: 0.25rem;color: var(--muted);font-size: 0.75rem;font-weight: 800;}
-.mypage-reason {max-width: 26.25rem;white-space: normal;line-height: 1.55;}
-.muted-chip {background: #f2f3ec;color: var(--muted);}
-.mypage-empty {padding: 1.375rem;border: 1px dashed #cdd8b8;border-radius: 1rem;background: #fbfdf6;color: var(--muted);text-align: center;font-weight: 850;}
-.mypage-empty.small {padding: 1.125rem;text-align: left;}
-.mypage-room-list {display: grid;gap: 0.75rem;}
-.mypage-room-list.compact {margin-top: 0.75rem;}
-.mypage-room-card {display: grid;grid-template-columns: minmax(0, 1fr) auto;align-items: center;gap: 0.875rem;padding: 1rem;border: 1px solid var(--line);border-radius: 1.125rem;background: var(--cream);}
-.mypage-room-card strong {display: block;color: var(--olive-dark);font-size: 1.0625rem;}
-.mypage-room-card p {margin: 0.4375rem 0 0;color: var(--text);font-weight: 800;}
-.mypage-room-actions {display: flex;gap: 0.5rem;flex-wrap: wrap;justify-content: flex-end;}
-.mypage-room-two-col {display: grid;grid-template-columns: 1fr 1fr;gap: 1.125rem;}
-.mypage-room-two-col h3 {margin: 0 0 0.75rem;color: var(--olive-dark);}
+.mypage-page {padding-top:3.25rem;}
+.mypage-top-grid {display:grid;grid-template-columns:1.05fr 1.12fr 1.12fr 1fr;gap:1.125rem;align-items:stretch;margin-bottom:1.375rem;}
+.mypage-profile-card,.mypage-stat-card,.mypage-bank-card,.mypage-report-card,.mypage-panel {padding:1.625rem;}
+.mypage-profile-card {display:grid;gap:0.875rem;}
+.mypage-profile-card h3,.mypage-stat-card h3,.mypage-bank-card h3,.mypage-report-card h3,.mypage-panel h2 {margin:0;letter-spacing:-.035em;}
+.mypage-stat-card strong {display:block;margin:1rem 0 0.5rem;color:var(--olive-dark);font-size:2.125rem;letter-spacing:-.04em;}
+.mypage-muted {color:var(--muted);line-height:1.65;}
+.mypage-account-box,.mypage-report-summary {display:grid;gap:0.625rem;margin:1.125rem 0;padding:0.9375rem;border:1px solid var(--line);border-radius:1rem;background:var(--cream);}
+.mypage-account-box span,.mypage-report-summary span {color:var(--muted);font-size:0.8125rem;font-weight:900;}
+.mypage-account-box strong,.mypage-report-summary strong {color:var(--olive-dark);font-size:1.125rem;}
+.mypage-report-summary {grid-template-columns:1fr;gap:0.5rem;}
+.mypage-report-summary > div {display:flex;align-items:center;gap:0.5rem;white-space:nowrap;}
+.mypage-report-summary > div span,.mypage-report-summary > div strong {display:inline-block;}
+.mypage-panel {margin-top:1.375rem;}
+.mypage-panel-head {display:flex;justify-content:space-between;align-items:flex-end;gap:1.125rem;margin-bottom:1.25rem;}
+.mypage-panel-head span {color:var(--muted);font-weight:800;font-size:0.875rem;line-height:1.6;}
+.mypage-edit-form {display:grid;grid-template-columns:1fr;gap:1.125rem;}
+.mypage-form-actions {grid-column:1 / -1;display:flex;justify-content:flex-end;gap:0.625rem;margin-top:0.25rem;}
+.mypage-table small,.mypage-room-card small {display:block;margin-top:0.25rem;color:var(--muted);font-size:0.75rem;font-weight:800;}
+.mypage-reason {max-width:26.25rem;white-space:normal;line-height:1.55;}
+.muted-chip {background:#f2f3ec;color:var(--muted);}
+.mypage-empty {padding:1.375rem;border:1px dashed #cdd8b8;border-radius:1rem;background:#fbfdf6;color:var(--muted);text-align:center;font-weight:850;}
+.mypage-empty.small {padding:1.125rem;text-align:left;}
+.mypage-room-list {display:grid;gap:0.75rem;}
+.mypage-room-list.compact {margin-top:0.75rem;}
+.mypage-room-card {display:grid;grid-template-columns:minmax(0, 1fr) auto;align-items:center;gap:0.875rem;padding:1rem;border:1px solid var(--line);border-radius:1.125rem;background:var(--cream);}
+.mypage-room-card strong {display:block;color:var(--olive-dark);font-size:1.0625rem;}
+.mypage-room-card p {margin:0.4375rem 0 0;color:var(--text);font-weight:800;}
+.mypage-room-actions {display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:flex-end;}
+.mypage-room-two-col {display:grid;grid-template-columns:1fr 1fr;gap:1.125rem;}
+.mypage-room-two-col h3 {margin:0 0 0.75rem;color:var(--olive-dark);}
 @media (max-width: 73.75rem) {
     /* 1180px / 16 = 73.75rem */
-    .mypage-top-grid {grid-template-columns: repeat(2, 1fr);}
-    .mypage-edit-form,.mypage-room-two-col {grid-template-columns: 1fr;}
+    .mypage-top-grid {grid-template-columns:repeat(2, 1fr);}
+    .mypage-edit-form,.mypage-room-two-col {grid-template-columns:1fr;}
 }
 @media (max-width: 43.75rem) {
     /* 700px / 16 = 43.75rem */
-    .mypage-top-grid,.mypage-room-card {grid-template-columns: 1fr;}
-    .mypage-panel-head {align-items: flex-start;flex-direction: column;}
-    .mypage-form-actions,.mypage-room-actions {justify-content: stretch;}
+    .mypage-top-grid,.mypage-room-card {grid-template-columns:1fr;}
+    .mypage-panel-head {align-items:flex-start;flex-direction:column;}
+    .mypage-form-actions,.mypage-room-actions {justify-content:stretch;}
 }
 /* 마이페이지 신고/차단 요약: 항목을 한 줄씩 세로로 표시 */
-.mypage-report-summary.mypage-report-summary-vertical,.mypage-report-card .mypage-report-summary {display: flex !important;flex-direction: column !important;grid-template-columns: none !important;align-items: stretch !important;gap: 0.5rem !important;}
-.mypage-report-summary-vertical .mypage-report-line,.mypage-report-card .mypage-report-summary > div {display: flex !important;align-items: baseline !important;justify-content: flex-start !important;gap: 0.375rem !important;width: 100% !important;white-space: nowrap !important;}
-.mypage-report-summary-vertical .mypage-report-line span,.mypage-report-summary-vertical .mypage-report-line strong,.mypage-report-card .mypage-report-summary > div span,.mypage-report-card .mypage-report-summary > div strong {display: inline !important;}
+.mypage-report-summary.mypage-report-summary-vertical,.mypage-report-card .mypage-report-summary {display:flex !important;flex-direction:column !important;grid-template-columns:none !important;align-items:stretch !important;gap:0.5rem !important;}
+.mypage-report-summary-vertical .mypage-report-line,.mypage-report-card .mypage-report-summary > div {display:flex !important;align-items:baseline !important;justify-content:flex-start !important;gap:0.375rem !important;width:100% !important;white-space:nowrap !important;}
+.mypage-report-summary-vertical .mypage-report-line span,.mypage-report-summary-vertical .mypage-report-line strong,.mypage-report-card .mypage-report-summary > div span,.mypage-report-card .mypage-report-summary > div strong {display:inline !important;}
 /* 마이페이지 회원정보 수정: 일렬 정렬 + 이메일/전화번호 인증 + 비밀번호 확인 */
-.mypage-profile-edit {padding: 1.875rem 2.125rem;}
-.mypage-form-section {display: grid;gap: 1rem;padding: 1.25rem;border: 1px solid var(--line);border-radius: 1.25rem;background: #fff7e2;}
-.mypage-form-section-head {display: flex;justify-content: space-between;align-items: baseline;gap: 0.875rem;padding-bottom: 0.75rem;border-bottom: 1px dashed #d9dfc9;}
-.mypage-form-section-head h3 {margin: 0;color: var(--olive-dark);font-size: 1.125rem;letter-spacing: -.03em;}
-.mypage-form-section-head p {margin: 0;color: var(--muted);font-size: 0.8125rem;font-weight: 850;line-height: 1.5;text-align: right;}
-.mypage-form-stack,.mypage-verify-group {display: grid;gap: 0.75rem;max-width: 53.75rem;}
-.mypage-field {display: grid;gap: 0.5rem;margin: 0;}
-.mypage-field input {margin-top: 0;}
-.mypage-field-with-button {display: grid;grid-template-columns: minmax(0, 1fr) 9.375rem;gap: 0.625rem;align-items: end;max-width: 53.75rem;}
-.mypage-field-with-button .btn {min-height: 3rem;white-space: nowrap;}
-.mypage-code-row {display: grid;grid-template-columns: minmax(0, 1fr) 5.375rem;gap: 0.5rem;align-items: center;max-width: 32.5rem;}
-.mypage-code-row .btn {min-height: 2.625rem;white-space: nowrap;}
-.mypage-help {margin: 0;color: var(--muted);font-size: 0.75rem;font-weight: 850;line-height: 1.45;}
-.mypage-help.success {color: var(--olive-dark);}
-.mypage-help.warn {color: #9a5f13;}
+.mypage-profile-edit {padding:1.875rem 2.125rem;}
+.mypage-form-section {display:grid;gap:1rem;padding:1.25rem;border:1px solid var(--line);border-radius:1.25rem;background:#fff7e2;}
+.mypage-form-section-head {display:flex;justify-content:space-between;align-items:baseline;gap:0.875rem;padding-bottom:0.75rem;border-bottom:1px dashed #d9dfc9;}
+.mypage-form-section-head h3 {margin:0;color:var(--olive-dark);font-size:1.125rem;letter-spacing:-.03em;}
+.mypage-form-section-head p {margin:0;color:var(--muted);font-size:0.8125rem;font-weight:850;line-height:1.5;text-align:right;}
+.mypage-form-stack,.mypage-verify-group {display:grid;gap:0.75rem;max-width:53.75rem;}
+.mypage-field {display:grid;gap:0.5rem;margin:0;}
+.mypage-field input {margin-top:0;}
+.mypage-field-with-button {display:grid;grid-template-columns:minmax(0, 1fr) 9.375rem;gap:0.625rem;align-items:end;max-width:53.75rem;}
+.mypage-field-with-button .btn {min-height:3rem;white-space:nowrap;}
+.mypage-code-row {display:grid;grid-template-columns:minmax(0, 1fr) 5.375rem;gap:0.5rem;align-items:center;max-width:32.5rem;}
+.mypage-code-row .btn {min-height:2.625rem;white-space:nowrap;}
+.mypage-help {margin:0;color:var(--muted);font-size:0.75rem;font-weight:850;line-height:1.45;}
+.mypage-help.success {color:var(--olive-dark);}
+.mypage-help.warn {color:#9a5f13;}
 @media (max-width: 43.75rem) {
-    .mypage-profile-edit {padding: 1.375rem;}
-    .mypage-form-section-head {display: grid;gap: 0.375rem;}
-    .mypage-form-section-head p {text-align: left;}
-    .mypage-field-with-button,.mypage-code-row {grid-template-columns: 1fr;}
+    .mypage-profile-edit {padding:1.375rem;}
+    .mypage-form-section-head {display:grid;gap:0.375rem;}
+    .mypage-form-section-head p {text-align:left;}
+    .mypage-field-with-button,.mypage-code-row {grid-template-columns:1fr;}
 }
 /* =========================================================
    마이페이지 상단 카드 버튼 하단 정렬
 ========================================================= */
 /* 상단 4개 카드가 같은 높이를 유지하도록 설정 */
-.mypage-top-grid {align-items: stretch;}
+.mypage-top-grid {align-items:stretch;}
 /* 카드 내부를 세로 방향 flex 구조로 변경 */
-.mypage-top-grid > .card {display: flex;flex-direction: column;height: 100%;}
+.mypage-top-grid > .card {display:flex;flex-direction:column;height:100%;}
 /* 카드 안의 마지막 버튼을 아래쪽으로 밀기 */
-.mypage-top-grid > .card > .btn {margin-top: auto;}
+.mypage-top-grid > .card > .btn {margin-top:auto;}
 /* 계좌관리 카드처럼 조건문 안에서 버튼이 나와도 동일하게 적용 */
-.mypage-bank-card > .btn,.mypage-report-card > .btn,.mypage-profile-card > .btn,.mypage-stat-card > .btn {margin-top: auto;}
+.mypage-bank-card > .btn,.mypage-report-card > .btn,.mypage-profile-card > .btn,.mypage-stat-card > .btn {margin-top:auto;}
 /* =========================================================
    [마이페이지 계좌·카드 연결 CSS 추가 시작]
    최초 화면 전환과 계좌·카드 목록, 4개 단위 페이지 표시 스타일
    검색 키워드: 마이페이지 계좌·카드 연결
    ========================================================= */
 /* 마이페이지 선택 영역: 최초 진입 시 공유방만 보이고 상단 버튼을 누르면 해당 영역을 표시 */
-.mypage-toggle-panel {scroll-margin-top: 6.5rem;}
+.mypage-toggle-panel {scroll-margin-top:6.5rem;}
 /* 나의 계좌·카드 목록 */
-.mypage-asset-section {display: grid;gap: 0.875rem;margin-top: 1.625rem;}
-.mypage-asset-section:first-of-type {margin-top: 0;}
-.mypage-asset-section-head {display: flex;align-items: center;justify-content: space-between;gap: 1rem;}
-.mypage-asset-section-head h3 {margin: 0;color: var(--olive-dark);font-size: 1.25rem;}
-.mypage-asset-pager {display: flex;align-items: center;gap: 0.5rem;}
-.mypage-asset-pager span {min-width: 3.375rem;color: var(--muted);font-size: 0.8125rem;font-weight: 900;text-align: center;}
-.mypage-asset-pager .btn:disabled {cursor: default;opacity: .45;transform: none;}
-.mypage-asset-list {display: grid;gap: 0.75rem;}
-.mypage-asset-item {display: grid;grid-template-columns: minmax(0, 1fr) 11.25rem auto;align-items: center;gap: 1rem;min-height: 6rem;padding: 1rem;border: 1px solid var(--line);border-radius: 1.125rem;background: var(--cream);}
+.mypage-asset-section {display:grid;gap:0.875rem;margin-top:1.625rem;}
+.mypage-asset-section:first-of-type {margin-top:0;}
+.mypage-asset-section-head {display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.mypage-asset-section-head h3 {margin:0;color:var(--olive-dark);font-size:1.25rem;}
+.mypage-asset-pager {display:flex;align-items:center;gap:0.5rem;}
+.mypage-asset-pager span {min-width:3.375rem;color:var(--muted);font-size:0.8125rem;font-weight:900;text-align:center;}
+.mypage-asset-pager .btn:disabled {cursor:default;opacity:.45;transform:none;}
+.mypage-asset-list {display:grid;gap:0.75rem;}
+.mypage-asset-item {display:grid;grid-template-columns:minmax(0, 1fr) 11.25rem auto;align-items:center;gap:1rem;min-height:6rem;padding:1rem;border:1px solid var(--line);border-radius:1.125rem;background:var(--cream);}
 .mypage-card-item {grid-template-columns:minmax(0,1fr) auto;}
-.mypage-asset-main {min-width: 0;}
-.mypage-asset-main > strong {display: block;color: var(--olive-dark);font-size: 1.0625rem;}
-.mypage-asset-main p {margin: 0.4375rem 0 0;color: var(--text);font-size: 0.875rem;font-weight: 800;word-break: break-all;}
-.mypage-asset-title-form {display: flex;align-items: center;gap: 0.5rem;}
-.mypage-asset-title-form input {width: min(17.5rem, 100%);height: 2.25rem;margin: 0;padding: 0.375rem 0.625rem;color: var(--olive-dark);font-size: 1.0625rem;font-weight: 900;}
-.mypage-asset-title-form input[readonly] {border-color: transparent;background: transparent;box-shadow: none;}
-.mypage-account-balance {display: grid;gap: 0.3125rem;text-align: right;}
-.mypage-account-balance span {color: var(--muted);font-size: 0.75rem;font-weight: 850;}
-.mypage-account-balance strong {color: var(--olive-dark);font-size: 1.125rem;white-space: nowrap;}
-.mypage-asset-empty {display: flex;grid-template-columns: 1fr;align-items: center;justify-content: center;color: var(--muted);font-weight: 850;text-align: center;}
+.mypage-asset-main {min-width:0;}
+.mypage-asset-main > strong {display:block;color:var(--olive-dark);font-size:1.0625rem;}
+.mypage-asset-main p {margin:0.4375rem 0 0;color:var(--text);font-size:0.875rem;font-weight:800;word-break:break-all;}
+.mypage-asset-title-form {display:flex;align-items:center;gap:0.5rem;}
+.mypage-asset-title-form input {width:min(17.5rem, 100%);height:2.25rem;margin:0;padding:0.375rem 0.625rem;color:var(--olive-dark);font-size:1.0625rem;font-weight:900;}
+.mypage-asset-title-form input[readonly] {border-color:transparent;background:transparent;box-shadow:none;}
+.mypage-account-balance {display:grid;gap:0.3125rem;text-align:right;}
+.mypage-account-balance span {color:var(--muted);font-size:0.75rem;font-weight:850;}
+.mypage-account-balance strong {color:var(--olive-dark);font-size:1.125rem;white-space:nowrap;}
+.mypage-asset-empty {display:flex;grid-template-columns:1fr;align-items:center;justify-content:center;color:var(--muted);font-weight:850;text-align:center;}
 @media (max-width:43.75rem) {
-    .mypage-asset-section-head {align-items: flex-start;flex-direction: column;}
-    .mypage-asset-pager {width: 100%;justify-content: flex-end;}
-    .mypage-asset-item {grid-template-columns: 1fr;align-items: stretch;}
-    .mypage-account-balance {text-align: left;}
-    .mypage-asset-title-form {align-items: stretch;}
-    .mypage-asset-title-form input {width: 100%;}
+    .mypage-asset-section-head {align-items:flex-start;flex-direction:column;}
+    .mypage-asset-pager {width:100%;justify-content:flex-end;}
+    .mypage-asset-item {grid-template-columns:1fr;align-items:stretch;}
+    .mypage-account-balance {text-align:left;}
+    .mypage-asset-title-form {align-items:stretch;}
+    .mypage-asset-title-form input {width:100%;}
 }
 /* [마이페이지 계좌·카드 연결 CSS 추가 끝] */
 /* 마이페이지 이번 달 지출·예산 요약 */

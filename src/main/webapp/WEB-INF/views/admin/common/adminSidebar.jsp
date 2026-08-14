@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- 관리자 사이드바 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <aside id="adminSidebar" class="admin-sidebar" aria-label="관리자 메뉴">

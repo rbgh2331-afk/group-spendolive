@@ -226,7 +226,7 @@ function validateInquiryForm(formEl) {
     const submitBtn = formEl.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = '등록 중...';
-    
+
     return true;
 }
 /* ---- inquiryList.jsp / inquiryDetail.jsp : 첨부 사진 확대보기(라이트박스) ---- */

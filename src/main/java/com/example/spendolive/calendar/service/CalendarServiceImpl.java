@@ -24,7 +24,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public List<Map<String, Object>> getMonthlyExpenses(long memberId, int year, int month) {
 
-        // selectExpenseList는 "yyyy-MM" 형식을 YearMonth.parse로 받는다.
+        // selectExpenseList는 "yyyy-MM" 형식을 YearMonth.parse로 받는다
         String yearMonth = String.format("%04d-%02d", year, month);
 
         List<ExpenseDTO> expenses;

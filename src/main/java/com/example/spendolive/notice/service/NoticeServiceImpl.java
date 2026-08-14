@@ -35,7 +35,7 @@ public class NoticeServiceImpl implements NoticeService {
         return noticeRepository.findAll(id);
     }
 
-    // 전체 개수가 기준(ADMIN_PAGINATION_THRESHOLD) 이하면 페이지 계산 없이 그냥 전부 반환.
+    // 전체 개수가 기준(ADMIN_PAGINATION_THRESHOLD) 이하면 페이지 계산 없이 그냥 전부 반환
     // 기준을 넘으면 요청받은 page를 1 미만이 안 되게 보정한 뒤, 그 페이지에 해당하는
     // offset만큼 건너뛰고 ADMIN_PAGE_SIZE(20)개만 잘라서 반환
     @Override
@@ -88,7 +88,6 @@ public class NoticeServiceImpl implements NoticeService {
     public void readNotice(int notice_id, String id) {
         noticeRepository.insertNoticeRead(notice_id, id);
     }
-
 
     @Override
     public List<NoticeDTO> getUnreadNoticeList(String id) {

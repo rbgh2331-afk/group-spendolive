@@ -30,7 +30,7 @@ CREATE TABLE settlement_payment_tb (
     card_number     VARCHAR2(50),
     card_company    VARCHAR2(20),
     paid_at         DATE,
-    confirmed_at    DATE, 
+    confirmed_at    DATE,
     expired_at      DATE, --??
     cancelled_at    DATE,
     paymentKey      VARCHAR2(100),

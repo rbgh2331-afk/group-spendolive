@@ -39,7 +39,7 @@ import com.example.spendolive.publicdata.price.domain.ConsumerStoreDTO;
 @Service
 public class ConsumerPriceServiceImpl implements ConsumerPriceService {
 
-    // [생필품 가격 비교] 가이드의 네 가지 오퍼레이션 중 상품·판매점·가격 조회를 사용한다.
+    // 가이드의 네 가지 오퍼레이션 중 상품·판매점·가격 조회를 사용
     private static final String PRODUCT_OPERATION = "getProductInfoSvc.do";
     private static final String STORE_OPERATION = "getStoreInfoSvc.do";
     private static final String PRICE_OPERATION = "getProductPriceInfoSvc.do";
@@ -79,7 +79,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
             throw new IllegalArgumentException("검색할 상품명을 입력해주세요.");
         }
 
-        // [생필품 가격 비교] 전체 상품은 6시간 캐시하고 화면에는 일치 상품 최대 20개만 반환한다.
+        // 전체 상품은 6시간 캐시하고 화면에는 일치 상품 최대 20개만 반환
         return loadProducts().stream()
                 .filter(product -> normalizeSearchText(product.getGoodName()).contains(normalizedKeyword))
                 .sorted(Comparator.comparing(ConsumerProductDTO::getGoodName, Comparator.nullsLast(String::compareTo)))
@@ -95,7 +95,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
             throw new IllegalArgumentException("가격을 조회할 상품을 선택해주세요.");
         }
 
-        // [생필품 가격 비교] 가이드상 조사일은 금요일이므로 최근 금요일부터 최대 8주 전까지 데이터가 있는 날을 찾는다.
+        // 가이드상 조사일은 금요일이므로 최근 금요일부터 최대 8주 전까지 데이터가 있는 날을 찾는다
         LocalDate latestFriday = LocalDate.now(KOREA_ZONE).with(TemporalAdjusters.previousOrSame(DayOfWeek.FRIDAY));
         PriceLookupResult lookupResult = null;
 
@@ -127,7 +127,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
             ConsumerPriceComparisonDTO.StorePrice storePrice = new ConsumerPriceComparisonDTO.StorePrice(
                     row.entpId(), storeName, roadAddress, row.price(), row.plusOneYn(), row.discountYn());
 
-            // [생필품 가격 비교] 같은 판매점 가격이 중복 응답되면 가장 낮은 가격 한 건만 사용한다.
+            // 같은 판매점 가격이 중복 응답되면 가장 낮은 가격 한 건만 사용
             lowestStorePrices.merge(row.entpId(), storePrice,
                     (before, after) -> before.getPrice() <= after.getPrice() ? before : after);
         }
@@ -253,7 +253,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
                         defaultYn(directChildText(element, "gooddcyn"))
                 ));
             } catch (NumberFormatException ignored) {
-                // [생필품 가격 비교] 숫자가 아닌 가격 한 건은 전체 조회 실패 대신 제외한다.
+                // 숫자가 아닌 가격 한 건은 전체 조회 실패 대신 제외
             }
         }
 
@@ -295,7 +295,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
     private Document parseXml(byte[] xmlBytes) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-        // [생필품 가격 비교] 외부 XML의 DTD·외부 엔티티를 차단해 XXE 취약점을 방지한다.
+        // 외부 XML의 DTD·외부 엔티티를 차단해 XXE 취약점을 방지
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
         factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);

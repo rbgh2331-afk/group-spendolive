@@ -30,7 +30,7 @@
         try {
             localStorage.setItem(SIDEBAR_STORAGE_KEY, String(collapsed));
         } catch (ignore) {
-            // 저장소를 사용할 수 없는 환경에서는 현재 화면에서만 상태를 유지한다.
+            // 저장소를 사용할 수 없는 환경에서는 현재 화면에서만 상태를 유지
         }
     }
 
@@ -193,7 +193,7 @@
         if (!element || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
         // 숨겨져 있던 탭에 최초 진입 애니메이션 클래스가 남아 있으면
-        // 탭 전환 애니메이션과 겹쳐 두 번 깜빡이는 것처럼 보일 수 있다.
+        // 탭 전환 애니메이션과 겹쳐 두 번 깜빡이는 것처럼 보일 수 있다
         element.classList.remove('admin-motion-block', 'admin-motion-section', 'admin-motion-table', 'admin-motion-panel');
         element.style.removeProperty('--admin-motion-delay');
         void element.offsetWidth;
@@ -208,8 +208,8 @@
         const root = pageRoot();
         if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         const blocks = Array.from(root.children).filter(function (element) {
-            // hidden 상태의 탭에는 최초 애니메이션을 걸지 않는다.
-            // 숨겨진 탭이 나중에 열릴 때 section 애니메이션과 중복되는 문제를 막는다.
+            // hidden 상태의 탭에는 최초 애니메이션을 걸지 않는다
+            // 숨겨진 탭이 나중에 열릴 때 section 애니메이션과 중복되는 문제를 막는다
             return !element.hidden && element.matches('.hero,.stat-grid,.content-grid,.panel,.admin-local-tabs,.admin-page-section,#adminBoardArea,.flash-ok,.flash-err');
         }).slice(0, 8);
         blocks.forEach(function (element, index) {
@@ -335,7 +335,7 @@
             return;
         }
 
-        // 기존 프로젝트에 이미 있던 문의관리 ↔ FAQ관리 목록 AJAX만 유지한다.
+        // 기존 프로젝트에 이미 있던 문의관리 ↔ FAQ관리 목록 AJAX만 유지
         const boardArea = document.getElementById(BOARD_AREA_ID);
         const link = event.target.closest('a');
         if (boardArea && link && boardArea.contains(link) && isBoardLink(link.getAttribute('href'))) {

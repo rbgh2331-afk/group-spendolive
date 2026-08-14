@@ -5,102 +5,102 @@
 /* =========================================================
  OTT 선결제/마감/방삭제 예약 시스템 UI 보강
  ========================================================= */
-.ott-system-guide {display: block;margin-bottom: 1.5rem;padding: 1.25rem 1.5rem;}
-.ott-system-guide strong {display: block;color: #263238;margin-bottom: 0.625rem;font-size: 1rem;}
-.ott-system-guide ol {margin: 0;padding-left: 1.375rem;}
-.ott-system-guide li {margin-bottom: 0.375rem;font-size: 0.875rem;line-height: 1.7;color: #607d3b;}
-.ott-system-guide li:last-child {margin-bottom: 0;}
-.room-close-form {display: flex;gap: 0.5rem;align-items: center;width: 100%;margin-top: 0.75rem;padding-top: 0.75rem;border-top: 1px solid rgba(125, 151, 78, 0.16);}
-.room-close-form strong {min-width: 11.25rem;color: #4a5c2c;}
-.room-close-form input[type="text"] {flex: 1;min-width: 13.75rem;border: 1px solid #dfe8c9;border-radius: 0.75rem;padding: 0.625rem 0.75rem;background: #fffef8;}
-.settlement-pay-box {display: flex;flex-direction: column;align-items: flex-end;gap: 0.375rem;min-width: 6.875rem;}
-.settlement-pay-box b {color: #2f3b20;}
-.settlement-pay-box small {font-size: 0.75rem;color: #6f7c57;}
-.danger-text {color: #c0392b !important;font-weight: 700;}
-.warn-text {color: #b36b00 !important;font-weight: 700;}
-.status-pill.CLOSE_REQUESTED {background: #fff0eb;color: #c0392b;}
-.status-pill.REPLACE_RECRUITING {background: #fff8df;color: #9a6500;}
-.status-pill.PAYMENT_OPEN {background: #eaf5ff;color: #1f6fb2;}
+.ott-system-guide {display:block;margin-bottom:1.5rem;padding:1.25rem 1.5rem;}
+.ott-system-guide strong {display:block;color:#263238;margin-bottom:0.625rem;font-size:1rem;}
+.ott-system-guide ol {margin:0;padding-left:1.375rem;}
+.ott-system-guide li {margin-bottom:0.375rem;font-size:0.875rem;line-height:1.7;color:#607d3b;}
+.ott-system-guide li:last-child {margin-bottom:0;}
+.room-close-form {display:flex;gap:0.5rem;align-items:center;width:100%;margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(125, 151, 78, 0.16);}
+.room-close-form strong {min-width:11.25rem;color:#4a5c2c;}
+.room-close-form input[type="text"] {flex:1;min-width:13.75rem;border:1px solid #dfe8c9;border-radius:0.75rem;padding:0.625rem 0.75rem;background:#fffef8;}
+.settlement-pay-box {display:flex;flex-direction:column;align-items:flex-end;gap:0.375rem;min-width:6.875rem;}
+.settlement-pay-box b {color:#2f3b20;}
+.settlement-pay-box small {font-size:0.75rem;color:#6f7c57;}
+.danger-text {color:#c0392b !important;font-weight:700;}
+.warn-text {color:#b36b00 !important;font-weight:700;}
+.status-pill.CLOSE_REQUESTED {background:#fff0eb;color:#c0392b;}
+.status-pill.REPLACE_RECRUITING {background:#fff8df;color:#9a6500;}
+.status-pill.PAYMENT_OPEN {background:#eaf5ff;color:#1f6fb2;}
 @media (max-width: 56.25rem) {
-    .room-close-form {flex-direction: column;align-items: stretch;}
-    .room-close-form strong {min-width: 0;}
-    .settlement-pay-box {align-items: flex-start;}
+    .room-close-form {flex-direction:column;align-items:stretch;}
+    .room-close-form strong {min-width:0;}
+    .settlement-pay-box {align-items:flex-start;}
 }
 /* =========================================================
   OTT Pickle+ 방식 UI: 고정 최고 멤버십, 3% 수수료, compact 모집글
   ========================================================= */
-.ott-tab-menu {display: flex;flex-wrap: wrap;gap: 0.625rem;margin: 1.125rem 0 1.25rem;}
-.ott-tab-menu a {display: inline-flex;align-items: center;justify-content: center;min-height: 2.5rem;padding: 0 1rem;border: 1px solid #dbe7d4;border-radius: 999px;background: #ffffff;color: #40523d;font-size: 0.875rem;font-weight: 800;text-decoration: none;box-shadow: 0 0.5rem 1.125rem rgba(52, 74, 48, 0.05);}
-.ott-tab-menu a.active,.ott-tab-menu a:hover {background: #6d7f2e;border-color: #6d7f2e;color: #ffffff;}
-.ott-fixed-plan-form {align-items: end;}
-.ott-fixed-plan-preview {grid-column: 1 / -1;min-height: 5.375rem;padding: 1rem 1.125rem;border: 1px solid #dfe9d2;border-radius: 1.125rem;background: #fbfdf6;color: #3d4d2b;}
-.ott-fixed-plan-preview strong {display: block;margin-bottom: 0.5rem;color: #26351f;font-size: 0.9375rem;}
-.ott-fixed-plan-preview p {margin: 0;color: #6c775d;line-height: 1.55;font-size: 0.8125rem;}
-.ott-plan-preview-grid {display: grid;grid-template-columns: repeat(4, minmax(0, 1fr));gap: 0.625rem;}
-.ott-plan-preview-grid span {display: block;padding: 0.625rem 0.75rem;border: 1px solid #e5edd9;border-radius: 0.875rem;background: #ffffff;font-size: 0.8125rem;line-height: 1.45;}
-.ott-plan-preview-grid b {display: block;margin-bottom: 0.25rem;color: #7b7f36;font-size: 0.75rem;}
-.ott-plan-preview-grid small {display: block;margin-top: 0.1875rem;color: #77826a;}
-.recruit-search-form {display: grid;grid-template-columns: minmax(11.25rem, 15rem) minmax(16.25rem, 1fr) auto;gap: 0.75rem;align-items: end;margin: 0 0 1.125rem;padding: 1rem;border: 1px solid #e3ecd8;border-radius: 1.25rem;background: #fbfdf7;}
+.ott-tab-menu {display:flex;flex-wrap:wrap;gap:0.625rem;margin:1.125rem 0 1.25rem;}
+.ott-tab-menu a {display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;padding:0 1rem;border:1px solid #dbe7d4;border-radius:999px;background:#ffffff;color:#40523d;font-size:0.875rem;font-weight:800;text-decoration:none;box-shadow:0 0.5rem 1.125rem rgba(52, 74, 48, 0.05);}
+.ott-tab-menu a.active,.ott-tab-menu a:hover {background:#6d7f2e;border-color:#6d7f2e;color:#ffffff;}
+.ott-fixed-plan-form {align-items:end;}
+.ott-fixed-plan-preview {grid-column:1 / -1;min-height:5.375rem;padding:1rem 1.125rem;border:1px solid #dfe9d2;border-radius:1.125rem;background:#fbfdf6;color:#3d4d2b;}
+.ott-fixed-plan-preview strong {display:block;margin-bottom:0.5rem;color:#26351f;font-size:0.9375rem;}
+.ott-fixed-plan-preview p {margin:0;color:#6c775d;line-height:1.55;font-size:0.8125rem;}
+.ott-plan-preview-grid {display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:0.625rem;}
+.ott-plan-preview-grid span {display:block;padding:0.625rem 0.75rem;border:1px solid #e5edd9;border-radius:0.875rem;background:#ffffff;font-size:0.8125rem;line-height:1.45;}
+.ott-plan-preview-grid b {display:block;margin-bottom:0.25rem;color:#7b7f36;font-size:0.75rem;}
+.ott-plan-preview-grid small {display:block;margin-top:0.1875rem;color:#77826a;}
+.recruit-search-form {display:grid;grid-template-columns:minmax(11.25rem, 15rem) minmax(16.25rem, 1fr) auto;gap:0.75rem;align-items:end;margin:0 0 1.125rem;padding:1rem;border:1px solid #e3ecd8;border-radius:1.25rem;background:#fbfdf7;}
 /*.recruit-search-form label {display: flex;flex-direction: column;gap: 0.4375rem;color: #40523d;font-size: 0.8125rem;font-weight: 800;}
  .recruit-search-form select,.recruit-search-form input {width: 100%;height: 2.75rem;padding: 0 0.8125rem;border: 1px solid #d8e4d6;border-radius: 0.875rem;background: #ffffff;color: #24321f;font-size: 0.875rem;outline: none;}
  .recruit-search-form select:focus,.recruit-search-form input:focus {border-color: #8aa052;box-shadow: 0 0 0 0.1875rem rgba(138, 160, 82, 0.13);}
  */
-.recruit-search-actions {display: flex;gap: 0.5rem;align-items: center;justify-content: flex-end;}
-.recruit-search-result-text {margin: -0.25rem 0 1rem;padding: 0.6875rem 0.875rem;border-radius: 0.875rem;background: #f4f8ec;color: #647056;font-size: 0.875rem;font-weight: 700;}
-.recruit-search-result-text strong {color: #6d7f2e;}
+.recruit-search-actions {display:flex;gap:0.5rem;align-items:center;justify-content:flex-end;}
+.recruit-search-result-text {margin:-0.25rem 0 1rem;padding:0.6875rem 0.875rem;border-radius:0.875rem;background:#f4f8ec;color:#647056;font-size:0.875rem;font-weight:700;}
+.recruit-search-result-text strong {color:#6d7f2e;}
 @media (max-width: 51.25rem) {
-    .recruit-search-form {grid-template-columns: 1fr;}
-    .recruit-search-actions {justify-content: stretch;}
-    .recruit-search-actions .btn {flex: 1;}
+    .recruit-search-form {grid-template-columns:1fr;}
+    .recruit-search-actions {justify-content:stretch;}
+    .recruit-search-actions .btn {flex:1;}
 }
-.recruit-card-grid {display: grid;grid-template-columns: repeat(2, minmax(0, 1fr));gap: 0.875rem;}
-.recruit-card {display: grid;gap: 0.875rem;padding: 1rem;border: 1px solid #e3ecd8;border-radius: 1.125rem;background: #ffffff;box-shadow: 0 0.625rem 1.5rem rgba(52, 74, 48, 0.05);}
+.recruit-card-grid {display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:0.875rem;}
+.recruit-card {display:grid;gap:0.875rem;padding:1rem;border:1px solid #e3ecd8;border-radius:1.125rem;background:#ffffff;box-shadow:0 0.625rem 1.5rem rgba(52, 74, 48, 0.05);}
 @media (max-width: 51.25rem) {
-    .recruit-card-grid {grid-template-columns: 1fr;}
+    .recruit-card-grid {grid-template-columns:1fr;}
 }
-.recruit-card-head {display: flex;align-items: flex-start;justify-content: space-between;gap: 0.75rem;}
-.recruit-card-head h3 {margin: 0 0 0.375rem;color: #132718;font-size: 1.0625rem;line-height: 1.35;}
-.recruit-card-head p {margin: 0;color: #697760;font-size: 0.8125rem;}
-.recruit-info-grid {display: grid;grid-template-columns: repeat(4, minmax(0, 1fr));gap: 0.5rem;}
-.recruit-info-grid div {min-width: 0;padding: 0.625rem;border: 1px solid #e8efdf;border-radius: 0.875rem;background: #fbfdf7;}
-.recruit-info-grid span,.recruit-info-grid small {display: block;color: #6f7b66;font-size: 0.75rem;line-height: 1.35;}
-.recruit-info-grid strong {display: block;margin-top: 0.25rem;color: #1f321e;font-size: 0.9375rem;}
+.recruit-card-head {display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;}
+.recruit-card-head h3 {margin:0 0 0.375rem;color:#132718;font-size:1.0625rem;line-height:1.35;}
+.recruit-card-head p {margin:0;color:#697760;font-size:0.8125rem;}
+.recruit-info-grid {display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:0.5rem;}
+.recruit-info-grid div {min-width:0;padding:0.625rem;border:1px solid #e8efdf;border-radius:0.875rem;background:#fbfdf7;}
+.recruit-info-grid span,.recruit-info-grid small {display:block;color:#6f7b66;font-size:0.75rem;line-height:1.35;}
+.recruit-info-grid strong {display:block;margin-top:0.25rem;color:#1f321e;font-size:0.9375rem;}
 @media (max-width: 68.75rem) {
-    .ott-plan-preview-grid,.recruit-info-grid {grid-template-columns: repeat(2, minmax(0, 1fr));}
+    .ott-plan-preview-grid,.recruit-info-grid {grid-template-columns:repeat(2, minmax(0, 1fr));}
 }
 @media (max-width: 43.75rem) {
-    .ott-plan-preview-grid,.recruit-info-grid {grid-template-columns: 1fr;}
-    .ott-tab-menu a {width: 100%;}
+    .ott-plan-preview-grid,.recruit-info-grid {grid-template-columns:1fr;}
+    .ott-tab-menu a {width:100%;}
 }
 /* =========================================================
    Ajax 자동결제 상세 화면과 진행 상태 팝업
    ========================================================= */
-.paymentdetail-page .payment-summary-card {max-width: 46rem; margin: 0 auto; padding: 1.5rem;}
-.payment-summary-head {margin-bottom: 1.25rem;}
-.payment-summary-head h2 {margin: 0.75rem 0 0.375rem; color: #26351f;}
-.payment-summary-head p {margin: 0; color: #6f7b66; line-height: 1.6;}
-.payment-amount-table th:last-child, .payment-amount-table td:last-child {text-align: right;}
-.payment-total-row td {border-top: 0.125rem solid #dfe9d2; background: #fbfdf6; color: #26351f; font-size: 1.0625rem;}
-.payment-auto-guide {margin-top: 1rem; padding: 0.875rem 1rem; border: 1px solid #e2edc9; border-radius: 0.875rem; background: #f7faee; color: #5f6f49; text-align: center;}
-.payment-auto-guide strong {color: #4d6328;}
-.payment-action-row {display: flex; justify-content: flex-end; gap: 0.625rem; margin-top: 1.25rem;}
-.payment-action-row .btn {min-width: 7.5rem;}
+.paymentdetail-page .payment-summary-card {max-width:46rem;margin:0 auto;padding:1.5rem;}
+.payment-summary-head {margin-bottom:1.25rem;}
+.payment-summary-head h2 {margin:0.75rem 0 0.375rem;color:#26351f;}
+.payment-summary-head p {margin:0;color:#6f7b66;line-height:1.6;}
+.payment-amount-table th:last-child, .payment-amount-table td:last-child {text-align:right;}
+.payment-total-row td {border-top:0.125rem solid #dfe9d2;background:#fbfdf6;color:#26351f;font-size:1.0625rem;}
+.payment-auto-guide {margin-top:1rem;padding:0.875rem 1rem;border:1px solid #e2edc9;border-radius:0.875rem;background:#f7faee;color:#5f6f49;text-align:center;}
+.payment-auto-guide strong {color:#4d6328;}
+.payment-action-row {display:flex;justify-content:flex-end;gap:0.625rem;margin-top:1.25rem;}
+.payment-action-row .btn {min-width:7.5rem;}
 /* 결제 중에는 화면 전체를 덮어서 중복 클릭과 다른 화면 조작을 막습니다. */
-.status-overlay {position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(20, 29, 18, 0.48); backdrop-filter: blur(0.125rem);}
-.status-overlay[hidden] {display: none;}
-.status-box {width: min(100%, 23rem); padding: 2rem 1.5rem 1.5rem; border-radius: 1.25rem; background: #ffffff; box-shadow: 0 1.5rem 4rem rgba(21, 40, 18, 0.24); text-align: center;}
-.status-box h3 {margin: 0 0 0.625rem; color: #26351f; font-size: 1.125rem;}
-.status-box p {margin: 0; color: #6f7b66; line-height: 1.65; white-space: pre-line;}
-.status-spinner {width: 2.75rem; height: 2.75rem; margin: 0 auto 1.125rem; border: 0.25rem solid #e6eddc; border-top-color: #6d7f2e; border-radius: 50%; animation: status-spin 0.8s linear infinite;}
-.status-icon {display: flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; margin: 0 auto 1.125rem; border-radius: 50%; background: #eef5df; color: #5f7628; font-size: 1.5rem; font-weight: 900;}
-.status-overlay[data-state="error"] .status-icon {background: #fff0eb; color: #c0392b;}
-.status-actions {display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.25rem;}
-.status-actions[hidden] {display: none;}
+.status-overlay {position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(20, 29, 18, 0.48);backdrop-filter:blur(0.125rem);}
+.status-overlay[hidden] {display:none;}
+.status-box {width:min(100%, 23rem);padding:2rem 1.5rem 1.5rem;border-radius:1.25rem;background:#ffffff;box-shadow:0 1.5rem 4rem rgba(21, 40, 18, 0.24);text-align:center;}
+.status-box h3 {margin:0 0 0.625rem;color:#26351f;font-size:1.125rem;}
+.status-box p {margin:0;color:#6f7b66;line-height:1.65;white-space:pre-line;}
+.status-spinner {width:2.75rem;height:2.75rem;margin:0 auto 1.125rem;border:0.25rem solid #e6eddc;border-top-color:#6d7f2e;border-radius:50%;animation:status-spin 0.8s linear infinite;}
+.status-icon {display:flex;align-items:center;justify-content:center;width:2.75rem;height:2.75rem;margin:0 auto 1.125rem;border-radius:50%;background:#eef5df;color:#5f7628;font-size:1.5rem;font-weight:900;}
+.status-overlay[data-state="error"] .status-icon {background:#fff0eb;color:#c0392b;}
+.status-actions {display:flex;justify-content:center;gap:0.5rem;margin-top:1.25rem;}
+.status-actions[hidden] {display:none;}
 @keyframes status-spin {
-    to {transform: rotate(360deg);}
+    to {transform:rotate(360deg);}
 }
 @media (max-width: 36rem) {
-    .action-row, .status-actions {flex-direction: column;}
-    .action-row .btn, .status-actions .btn {width: 100%;}
+    .action-row, .status-actions {flex-direction:column;}
+    .action-row .btn, .status-actions .btn {width:100%;}
 }
-.status-spinner[hidden], .status-icon[hidden], .status-actions button[hidden] {display: none;}
+.status-spinner[hidden], .status-icon[hidden], .status-actions button[hidden] {display:none;}

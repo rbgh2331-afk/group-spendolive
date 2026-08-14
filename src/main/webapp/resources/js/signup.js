@@ -80,7 +80,7 @@ function showMemberModal(prefix, type, titleText, messageText) {
     const emailButton = document.getElementById('emailButton');
     if (!emailButton || !emailInput) return;
 
-   
+
     // 2. 아이디 중복확인 버튼 클릭 이벤트
     emailButton.addEventListener('click', async function (e) {
         e.preventDefault(); // 🛑 브라우저의 기본 동작(새로고침 등)을 막아줍니다!
@@ -125,9 +125,9 @@ function showMemberModal(prefix, type, titleText, messageText) {
     const phoneButton = document.getElementById('phoneButton');
     if (!phoneButton || !phoneInput) return;
 
-   
+
     phoneButton.addEventListener('click', async function (e) {
-    
+
         const phone = phoneInput.value.trim();
         if (!phone) {
             showMemberModal('member','error', '입력 오류', 'phone을 입력해 주세요.');
@@ -167,7 +167,7 @@ function showMemberModal(prefix, type, titleText, messageText) {
     const signupForm = document.querySelector('form');
     const signupButton = document.getElementById('signupButton');
     if (!signupButton||!signupForm) return;
-    
+
 
     signupButton.addEventListener('click', async function (e) {
         const formData = new FormData(signupForm);
@@ -205,13 +205,13 @@ function showMemberModal(prefix, type, titleText, messageText) {
         }
     });
     function signupmoveAfterSuccess(result) {
-  
+
         window.setTimeout(function () {
             window.location.href = result.redirectUrl;
         }, 1200);
     }
 })();
-    
+
     // 2. 로그인
 (function () {
     const loginForm = document.querySelector('form');
@@ -252,16 +252,16 @@ function showMemberModal(prefix, type, titleText, messageText) {
         }
     });
     function loginmoveAfterSuccess(result) {
-  
+
         window.setTimeout(function () {
             window.location.href = result.redirectUrl;
         }, 500);
     }
 })();
-    
+
     // 주카드 변경
 (function () {
-    // class로 모든 카드 변경 버튼을 가져옵니다.
+    // class로 모든 카드 변경 버튼을 가져옵니다
     const changeCardButtons = document.querySelectorAll('.btn-change-card');
     if (changeCardButtons.length === 0) return;
 
@@ -293,7 +293,7 @@ function showMemberModal(prefix, type, titleText, messageText) {
 
                 if (result.code === 'UPDATE_COMPLETED' || result.success) {
                     showMemberModal('card', 'success', '카드 변경 성공!', result.message || '카드 변경이 완료되었습니다.');
-                    
+
                     // 1초 후 페이지 새로고침하여 적용 상태 반영
                     setTimeout(function () {
                         location.reload();
@@ -309,12 +309,12 @@ function showMemberModal(prefix, type, titleText, messageText) {
         });
     });
 })();
-    
+
     // 관리자 회원 강제 탈퇴
 (function () {
 
     document.addEventListener('click', async function (e) {
-        
+
         const whitdrawButton = e.target.closest('.adminmemberSubmitButton');
         if (!whitdrawButton) return;
         const id = whitdrawButton.dataset.id;
@@ -349,7 +349,7 @@ function showMemberModal(prefix, type, titleText, messageText) {
         }
     });
     function signupmoveAfterSuccess(result) {
-  
+
         window.setTimeout(function () {
             window.location.href = result.redirectUrl;
         }, 1200);

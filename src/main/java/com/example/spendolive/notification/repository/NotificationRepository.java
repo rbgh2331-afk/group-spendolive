@@ -202,7 +202,6 @@ public class NotificationRepository {
         }
     }
 
-
     /* ─── 알림 1건 생성 (모든 기능이 공용으로 쓰는 발송 창구) ─── */
     public void insertNotification(String id, String type, String title, String message, String linkUrl) {
         if (id == null || id.isBlank() || type == null || type.isBlank()

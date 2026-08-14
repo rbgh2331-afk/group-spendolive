@@ -19,11 +19,8 @@ const WEATHER_REGIONS = {
     jeju:     { nx: 52, ny: 38,  label: "제주" }
 };
 
-// header.jsp의 <select id="weatherPageRegionSelect">를 WEATHER_REGIONS 기준으로 채움.
-// "내 위치 사용"(value="current")은 좌표가 없는 특수 옵션이라 고정으로 먼저 넣고,
-// 그 다음 WEATHER_REGIONS의 키 순서대로 지역 옵션을 이어붙임. 기본 선택은 서울.
-// header.jsp가 렌더링된 뒤 이 스크립트(weather.js)가 나중에 로드되므로,
-// DOMContentLoaded를 안 기다리고 바로 실행해도 <select>는 이미 존재함.
+// 날씨 지역 선택 옵션 구성
+// 내 위치 옵션과 지역 목록을 추가하고 서울을 기본 선택값으로 설정
 function populateWeatherRegionSelect() {
     const select = document.getElementById("weatherPageRegionSelect");
     if (!select) return;
@@ -104,7 +101,7 @@ function fetchWeatherPageByLatLon(lat, lon) {
 }
 
 /**
- * 기상청 PTY(강수형태) / SKY(하늘상태) 코드를 이모지로 변환한다.
+ * 기상청 PTY(강수형태) / SKY(하늘상태) 코드를 이모지로 변환
  *
  * PTY: 0 없음, 1 비, 2 비/눈, 3 눈, 4 소나기
  * SKY: 1 맑음, 3 구름많음, 4 흐림  (PTY가 0일 때만 의미 있음)

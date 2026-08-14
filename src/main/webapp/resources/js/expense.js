@@ -1,6 +1,6 @@
 /* [AJAX 변경 주석]
  * 기존 지출 화면 동작은 유지하고 AJAX 재렌더링 후 필요한 이벤트와 차트를 다시 초기화한다.
- * 기존 Controller/Service URL과 파라미터는 특별한 문제가 없는 한 그대로 유지한다.
+ * 기존 Controller/Service URL과 파라미터는 특별한 문제가 없는 한 그대로 유지
  */
 function initExpensePage() {
     const expenseTypeSelect = document.getElementById('expense_type');
@@ -9,7 +9,7 @@ function initExpensePage() {
     const repeatCycleSelect = document.getElementById('repeat_cycle');
     const repeatYnInput = document.getElementById('repeat_yn');
     const fixedYnInput = document.getElementById('fixed_yn');
-    // [고정지출 종료월] 등록 화면의 종료월 영역과 시작일을 함께 제어한다.
+    // 등록 화면의 종료월 영역과 시작일을 함께 제어한다
     const repeatEndMonthArea = document.getElementById('repeatEndMonthArea');
     const repeatEndMonthInput = document.getElementById('repeat_end_month');
     const expenseDateInput = document.querySelector('#expense-form input[name="expense_date"]');
@@ -72,7 +72,7 @@ function initExpensePage() {
         }
     }
 
-    // [고정지출 종료월] 고정 분류에서만 종료월 입력을 노출하고 시작월 이전 선택을 막는다.
+    // 고정 분류에서만 종료월 입력을 노출하고 시작월 이전 선택을 막는다
     function syncRepeatEndMonthArea() {
         const fixedExpense = expenseTypeSelect && expenseTypeSelect.value === 'FIXED';
 
@@ -288,13 +288,13 @@ function initExpensePage() {
     }
 
     function changeEditRepeatYnByRow(row) {
-        // 자동 반복 행의 화면 키와 실제 DB 지출 ID를 분리한다.
+        // 자동 반복 행의 화면 키와 실제 DB 지출 ID를 분리한다
         const expense_id = row.dataset.sourceExpenseId;
         const typeSelect = row.querySelector('.edit-expense-type');
         const editRepeatCycleSelect = row.querySelector('.edit-repeat-cycle');
         const editRepeatYnInput = document.getElementById(`editRepeatYn${expense_id}`);
         const editFixedYnInput = document.getElementById(`editFixedYn${expense_id}`);
-        // [고정지출 종료월] 수정 행의 종료월 입력과 시작일을 함께 제어한다.
+        // 수정 행의 종료월 입력과 시작일을 함께 제어한다
         const editRepeatEndArea = row.querySelector('.edit-repeat-end-area');
         const editRepeatEndInput = row.querySelector('.edit-repeat-end-month');
         const editExpenseDateInput = row.querySelector('.edit-expense-date');
@@ -331,7 +331,7 @@ function initExpensePage() {
         }
     }
 
-    // [고정지출 종료월] 수정 중 시작일이 바뀌면 종료월의 최소값도 즉시 갱신한다.
+    // 수정 중 시작일이 바뀌면 종료월의 최소값도 즉시 갱신
     function syncEditRepeatEndMonthMin(input) {
         const row = input.closest('tr');
         if (row) {
@@ -364,7 +364,7 @@ const categoryFilter = document.getElementById('expenseCategoryFilter');
 const amountSort = document.getElementById('expenseAmountSort');
 const expenseRows = Array.from(document.querySelectorAll('.expense-row'));
 const expenseTbody = document.getElementById('expenseRows');
-// [최근 지출 페이지 처리] 월별 전체 데이터는 유지하고 화면에서만 10개씩 나누어 표시한다.
+// 월별 전체 데이터는 유지하고 화면에서만 10개씩 나누어 표시
 const EXPENSE_PAGE_SIZE = 10;
 const expensePagination = document.getElementById('expensePagination');
 const expensePageNumbers = document.getElementById('expensePageNumbers');
@@ -383,7 +383,7 @@ const categoryFilterMasterList = categoryFilter
     }))
     : [];
 
-// 목록의 분류를 선택하면 해당 분류에 속한 카테고리만 필터 선택창에 표시한다.
+// 목록의 분류를 선택하면 해당 분류에 속한 카테고리만 필터 선택창에 표시
 function syncExpenseCategoryFilter() {
     if (!typeFilter || !categoryFilter) {
         return;
@@ -416,7 +416,7 @@ function syncExpenseCategoryFilter() {
     categoryFilter.value = canKeepPreviousCategory ? previousCategory : '';
 }
 
-// [최근 지출 페이지 처리] 페이지가 많아져도 버튼이 지나치게 길어지지 않도록 표시할 번호를 계산한다.
+// 페이지가 많아져도 버튼이 지나치게 길어지지 않도록 표시할 번호를 계산
 function makeExpensePageItems(currentPage, totalPages) {
     if (totalPages <= 7) {
         return Array.from({length: totalPages}, (_, index) => index + 1);
@@ -442,7 +442,7 @@ function makeExpensePageItems(currentPage, totalPages) {
     return pageItems;
 }
 
-// [최근 지출 페이지 처리] 현재 필터 결과에 맞춰 이전·숫자·다음 버튼을 다시 그린다.
+// 현재 필터 결과에 맞춰 이전·숫자·다음 버튼을 다시 그린다
 function renderExpensePagination(totalItemCount) {
     if (!expensePagination || !expensePageNumbers || !expensePrevButton || !expenseNextButton) {
         return;
@@ -482,7 +482,7 @@ function renderExpensePagination(totalItemCount) {
     });
 }
 
-// [최근 지출 페이지 처리] 필터·정렬을 먼저 적용한 뒤 현재 페이지에 해당하는 행만 노출한다.
+// 필터·정렬을 먼저 적용한 뒤 현재 페이지에 해당하는 행만 노출한다
 function filterExpenseRows(resetPage) {
     if (!typeFilter || !categoryFilter || !amountSort || !expenseTbody) {
         return;
@@ -528,7 +528,7 @@ function filterExpenseRows(resetPage) {
 
     const emptyMessage = document.getElementById('expenseFilterEmpty');
     if (emptyMessage) {
-        // 월별 원본 지출이 없는 경우에는 기존 '등록된 내역 없음' 행만 표시한다.
+        // 월별 원본 지출이 없는 경우에는 기존 '등록된 내역 없음' 행만 표시
         const showFilterEmpty = expenseRows.length > 0 && filteredRows.length === 0;
         emptyMessage.classList.toggle('expense-hidden', !showFilterEmpty);
     }
@@ -579,13 +579,13 @@ if (expenseNextButton) {
     });
 }
 
-// 최초 진입 시에도 분류에 맞는 카테고리와 첫 페이지를 표시한다.
+// 최초 진입 시에도 분류에 맞는 카테고리와 첫 페이지를 표시
 if (typeFilter && categoryFilter && amountSort && expenseTbody) {
     syncExpenseCategoryFilter();
     filterExpenseRows(true);
 }
 
-// [생필품 가격 비교] 지출관리 하단에서 상품 검색과 최근 조사 가격 조회를 AJAX로 처리한다.
+// 지출관리 하단에서 상품 검색과 최근 조사 가격 조회를 AJAX로 처리
 const consumerPriceSection = document.getElementById('consumer-price-compare');
 
 if (consumerPriceSection && consumerPriceSection.dataset.initialized !== 'true') {
@@ -605,7 +605,7 @@ if (consumerPriceSection && consumerPriceSection.dataset.initialized !== 'true')
     const highestPrice = document.getElementById('consumerHighestPrice');
     const storePriceRows = document.getElementById('consumerStorePriceRows');
 
-    // [생필품 가격 비교 더미데이터] 인증키 활성화 전 결과 화면 확인을 위한 시연용 상품 목록이다.
+    // 인증키 활성화 전 결과 화면 확인을 위한 시연용 상품 목록이다
     const consumerPriceDemoProducts = [
         {goodId: 'DEMO-MILK-001', goodName: '서울우유 나100% 1L', goodTotalCnt: '1000', goodTotalDivCode: 'mL', demo: true},
         {goodId: 'DEMO-MILK-002', goodName: '매일우유 오리지널 900mL', goodTotalCnt: '900', goodTotalDivCode: 'mL', demo: true},
@@ -613,7 +613,7 @@ if (consumerPriceSection && consumerPriceSection.dataset.initialized !== 'true')
         {goodId: 'DEMO-EGG-001', goodName: '신선한 계란 30구', goodTotalCnt: '30', goodTotalDivCode: '개', demo: true}
     ];
 
-    // [생필품 가격 비교 더미데이터] 상품별 시연용 가격 비교 결과다. DB에는 저장하지 않는다.
+    // 상품별 시연용 가격 비교 결과다. DB에는 저장하지 않는다
     const consumerPriceDemoComparisons = {
         'DEMO-MILK-001': {
             goodId: 'DEMO-MILK-001', goodName: '서울우유 나100% 1L', inspectDay: '2026-07-31', lowestPrice: 2580, averagePrice: 2830, highestPrice: 3200,
@@ -671,7 +671,7 @@ if (consumerPriceSection && consumerPriceSection.dataset.initialized !== 'true')
         storePriceRows.replaceChildren();
     }
 
-    // [생필품 가격 비교] 공통 AJAX 응답 형식과 로그인 만료 응답을 함께 처리한다.
+    // 공통 AJAX 응답 형식과 로그인 만료 응답을 함께 처리
     async function requestConsumerPrice(url) {
         const response = await fetch(url, {method: 'GET', credentials: 'same-origin', headers: {'Accept': 'application/json'}});
         const payload = await response.json().catch(function () { return null; });
@@ -724,7 +724,7 @@ if (consumerPriceSection && consumerPriceSection.dataset.initialized !== 'true')
         setConsumerPriceMessage('상품을 선택하면 최근 조사일의 판매점별 가격을 조회합니다.', '');
     }
 
-    // [생필품 가격 비교 더미데이터] 검색어와 일치하는 시연용 상품을 찾는다.
+    // 검색어와 일치하는 시연용 상품을 찾는다
     function findConsumerPriceDemoProducts(keyword) {
         const normalizedKeyword = String(keyword || '').replace(/\s/g, '').toLowerCase();
         const matchedProducts = consumerPriceDemoProducts.filter(function (product) {
@@ -734,7 +734,7 @@ if (consumerPriceSection && consumerPriceSection.dataset.initialized !== 'true')
         return matchedProducts.length > 0 ? matchedProducts : consumerPriceDemoProducts.slice(0, 3);
     }
 
-    // [생필품 가격 비교 더미데이터] 외부 API 오류 시 DB 없이 브라우저 데이터만으로 결과 화면을 표시한다.
+    // 외부 API 오류 시 DB 없이 브라우저 데이터만으로 결과 화면을 표시
     function renderConsumerPriceDemo(keyword) {
         const demoProducts = findConsumerPriceDemoProducts(keyword);
         const firstProduct = demoProducts[0];
@@ -783,11 +783,11 @@ if (consumerPriceSection && consumerPriceSection.dataset.initialized !== 'true')
         priceResults.scrollIntoView({behavior: 'smooth', block: 'nearest'});
     }
 
-    // [생필품 가격 비교] 선택 상품의 goodId로 최근 금요일 가격을 서버에 요청한다.
+    // 선택 상품의 goodId로 최근 금요일 가격을 서버에 요청
     async function loadConsumerPrices(product) {
         clearPriceResult();
 
-        // [생필품 가격 비교 더미데이터] 시연용 상품은 외부 API를 호출하지 않고 즉시 화면에 표시한다.
+        // 시연용 상품은 외부 API를 호출하지 않고 즉시 화면에 표시
         if (product.demo === true && consumerPriceDemoComparisons[product.goodId]) {
             renderPriceComparison(consumerPriceDemoComparisons[product.goodId]);
             setConsumerPriceMessage('한국소비자원 API 인증 대기 중 · 현재 시연용 예시 데이터를 표시합니다.', '');
@@ -826,7 +826,7 @@ if (consumerPriceSection && consumerPriceSection.dataset.initialized !== 'true')
             const payload = await requestConsumerPrice(`${contextPath}/spendolive/publicdata/consumer-price/products.do?${query.toString()}`);
             renderProductResults(payload.data);
         } catch (error) {
-            // [생필품 가격 비교 더미데이터] 인증키 동기화 전에도 결과 화면을 확인할 수 있도록 자동 전환한다.
+            // 인증키 동기화 전에도 결과 화면을 확인할 수 있도록 자동 전환한다
             console.warn('[생필품 가격 비교] 실제 API 호출 실패로 시연용 데이터를 표시합니다.', error);
             renderConsumerPriceDemo(keyword);
         } finally {

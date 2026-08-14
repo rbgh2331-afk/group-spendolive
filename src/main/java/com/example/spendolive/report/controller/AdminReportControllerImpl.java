@@ -32,14 +32,14 @@ public class AdminReportControllerImpl implements AdminReportController{
     }
     @Override
     @GetMapping("/list.do")
-    public ModelAndView listUpReport(@RequestParam(value = "status", required = false) String status,HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView listUpReport(@RequestParam(value = "status", required = false) String status, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
         session = request.getSession();
-        
+
         try {
             List<ReportVO> reportList = new ArrayList<ReportVO>();
-            if(status == null){reportList = reportService.selectReportAll();}
+            if (status == null) {reportList = reportService.selectReportAll();}
             else{reportList = reportService.selectReport(status);}
-            
+
             ModelAndView mav = layout("/WEB-INF/views/admin/report/report.jsp");
             mav.addObject("reportList", reportList);
 
@@ -52,10 +52,9 @@ public class AdminReportControllerImpl implements AdminReportController{
     }
     @Override
     @PostMapping("/comment.do")
-    public ResponseEntity<ReportAjaxResponse> comment(@RequestParam("admin_comment") String admin_comment,@RequestParam("reported_member_id") String reported_member_id,@RequestParam("report_id") int report_id,@RequestParam("result") String result,  HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
+    public ResponseEntity<ReportAjaxResponse> comment(@RequestParam("admin_comment") String admin_comment, @RequestParam("reported_member_id") String reported_member_id, @RequestParam("report_id") int report_id, @RequestParam("result") String result,  HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
         session = request.getSession();
-        
-        
+
         try {
             reportService.insertWarning(admin_comment, reported_member_id, report_id, result);
             return ResponseEntity.ok(new ReportAjaxResponse(
@@ -94,5 +93,5 @@ public class AdminReportControllerImpl implements AdminReportController{
         mav.addObject("body_page", bodyPage);
         return mav;
     }
-    
+
 }

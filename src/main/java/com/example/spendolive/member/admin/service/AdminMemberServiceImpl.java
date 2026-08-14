@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.spendolive.member.domain.MemberVO;
 import com.example.spendolive.member.repository.MemberRepository;
 
+/**
+ * 관리자 회원 관리 서비스 구현체
+ */
 @Service
 public class AdminMemberServiceImpl implements AdminMemberService{
     private final MemberRepository memberRepository;

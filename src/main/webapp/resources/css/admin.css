@@ -242,12 +242,12 @@ html,body {overflow-x:hidden;}
    질문 텍스트 길이에 따라 각 표의 컬럼 너비가 제각각 정해지면서 "노출"/"관리" 열이 표마다 안 맞았음.
    이 페이지(.admin-main[data-admin-page="faq"])에서만 컬럼 너비를 고정해서 전부 맞춤.
    다른 관리자 화면(회원/정산/신고 등)도 .admin-table을 공유하므로 전역으로는 건드리지 않음. */
-.admin-main[data-admin-page="faq"] .admin-table {table-layout: fixed;}
-.admin-main[data-admin-page="faq"] .admin-table th:nth-child(1), .admin-main[data-admin-page="faq"] .admin-table td:nth-child(1) {width: 4.375rem;}
+.admin-main[data-admin-page="faq"] .admin-table {table-layout:fixed;}
+.admin-main[data-admin-page="faq"] .admin-table th:nth-child(1), .admin-main[data-admin-page="faq"] .admin-table td:nth-child(1) {width:4.375rem;}
 /* 번호 */
-.admin-main[data-admin-page="faq"] .admin-table th:nth-child(3), .admin-main[data-admin-page="faq"] .admin-table td:nth-child(3) {width: 6.25rem;}
+.admin-main[data-admin-page="faq"] .admin-table th:nth-child(3), .admin-main[data-admin-page="faq"] .admin-table td:nth-child(3) {width:6.25rem;}
 /* 노출 */
-.admin-main[data-admin-page="faq"] .admin-table th:nth-child(4), .admin-main[data-admin-page="faq"] .admin-table td:nth-child(4) {width: 14rem;}
+.admin-main[data-admin-page="faq"] .admin-table th:nth-child(4), .admin-main[data-admin-page="faq"] .admin-table td:nth-child(4) {width:14rem;}
 /* 관리 */
 /* 질문(2번째)은 <colgroup> 없이 남은 공간을 자동으로 채움 */
 /* 관리자 JSP inline style 정리 */

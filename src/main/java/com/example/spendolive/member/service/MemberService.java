@@ -23,10 +23,10 @@ public interface MemberService {
     /* 마이페이지 계좌 목록에서 계좌 제목을 수정한다. */
     void updateAccountName(String id, int accountIdx, String accountName) throws Exception;
 
-    // 마이페이지에서 선택한 계좌를 주계좌로 변경한다.
+    // 마이페이지에서 선택한 계좌를 주계좌로 변경
     void updatePrimaryAccount(String id, int accountIdx) throws Exception;
 
-    // 마이페이지에서 선택한 계좌의 거래내역을 최신순으로 조회한다.
+    // 마이페이지에서 선택한 계좌의 거래내역을 최신순으로 조회
     List<MemberTranVO> getTransactionsByAccount(String id, int accountIdx) throws Exception;
 
     void addMember(MemberVO memberVO) throws Exception;
@@ -52,13 +52,13 @@ public interface MemberService {
     void registerOpenBankingIntegratedToken(MemberVO memberVO,
                                             MemberAccountVO accountVO) throws Exception;
 
-    // 마이페이지에서 로그인한 회원 정보를 조회하고 수정한다.
+    // 마이페이지에서 로그인한 회원 정보를 조회하고 수정
     MemberVO getMemberById(String id) throws Exception;
 
     void updateMyInfo(MemberVO memberVO, String newPassword) throws Exception;
     boolean matchesPassword(String rawPassword, String encodedPassword);
 
-    // 로그인 페이지의 아이디·비밀번호 찾기 기능에서 사용한다.
+    // 로그인 페이지의 아이디·비밀번호 찾기 기능에서 사용
     String findIdByPhone(String phone) throws Exception;
 
     boolean existsActiveId(String id) throws Exception;
@@ -68,7 +68,7 @@ public interface MemberService {
     void updatePasswordById(String id, String newPassword) throws Exception;
     void updatePrimaryCard(String id, int cardIdx) throws Exception;
 
-    // 마이페이지에서 카드 표시 이름을 수정한다.
+    // 마이페이지에서 카드 표시 이름을 수정
     void updateCardName(String id, int cardIdx, String cardName) throws Exception;
-    public void deleteCard(int card_idx,String id) throws Exception;
+    public void deleteCard(int card_idx, String id) throws Exception;
 }

@@ -15,9 +15,7 @@ public interface ExpenseService {
 
     void modifyExpense(ExpenseDTO expenseDTO);
 
-
     void removeExpense(Long expense_id, Long member_id);
-
 
     List<ExpenseCategoryDTO> getCategoryList();
 

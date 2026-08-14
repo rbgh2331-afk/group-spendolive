@@ -58,7 +58,6 @@ public class InquiryController {
             return new ModelAndView("redirect:/member/loginForm.do");
         }
 
-       
         ModelAndView mav = new ModelAndView("common/layout");
         mav.addObject("body_page", "/WEB-INF/views/inquiry/inquiryList.jsp");
 
@@ -110,7 +109,6 @@ public class InquiryController {
         return mav;
     }
 
-
     /* ─── 문의 상세 ───────────────────────────────────────── */
     @GetMapping("/detail.do")
     public ModelAndView inquiryDetail(
@@ -136,12 +134,12 @@ public class InquiryController {
             return new ModelAndView("redirect:/spendolive/inquiry/list.do");
         }
 
-        // TODO: 상세 페이지 JSP(inquiryDetail.jsp)
+        // 문의 상세 화면 구성
         ModelAndView mav = new ModelAndView("common/layout");
         mav.addObject("body_page", "/WEB-INF/views/inquiry/inquiryDetail.jsp");
         mav.addObject("inquiry", inquiry);
         return mav;
-        
+
     }
 
     /* ─── 문의 수정 폼 ─────────────────────────────────────── */
@@ -169,8 +167,6 @@ public class InquiryController {
         mav.addObject("inquiry", inquiry);
         return mav;
     }
-
-
 
     /* ════════════════════════════════════════════════════════════
        AJAX 전용 엔드포인트 (페이지 이동 없이 JSON으로 결과만 반환)

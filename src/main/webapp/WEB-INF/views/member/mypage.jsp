@@ -1,4 +1,4 @@
-<%-- [AJAX 변경 주석] 회원정보·계좌명·주계좌·주카드 폼은 기존 action을 호환용으로 유지하고 AJAX 전용 주소를 추가했다. --%>
+<%-- 회원정보·계좌·카드 관리 AJAX 폼 --%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
@@ -754,7 +754,7 @@
         <p class="eyebrow">ACCOUNT DELETE</p>
         <h2>회원탈퇴</h2>
         <p class="mypage-muted">회원탈퇴를 하면 현재 계정으로 다시 로그인할 수 없습니다.</p>
-        <%-- [회원탈퇴 정책 변경] 과거 OTT 참여 이력·문의는 삭제하고, 신고 등 필요한 처리 기록만 익명화 보존한다. --%>
+        <%-- 회원탈퇴 시 개인 데이터 삭제 및 필요한 처리 기록 익명화 보존 --%>
         <ul class="withdraw-list">
             <li>개인 지출 내역과 월별 예산, 등록된 계좌·카드 정보는 모두 삭제됩니다.</li>
             <li>과거 OTT 참여 이력과 문의 내역·첨부파일은 모두 삭제됩니다.</li>

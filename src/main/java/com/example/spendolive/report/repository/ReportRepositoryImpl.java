@@ -23,19 +23,19 @@ public class ReportRepositoryImpl implements ReportRepository {
                                         +"from report_tb ";
     private final String selectReport = "SELECT REPORT_ID,REPORTER_ID,REPORTED_member_id,ROOM_ID,REPORT_REASON,REPORT_STATUS,ADMIN_COMMENT,created_at,processed_at "
                                         +"from report_tb where report_status=? ";
-                                                                         
+
     private final String updateComment = "UPDATE report_tb SET admin_comment =? , processed_at =SYSDATE , report_status =? WHERE report_id=? ";
     private final String completeReportIfWaiting = "UPDATE report_tb SET admin_comment =?, processed_at =SYSDATE, report_status ='COMPLETE' "
                                                  + "WHERE report_id =? AND report_status ='WAIT' ";
     private final String insertWarning = "INSERT INTO warning_tb (member_id, report_id, warning_reason, penalty_days, status, created_at)"
                                         +" VALUES (?,?,?,?,?,SYSDATE) ";
-    
+
     @Override
-    public void insertReport(ReportVO reportInfo){
-        jdbcTemplate.update(insertReport, reportInfo.getRoom_id(), reportInfo.getReporter_id() ,reportInfo.getReported_member_id(), reportInfo.getReport_reason());
+    public void insertReport(ReportVO reportInfo) {
+        jdbcTemplate.update(insertReport, reportInfo.getRoom_id(), reportInfo.getReporter_id() , reportInfo.getReported_member_id(), reportInfo.getReport_reason());
     }
     @Override
-    public List<ReportVO> selectReportAll(){
+    public List<ReportVO> selectReportAll() {
         try {
             return jdbcTemplate.query(selectReportAll, (rs, rowNum) -> {
             ReportVO report = new ReportVO();
@@ -52,12 +52,12 @@ public class ReportRepositoryImpl implements ReportRepository {
             return report;
             });
         }catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-            return null; 
+            // 조회 결과가 없으면 null 반환
+            return null;
         }
     }
     @Override
-    public List<ReportVO> selectReport(String status){
+    public List<ReportVO> selectReport(String status) {
         try {
             return jdbcTemplate.query(selectReport, (rs, rowNum) -> {
             ReportVO report = new ReportVO();
@@ -74,20 +74,20 @@ public class ReportRepositoryImpl implements ReportRepository {
             return report;
             }, status);
         }catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-            return null; 
+            // 조회 결과가 없으면 null 반환
+            return null;
         }
     }
     @Override
-    public void updateComment(String comment, int report_id){
+    public void updateComment(String comment, int report_id) {
         jdbcTemplate.update(updateComment, comment, "COMPLETE", report_id);
     }
     @Override
-    public int completeReportIfWaiting(String comment, int report_id){
+    public int completeReportIfWaiting(String comment, int report_id) {
         return jdbcTemplate.update(completeReportIfWaiting, comment, report_id);
     }
     @Override
-    public void insertWarning(WarningVO warning){
+    public void insertWarning(WarningVO warning) {
         jdbcTemplate.update(insertWarning, warning.getMember_id(), warning.getReport_id(), warning.getWarning_reason(),
                 warning.getPenalty_days(), warning.getStatus());
     }

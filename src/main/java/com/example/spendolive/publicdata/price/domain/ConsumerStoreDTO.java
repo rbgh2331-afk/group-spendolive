@@ -2,7 +2,7 @@ package com.example.spendolive.publicdata.price.domain;
 
 public class ConsumerStoreDTO {
 
-    // [생필품 가격 비교] 가격정보의 entpId와 판매점 정보를 연결할 때 사용한다.
+    // 가격정보의 entpId와 판매점 정보를 연결할 때 사용
     private String entpId;
     private String entpName;
     private String roadAddrBasic;

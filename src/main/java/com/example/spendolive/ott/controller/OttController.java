@@ -50,8 +50,8 @@ public class OttController {
         session.removeAttribute("log");
         model.addAttribute("serviceList", ottService.getShareableServices());
         model.addAttribute("recruitRoomCount", ottService.getRecruitRoomCount());
-        
-        // [내 담당 로그인 공통화] OTT 진입 로그인 안내는 공통 JS에서 처리하고 Controller는 화면 데이터만 구성한다.
+
+        // OTT 진입 로그인 안내는 공통 JS에서 처리하고 Controller는 화면 데이터만 구성
         model.addAttribute("myRoomCount", ottService.getMyRoomCount(loginId));
         model.addAttribute("body_page", "/WEB-INF/views/ott/ott.jsp");
         return "common/layout";
@@ -61,7 +61,7 @@ public class OttController {
     @GetMapping("/ott/friends.do")
     public String friends(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
-        // 조회 화면은 계좌 연동 여부와 관계없이 열고, 실제 생성/참가/결제 시점에만 연동 상태를 검사한다.
+        // 조회 화면은 계좌 연동 여부와 관계없이 열고, 실제 생성/참가/결제 시점에만 연동 상태를 검사한다
         addCommonOttModel(model, loginId);
         model.addAttribute("myRoomList", ottService.getFriendRooms(loginId));
         model.addAttribute("hostedRoomList", ottService.getHostedFriendRooms(loginId));
@@ -72,10 +72,10 @@ public class OttController {
 
     // 가족·지인 공유방 생성 - 생성자를 방장 멤버로 등록
     @PostMapping("/ott/friends/create.do")
-    public String createFriendRoom(@ModelAttribute OttRoomDTO roomDTO,HttpSession session,RedirectAttributes redirectAttributes) {
+    public String createFriendRoom(@ModelAttribute OttRoomDTO roomDTO, HttpSession session, RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
 
-        // 화면 주소를 거치지 않고 생성 URL을 직접 호출하는 경우도 막는다.
+        // 화면 주소를 거치지 않고 생성 URL을 직접 호출하는 경우도 막는다
         if (!hasLinkedAccount(session)) {
             redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 계좌 연동이 필요합니다.");
             return "redirect:/spendolive/main.do";
@@ -101,7 +101,7 @@ public class OttController {
                           RedirectAttributes redirectAttributes,
                           HttpSession session) {
         String loginId = getLoginId(session);
-        // 모집글 조회는 계좌 연동 여부와 관계없이 허용하고, 실제 생성/참가/결제에서만 연동 상태를 검사한다.
+        // 모집글 조회는 계좌 연동 여부와 관계없이 허용하고, 실제 생성/참가/결제에서만 연동 상태를 검사한다
         Long selectedOttServiceId = parseOttServiceId(ott_service_id);
         int totalRecruitRoomCount = ottService.getRecruitRoomCount(selectedOttServiceId, roomNameKeyword);
         int totalPages = totalRecruitRoomCount == 0
@@ -136,7 +136,7 @@ public class OttController {
     @PostMapping("/ott/recruit/create.do")
     public String createRecruitRoom(@ModelAttribute OttRoomDTO roomDTO, HttpSession session, RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
-        // DB 기본값 "NO"를 확실히 차단하기 위해 "YES"만 허용한다.
+        // DB 기본값 "NO"를 확실히 차단하기 위해 "YES"만 허용한다
         if (!hasLinkedAccount(session)) {
             redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 계좌 연동이 필요합니다.");
             return "redirect:/spendolive/main.do";
@@ -158,7 +158,7 @@ public class OttController {
                                     RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
 
-        // 빠른 참가도 OTT 기능이므로 동일한 계좌 연동 검사를 적용한다.
+        // 빠른 참가도 OTT 기능이므로 동일한 계좌 연동 검사를 적용
         if (!hasLinkedCard(session)) {
             redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 카드 등록이 필요합니다.");
             return "redirect:/spendolive/main.do";
@@ -172,9 +172,9 @@ public class OttController {
             return "redirect:/spendolive/ott/recruit.do?tab=all";
         }
 
-        // 선택한 OTT 기준으로 참가 가능한 가장 오래된 빈 방의 roomId를 찾는다.
-        // 여기서는 아직 DB에 참여자로 저장하지 않는다.
-        // 결제 흐름을 거쳐야 하므로 "방 찾기"만 한다.
+        // 선택한 OTT 기준으로 참가 가능한 가장 오래된 빈 방의 roomId를 찾는다
+        // 여기서는 아직 DB에 참여자로 저장하지 않는다
+        // 결제 흐름을 거쳐야 하므로 "방 찾기"만 한다
         Long room_id = ottService.findQuickJoinRecruitRoomId(selectedOttServiceId, loginId);
 
         // 참가 가능한 방이 없는 경우
@@ -184,9 +184,9 @@ public class OttController {
         }
 
         // 기존 신청하기와 동일한 결제 흐름으로 이동
-        // 일반 신청하기도 최종적으로 roomId를 결제쪽으로 넘긴다.
-        // 빠른 참가는 서버에서 자동으로 찾은 roomId를 넘긴다는 점만 다르다.
-        // 결제쪽은 기존 room_id 기반 결제 로직을 그대로 사용하면 된다.
+        // 일반 신청하기도 최종적으로 roomId를 결제쪽으로 넘긴다
+        // 빠른 참가는 서버에서 자동으로 찾은 roomId를 넘긴다는 점만 다르다
+        // 결제쪽은 기존 room_id 기반 결제 로직을 그대로 사용하면 된다
         return redirectToRoomPayment(room_id, "RECRUIT", null);
     }
 
@@ -303,7 +303,6 @@ public class OttController {
         return "redirect:/spendolive/ott/friends.do?result=closeRequested";
     }
 
-
     // 탈퇴 예약 - 참여자의 다음 이용 회차 탈퇴 예약
     @PostMapping("/ott/room/leave-reserve.do")
     public String reserveRoomLeave(@RequestParam("room_id") Long room_id,
@@ -329,7 +328,6 @@ public class OttController {
         redirectAttributes.addFlashAttribute("msg", msg);
         return redirectAfterRoomAction(returnPage);
     }
-
 
     // 방 관리 화면 이동 경로 처리
     private String redirectAfterRoomAction(String returnPage) {
@@ -380,7 +378,7 @@ public class OttController {
     }
 
     // OTT 계좌 연동 여부 공통 검사
-    // MEMBER_TB.ACCOUNT_STATUS의 연동 완료 값은 "YES"이므로 그 값만 허용한다.
+    // MEMBER_TB.ACCOUNT_STATUS의 연동 완료 값은 "YES"이므로 그 값만 허용한다
     private boolean hasLinkedAccount(HttpSession session) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
         return memberInfo != null && "YES".equals(memberInfo.getAccount_status());
@@ -390,7 +388,7 @@ public class OttController {
         return memberInfo != null && "YES".equals(memberInfo.getCard_status());
     }
 
-    // [내 담당 로그인 공통화] 로그인 여부 판단은 공통 JS에서 처리하고 Controller에서는 세션 사용자 ID만 사용한다.
+    // 로그인 여부 판단은 공통 JS에서 처리하고 Controller에서는 세션 사용자 ID만 사용
     private String getLoginId(HttpSession session) {
         MemberVO memberInfo = session == null ? null : (MemberVO) session.getAttribute("memberInfo");
         if (memberInfo == null) {

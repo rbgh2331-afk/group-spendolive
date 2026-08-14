@@ -20,7 +20,6 @@ import com.example.spendolive.member.domain.MemberVO;
 import com.example.spendolive.notice.domain.NoticeDTO;
 import com.example.spendolive.notice.service.NoticeService;
 
-
 @Controller
 @RequestMapping("/spendolive/notice")
 public class NoticeController {
@@ -37,20 +36,19 @@ public class NoticeController {
 
     public Object noticeCenter(
             @RequestParam(value = "tab", required = false, defaultValue = "notice") String tab,
-            HttpSession session, 
+            HttpSession session,
             RedirectAttributes redirectAttributes) {
 
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
-     
+
         // 알림 탭은 로그인 필요
         if ("alert".equals(tab) && memberInfo == null) {
             redirectAttributes.addFlashAttribute("msg", "로그인이 필요한 기능 입니다. 로그인을 해주세요 !");
             return "redirect:/member/loginForm.do?log=notice";
         }
 
-        
         String id = (memberInfo != null) ? memberInfo.getId() : null;
-        
+
         ModelAndView mav = new ModelAndView("common/layout");
         mav.addObject("body_page", "/WEB-INF/views/notice/noticeCenter.jsp");
         mav.addObject("loginYn", memberInfo != null);

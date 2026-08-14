@@ -6,22 +6,22 @@
    - notice.js(전역 로드)뿐 아니라 inquiry.js 등 다른 화면도 이 soAlert/soConfirm을
      그대로 갖다 쓰므로, 사이트 전체에서 공통으로 쓰는 부품임 - 함부로 지우면 안 됨
    ========================================================= */
-.so-local-overlay {position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(20, 29, 18, .48); backdrop-filter: blur(2px);}
-.so-local-overlay[hidden] {display: none;}
-.so-local-box {width: min(100%, 23rem); padding: 2rem 1.5rem 1.5rem; border-radius: 1.25rem; background: #fff; box-shadow: 0 1.5rem 4rem rgba(21, 40, 18, .24); text-align: center; animation: soLocalPop .18s ease-out;}
+.so-local-overlay {position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(20, 29, 18, .48);backdrop-filter:blur(2px);}
+.so-local-overlay[hidden] {display:none;}
+.so-local-box {width:min(100%, 23rem);padding:2rem 1.5rem 1.5rem;border-radius:1.25rem;background:#fff;box-shadow:0 1.5rem 4rem rgba(21, 40, 18, .24);text-align:center;animation:soLocalPop .18s ease-out;}
 @keyframes soLocalPop {
-    from {transform: scale(.94); opacity: 0;}
-    to {transform: scale(1); opacity: 1;}
+    from {transform:scale(.94);opacity:0;}
+    to {transform:scale(1);opacity:1;}
 }
-.so-local-icon {display: flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; margin: 0 auto 1.125rem; border-radius: 50%; background: #eef5df; color: #5f7628; font-size: 1.5rem; font-weight: 900;}
-.so-local-overlay[data-state="error"] .so-local-icon {background: #fff0eb; color: #c0392b;}
-.so-local-title {margin: 0 0 .5rem; color: #26351f; font-size: 1.125rem; font-weight: 800; white-space: pre-line; line-height: 1.5;}
-.so-local-msg {margin: 0; color: #6f7b66; line-height: 1.65; white-space: pre-line;}
-.so-local-msg[hidden] {display: none;}
-.so-local-actions {display: flex; gap: .5rem; justify-content: center; margin-top: 1.5rem;}
-.so-local-btn {min-width: 5rem; padding: .65rem 1.2rem; border-radius: .7rem; font-weight: 700; font-size: .95rem; cursor: pointer; border: 1.5px solid transparent;}
-.so-local-ok {background: #6d7f2e; color: #fff;}
-.so-local-ok:hover {background: #5f7628;}
-.so-local-cancel {background: #f1f4df; color: #3f4a2c; border-color: #dfe6cb;}
-.so-local-cancel:hover {border-color: #b9c58f;}
-.so-local-cancel[hidden] {display: none;}
+.so-local-icon {display:flex;align-items:center;justify-content:center;width:2.75rem;height:2.75rem;margin:0 auto 1.125rem;border-radius:50%;background:#eef5df;color:#5f7628;font-size:1.5rem;font-weight:900;}
+.so-local-overlay[data-state="error"] .so-local-icon {background:#fff0eb;color:#c0392b;}
+.so-local-title {margin:0 0 .5rem;color:#26351f;font-size:1.125rem;font-weight:800;white-space:pre-line;line-height:1.5;}
+.so-local-msg {margin:0;color:#6f7b66;line-height:1.65;white-space:pre-line;}
+.so-local-msg[hidden] {display:none;}
+.so-local-actions {display:flex;gap:.5rem;justify-content:center;margin-top:1.5rem;}
+.so-local-btn {min-width:5rem;padding:.65rem 1.2rem;border-radius:.7rem;font-weight:700;font-size:.95rem;cursor:pointer;border:1.5px solid transparent;}
+.so-local-ok {background:#6d7f2e;color:#fff;}
+.so-local-ok:hover {background:#5f7628;}
+.so-local-cancel {background:#f1f4df;color:#3f4a2c;border-color:#dfe6cb;}
+.so-local-cancel:hover {border-color:#b9c58f;}
+.so-local-cancel[hidden] {display:none;}

@@ -13,7 +13,6 @@ public class OttRoomDTO {
     private String host_login_id;
     private String host_nickname;
 
-
     // OTT 서비스 및 방 설정
     private Long ott_service_id;
     private String service_name;

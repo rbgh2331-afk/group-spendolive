@@ -199,7 +199,7 @@
                     aria-describedby="loginStatusMessage"
                     hidden>
                     <div class="status-box">
-                    
+
                     <div id="loginStatusSpinner"
                             class="status-spinner"
                             aria-hidden="true"></div>

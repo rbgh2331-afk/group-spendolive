@@ -21,7 +21,7 @@
     const form = document.getElementById('chatSendForm');
     const input = document.getElementById('chatMessageInput');
     const sendButton = form ? form.querySelector('button[type="submit"],input[type="submit"]') : null;
-    // [채팅 중복 전송 방지] 채팅에는 전역 팝업을 쓰지 않고 별도 pending 상태로 연속 전송만 막는다.
+    // 채팅에는 전역 팝업을 쓰지 않고 별도 pending 상태로 연속 전송만 막는다
     let chatSendPending = false;
 
     if (!room_id || !list || !form || !input) {
@@ -115,7 +115,7 @@
     }
 
     // AJAX로 메시지 전송
-    // 채팅은 전역 로딩 팝업 대신 입력창 안에서 빠르게 이어져야 하므로 버튼 잠금만 적용한다.
+    // 채팅은 전역 로딩 팝업 대신 입력창 안에서 빠르게 이어져야 하므로 버튼 잠금만 적용
     form.addEventListener('submit', function (event) {
         event.preventDefault();
 

@@ -35,10 +35,10 @@ public class AdminMemberControllerImpl implements AdminMemberController{
 
     @Override
     @GetMapping("/list.do")
-    public ModelAndView listUpSettlement(@RequestParam(value = "status", required = false) String status,HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView listUpSettlement(@RequestParam(value = "status", required = false) String status, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
         session = request.getSession();
-        if(status==null){status = "READY";}
-        
+        if (status==null) {status = "READY";}
+
         try {
             List<MemberVO> memberList = adminmemberService.selectMemberAll();
             session.setAttribute("memberList", memberList);
@@ -50,8 +50,8 @@ public class AdminMemberControllerImpl implements AdminMemberController{
         }
     }
 
-    // 관리자 회원관리 화면에서만 호출되는 강제탈퇴 API입니다.
-    // SecurityConfig의 /admin/** 권한 검사와 Controller의 role 검사를 함께 적용합니다.
+    // 관리자 회원관리 화면에서만 호출되는 강제탈퇴 API입니다
+    // SecurityConfig의 /admin/** 권한 검사와 Controller의 role 검사를 함께 적용
     @Override
     @PostMapping("/withdraw.do")
     @ResponseBody

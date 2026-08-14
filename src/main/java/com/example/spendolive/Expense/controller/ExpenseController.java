@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpSession;
 /**
  * 지출관리 화면 조회 Controller.
  *
- * SSR 방식으로 지출 목록 화면과 차트·요약 데이터를 구성한다.
+ * SSR 방식으로 지출 목록 화면과 차트·요약 데이터를 구성
  * 등록·수정·삭제·예산 저장 AJAX 요청은 ExpenseAjaxController가 담당한다.
  */
 @Controller
@@ -46,7 +46,7 @@ public class ExpenseController {
                               Model model,
                               HttpSession session) {
 
-        // [내 담당 로그인 공통화] 화면 진입 로그인 안내는 공통 JS에서 처리하므로 Controller의 중복 redirect 검사는 제거한다.
+        // 화면 진입 로그인 안내는 공통 JS에서 처리하므로 Controller의 중복 redirect 검사는 제거한다
         Long memberId = getLoginMemberId(session);
 
         String selectedDate = normalizeDate(date);
@@ -98,7 +98,7 @@ public class ExpenseController {
             try {
                 return YearMonth.parse(yearMonth).toString();
             } catch (Exception ignored) {
-                // 잘못된 연월은 아래 날짜 또는 현재 연월로 보정한다.
+                // 잘못된 연월은 아래 날짜 또는 현재 연월로 보정한다
             }
         }
 
@@ -106,7 +106,7 @@ public class ExpenseController {
             try {
                 return YearMonth.from(LocalDate.parse(date)).toString();
             } catch (Exception ignored) {
-                // 잘못된 날짜는 아래 현재 연월로 보정한다.
+                // 잘못된 날짜는 아래 현재 연월로 보정한다
             }
         }
 
@@ -125,7 +125,7 @@ public class ExpenseController {
         }
     }
 
-    // [내 담당 로그인 공통화] 로그인 여부 판단은 화면 공통 함수에 맡기고 세션 회원번호만 꺼낸다.
+    // 로그인 여부 판단은 화면 공통 함수에 맡기고 세션 회원번호만 꺼낸다
     private Long getLoginMemberId(HttpSession session) {
         MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         return Long.valueOf(member.getMember_id());

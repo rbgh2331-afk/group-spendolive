@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%-- 관리자 OTT 관리 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="isEdit" value="${not empty editService}" />
 

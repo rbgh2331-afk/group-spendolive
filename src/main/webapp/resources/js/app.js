@@ -1,7 +1,7 @@
 /* SpendOlive Complete Fixed JS */
 const contextPath = window.contextPath;
 let currentMonth = 6;
-let isEmailVerified = false; 
+let isEmailVerified = false;
 let isPhoneVerified = false;
 
 function ensureCommonAlertModal() {
@@ -53,7 +53,7 @@ function commonAlert(message, options) {
   });
 }
 
-// 공통 로그인 필요 메뉴 처리: 비로그인 상태에서는 안내 후 로그인 화면으로 이동한다.
+// 공통 로그인 필요 메뉴 처리: 비로그인 상태에서는 안내 후 로그인 화면으로 이동
 window.loginYn = function (log, isLoggedIn) {
   if (isLoggedIn) return true;
 
@@ -168,7 +168,7 @@ function verifySms() {
 function joinCheck() {
 if(!isEmailVerified) {
     alert("이메일 인증을 완료해야 회원가입이 가능합니다.");
-    return false;    
+    return false;
 }
 if (!isPhoneVerified) {
   alert('전화번호 인증을 완료해 주세요.');
@@ -187,7 +187,7 @@ return true;
 function joinCheckKakao() {
   if(!isEmailVerified) {
       alert("이메일 인증을 완료해야 회원가입이 가능합니다.");
-      return false;    
+      return false;
   }
   if (!isPhoneVerified) {
     alert('전화번호 인증을 완료해 주세요.');
@@ -250,7 +250,7 @@ function updateFixedPlanForm(form) {
   const displayShareAmount = member_limit > 0 ? Math.floor(displayTotalPrice / member_limit) : 0;
   const displayFeeAmount = Math.floor(displayShareAmount * 0.03);
   const displayPersonAmount = displayShareAmount + displayFeeAmount;
-  
+
   const extraText = isFriendRoom
     ? '가족/지인 공유방은 추가 IP 비용을 제외합니다.'
     : (extraFee > 0 && extraCount > 0
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-  
+
   // ==========================================
   // 2. 글자 크기 및 폰트 설정 기능
   // ==========================================
@@ -363,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
       max: 30
   };
 
-  // [요청하신 Jua 폰트 추가]
   const FONT_MAP = {
       'system': "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
       'jua': '"Jua", sans-serif', // <-- Jua 폰트 반영
@@ -387,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // --- B. 폰트 종류 적용 ---
   function applyFontFamily(fontKey) {
     const selectedFont = FONT_MAP[fontKey] || FONT_MAP['system'];
-    
+
     // <html> 태그와 <body> 태그 모두에 폰트를 인라인으로 강제 적용
     htmlTag.style.setProperty('font-family', selectedFont, 'important');
     if (document.body) {
@@ -566,7 +565,7 @@ window.executeRequest = async function(options,prefix) {
       showFailure(button, result, prefix);
 
   } catch (error) {
-      // 네트워크 오류나 타임아웃이 발생했을 때 상태 확인 함수가 있으면 실제 처리 결과를 다시 확인합니다.
+      // 네트워크 오류나 타임아웃이 발생했을 때 상태 확인 함수가 있으면 실제 처리 결과를 다시 확인
       if (typeof checkStatusFunc === 'function') {
           showStatusModal(
               prefix,
@@ -591,7 +590,7 @@ window.executeRequest = async function(options,prefix) {
           return;
       }
 
-      // 상태 확인 API가 없는 일반 요청은 추가 함수를 호출하지 않고 요청별 안내 문구를 표시합니다.
+      // 상태 확인 API가 없는 일반 요청은 추가 함수를 호출하지 않고 요청별 안내 문구를 표시
       showFailure(button, { message: fallbackErrorMessage }, prefix);
 
   } finally {

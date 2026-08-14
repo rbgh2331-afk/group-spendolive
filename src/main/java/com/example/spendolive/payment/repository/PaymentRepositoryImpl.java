@@ -12,13 +12,12 @@ import com.example.spendolive.ott.domain.OttRoomMemberDTO;
 import com.example.spendolive.ott.domain.OttSettlementDTO;
 import com.example.spendolive.payment.domain.*;
 
-
 @Repository
 public class PaymentRepositoryImpl implements PaymentRepository{
     private final JdbcTemplate jdbcTemplate;
 //insert
 
-    // 사전 생성된 결제 행이 없는 예외적인 경우에만 새 결제 행을 등록합니다.
+    // 사전 생성된 결제 행이 없는 예외적인 경우에만 새 결제 행을 등록
     private final String insertSuccessfulPayment = """
             INSERT INTO settlement_payment_tb (
                 settlement_id,
@@ -48,9 +47,9 @@ public class PaymentRepositoryImpl implements PaymentRepository{
     +"SETTLEMENT_ID, payment_id,member_login_id, REFUND_AMOUNT, refund_reason, refund_status, completed_at) "
     +" VALUES(?,?,?,?,?,?,?) ";
 //select
-    
+
     private final String settlement_paymentByroomId = "select "
-    +"sp.payment_id, sp.settlement_id, sp.id, sp.base_amount, sp.fee_rate, sp.fee_amount, sp.total_amount, sp.payment_status, sp.card_number," 
+    +"sp.payment_id, sp.settlement_id, sp.id, sp.base_amount, sp.fee_rate, sp.fee_amount, sp.total_amount, sp.payment_status, sp.card_number,"
     +"sp.card_company, sp.paid_at, sp.confirmed_at, sp.expired_at, sp.cancelled_at, sp.paymentKey, sp.orderId, sp.memo "
     +" from settlement_payment_tb sp JOIN settlement_tb st ON sp.settlement_id = st.settlement_id "
     +"where st.room_id =? AND sp.id = ? ORDER BY st.settlement_id DESC FETCH FIRST 1 ROW ONLY";
@@ -74,23 +73,23 @@ public class PaymentRepositoryImpl implements PaymentRepository{
     + "TO_CHAR(r.CLOSE_REQUESTED_AT, 'YYYY-MM-DD') AS CLOSE_REQUESTED_AT, "
     + "TO_CHAR(r.CLOSED_AT, 'YYYY-MM-DD') AS CLOSED_AT, "
     + "TO_CHAR(r.created_at, 'YYYY-MM-DD') AS created_at, "
-    + "s.SETTLEMENT_STATUS "         
+    + "s.SETTLEMENT_STATUS "
     + "from ott_room_tb r INNER JOIN settlement_tb s ON r.ROOM_ID = s.ROOM_ID where r.BILLING_DAY >=? AND r.BILLING_DAY <=? AND r.status IN ('ACTIVE', 'FIRST') "
     + "AND s.settlement_status =? ";
     private final String selectTodaySettlementmember = "SELECT FEE_AMOUNT,FEE_RATE,MEMBER_LOGIN_ID,PAY_AMOUNT,PAY_DAY,PAY_LATE_DAY,ROOM_ID, settlement_status, "
-    + "TO_CHAR(JOINED_AT , 'YYYY-MM-DD') AS JOINED_AT "     
+    + "TO_CHAR(JOINED_AT , 'YYYY-MM-DD') AS JOINED_AT "
     + "from ott_room_member_tb where (pay_day + pay_late_day) >=? AND (pay_day + pay_late_day) <=? AND status= 'ACTIVE' "
     + "AND settlement_status =? and MEMBER_ROLE='MEMBER' AND room_id IN ( SELECT room_id from ott_room_tb where status ='ACTIVE' ) ";
     private final String settlement_paymentAll = "select "
-    +"payment_id, settlement_id, id, base_amount, fee_rate, fee_amount, total_amount, payment_status, card_number," 
+    +"payment_id, settlement_id, id, base_amount, fee_rate, fee_amount, total_amount, payment_status, card_number,"
     +"card_company, paid_at, confirmed_at, expired_at, cancelled_at, paymentKey, orderId, memo "
     +" from settlement_payment_tb ";
     private final String selectEscrowStatus = "select "
-    +"decode(count(*),1, 'false', 0, 'true') as status " 
+    +"decode(count(*),1, 'false', 0, 'true') as status "
     +" from escrow_payout_tb "
     +" where room_id =? and host_id=? and status='HELD' ";
     private final String selectRefundStatus = "select "
-    +"REFUND_STATUS " 
+    +"REFUND_STATUS "
     +" from settlement_refund_tb "
     +" where payment_id =? ";
 //update
@@ -105,7 +104,7 @@ public class PaymentRepositoryImpl implements PaymentRepository{
     private final String updateTodaysettlementroommemberstatus = "UPDATE ott_room_member_tb set SETTLEMENT_STATUS = 'DONE' where ROOM_ID =? and member_login_id =? ";
     private final String updateTodaysettlementroommemberlate = "UPDATE ott_room_member_tb set pay_late_day =? + 1 where ROOM_ID =? and member_login_id =? ";
     private final String updatePaymentstatusRefund = "UPDATE settlement_payment_tb set PAYMENT_STATUS =? where payment_id =? ";
-    public PaymentRepositoryImpl(JdbcTemplate jdbcTemplate){
+    public PaymentRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
     //delete
@@ -114,7 +113,7 @@ public class PaymentRepositoryImpl implements PaymentRepository{
     //Select
     @Override
     public void updatePaymentStatus(SettlementPaymentVO paymentInfo) {
-       
+
         jdbcTemplate.update(
                 insertSuccessfulPayment,
                 paymentInfo.getSettlement_id(),
@@ -153,12 +152,12 @@ public class PaymentRepositoryImpl implements PaymentRepository{
             settlementPaymentVO.setPayment_status(rs.getString("payment_status"));
             settlementPaymentVO.setSettlement_id(rs.getInt("settlement_id"));
             settlementPaymentVO.setTotal_amount(rs.getInt("total_amount"));
-         
+
             return settlementPaymentVO;
-            }, room_id,userId);
+            }, room_id, userId);
         }catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-            return null; 
+            // 조회 결과가 없으면 null 반환
+            return null;
         }
     }
     @Override
@@ -187,14 +186,14 @@ public class PaymentRepositoryImpl implements PaymentRepository{
             set.setHost_login_id(rs.getString("host_login_id"));
             return set;
         }, room_id);
-    
+
     }catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-            return null; 
+            // 조회 결과가 없으면 null 반환
+            return null;
         }
     }
     @Override
-    public List<OttRoomDTO> selectTodaysettlement(int today,int endday, String status) throws Exception {
+    public List<OttRoomDTO> selectTodaysettlement(int today, int endday, String status) throws Exception {
         try {
             return (List<OttRoomDTO>) jdbcTemplate.query(selectTodatSettlement, (rs, rowNum) -> {
             OttRoomDTO room = new OttRoomDTO();
@@ -217,14 +216,14 @@ public class PaymentRepositoryImpl implements PaymentRepository{
             room.setTotal_price(rs.getInt("TOTAL_PRICE"));
             room.setSettlement_status(rs.getString("settlement_status"));
             return room;
-        }, today,endday, status);
+        }, today, endday, status);
     }catch (org.springframework.dao.EmptyResultDataAccessException e) {
-        // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-        return null; 
+        // 조회 결과가 없으면 null 반환
+        return null;
     }
-} 
+}
 @Override
-public List<OttRoomMemberDTO> selectTodaysettlementMember(int today,int endday, String status) throws Exception {
+public List<OttRoomMemberDTO> selectTodaysettlementMember(int today, int endday, String status) throws Exception {
     try {
         return (List<OttRoomMemberDTO>) jdbcTemplate.query(selectTodaySettlementmember, (rs, rowNum) -> {
             OttRoomMemberDTO mem = new OttRoomMemberDTO();
@@ -238,12 +237,12 @@ public List<OttRoomMemberDTO> selectTodaysettlementMember(int today,int endday, 
             mem.setPay_late_day(rs.getInt("pay_late_day"));
             mem.setPay_day(rs.getInt("pay_day"));
         return mem;
-    }, today,endday, status);
+    }, today, endday, status);
 }catch (org.springframework.dao.EmptyResultDataAccessException e) {
-    // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-    return null; 
+    // 조회 결과가 없으면 null 반환
+    return null;
 }
-} 
+}
 
 @Override
 public List<SettlementPaymentVO> selectsettlement_paymentAll() throws DataAccessException {
@@ -267,61 +266,60 @@ public List<SettlementPaymentVO> selectsettlement_paymentAll() throws DataAccess
         settlementPaymentVO.setPayment_status(rs.getString("payment_status"));
         settlementPaymentVO.setSettlement_id(rs.getInt("settlement_id"));
         settlementPaymentVO.setTotal_amount(rs.getInt("total_amount"));
-     
+
         return settlementPaymentVO;
         });
     }catch (org.springframework.dao.EmptyResultDataAccessException e) {
-        // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-        return null; 
+        // 조회 결과가 없으면 null 반환
+        return null;
     }
 }
     @Override
-    public boolean selectEscrowStatus(int room_id,String host_id){
+    public boolean selectEscrowStatus(int room_id, String host_id) {
         try {
             return jdbcTemplate.queryForObject(selectEscrowStatus, (rs, rowNum) -> {
                 String statuss = rs.getString("status");
-                if(statuss.equals("true")){
+                if (statuss.equals("true")) {
                     return  true;}
                 return false;
-                } ,room_id,host_id);
+                } , room_id, host_id);
         }catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-            return false; 
+            // 조회 결과가 없으면 null 반환
+            return false;
         }
     }
     @Override
-    public String selectRefundStatus(int payment_id){
+    public String selectRefundStatus(int payment_id) {
         try {
             return jdbcTemplate.queryForObject(selectRefundStatus, (rs, rowNum) -> {
                 return rs.getString("REFUND_STATUS");
-                } ,payment_id);
+                } , payment_id);
         }catch (org.springframework.dao.EmptyResultDataAccessException e) {
-            // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-            return null; 
+            // 조회 결과가 없으면 null 반환
+            return null;
         }
     }
-
 
     //Insert
     @Override
         public void insertRefund(SettlementRefundVO refund) {
-            jdbcTemplate.update(insertRefund, refund.getSettlement_id(),refund.getPayment_id(), refund.getMember_login_id() , refund.getRefund_amount() ,refund.getRefund_reason(),refund.getRefund_status(), refund.getCompleted_at());
+            jdbcTemplate.update(insertRefund, refund.getSettlement_id(), refund.getPayment_id(), refund.getMember_login_id() , refund.getRefund_amount() , refund.getRefund_reason(), refund.getRefund_status(), refund.getCompleted_at());
         }
     @Override
     public void insertEscrow(EscrowPayoutVO escrowInfo) {
-        jdbcTemplate.update(insertEscrow, escrowInfo.getSettlement_id(),escrowInfo.getRoom_id(), escrowInfo.getPayer_id() ,escrowInfo.getHost_id(), escrowInfo.getAmount() ,escrowInfo.getStatus(), escrowInfo.getCreated_at());
+        jdbcTemplate.update(insertEscrow, escrowInfo.getSettlement_id(), escrowInfo.getRoom_id(), escrowInfo.getPayer_id() , escrowInfo.getHost_id(), escrowInfo.getAmount() , escrowInfo.getStatus(), escrowInfo.getCreated_at());
     }
     @Override
     public void insertSeller(SellerAccountVO sellerInfo) {
 
-        jdbcTemplate.update(insertSeller, sellerInfo.getMember_id(), sellerInfo.getBank_name(), sellerInfo.getAccount_number(),sellerInfo.getTraceId());
+        jdbcTemplate.update(insertSeller, sellerInfo.getMember_id(), sellerInfo.getBank_name(), sellerInfo.getAccount_number(), sellerInfo.getTraceId());
     }
     @Override
     public void insertPlatfoem_Revenue(PlatformRevenueVO revenueInfo) {
-        jdbcTemplate.update(insertRevenue, revenueInfo.getSettlement_id(),revenueInfo.getRoom_id(), revenueInfo.getPayer_id() , revenueInfo.getBase_amount() ,revenueInfo.getFee_rate(), revenueInfo.getFee_amount(),revenueInfo.getStatus(),revenueInfo.getCreated_at());
+        jdbcTemplate.update(insertRevenue, revenueInfo.getSettlement_id(), revenueInfo.getRoom_id(), revenueInfo.getPayer_id() , revenueInfo.getBase_amount() , revenueInfo.getFee_rate(), revenueInfo.getFee_amount(), revenueInfo.getStatus(), revenueInfo.getCreated_at());
     }
     //Update
-   
+
     @Override
     public void updateEscrowStatus(int room_id) {
         jdbcTemplate.update(insertTodayexcrow, room_id);
@@ -331,27 +329,27 @@ public List<SettlementPaymentVO> selectsettlement_paymentAll() throws DataAccess
     public void updatSettlementStatus(int room_id) {
         jdbcTemplate.update(updateTodaysettlement, room_id);
     }
-    
+
     @Override
-    public void updateReadyfromYet(int today,int endday) {
-        jdbcTemplate.update(updateReadyfromYet, today,endday);
+    public void updateReadyfromYet(int today, int endday) {
+        jdbcTemplate.update(updateReadyfromYet, today, endday);
     }
     @Override
-    public void updateReadyfromYettoroommember(int today,int endday) {
-        jdbcTemplate.update(updateReadyfromYettoroommember, today,endday);
+    public void updateReadyfromYettoroommember(int today, int endday) {
+        jdbcTemplate.update(updateReadyfromYettoroommember, today, endday);
     }
     @Override
     public void updatSettlementStatusYETroommember(int day) {
         jdbcTemplate.update(updateCheckTodayroommember, day);
     }
     @Override
-    public void updatSettlementroommemberStatus(int roomId,String userId) {
-        jdbcTemplate.update(updateTodaysettlementroommemberstatus, roomId,userId);
+    public void updatSettlementroommemberStatus(int roomId, String userId) {
+        jdbcTemplate.update(updateTodaysettlementroommemberstatus, roomId, userId);
     }
         @Override
-        public void updateTodaysettlementroommemberlate(int roomId,String userId,int late_day) {
-            jdbcTemplate.update(updateTodaysettlementroommemberlate, late_day,roomId,userId);
-        }   
+        public void updateTodaysettlementroommemberlate(int roomId, String userId, int late_day) {
+            jdbcTemplate.update(updateTodaysettlementroommemberlate, late_day, roomId, userId);
+        }
         @Override
         public void updatSettlementStatusYET(int day) {
             jdbcTemplate.update(updateCheckTodaysettlement, day);
@@ -361,11 +359,11 @@ public List<SettlementPaymentVO> selectsettlement_paymentAll() throws DataAccess
             jdbcTemplate.update(updatePaymentstatusRefund, "REFUNDED", payment_id);
         }
         @Override
-        public void deleteCard(int card_idx,String id) {
+        public void deleteCard(int card_idx, String id) {
             jdbcTemplate.update(deleteCard, card_idx, id);
         }
         @Override
-        public void deleteAccount(int account_idx,String id) {
+        public void deleteAccount(int account_idx, String id) {
             jdbcTemplate.update(deleteAccount, account_idx, id);
         }
 }

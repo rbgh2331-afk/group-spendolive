@@ -12,7 +12,7 @@ import com.example.spendolive.notification.domain.NotificationType;
 import com.example.spendolive.notification.service.NotificationService;
 
 /**
- * [홈페이지 전체 알림 기능 설정]
+ * 
  * OTT 공유방 정산/결제 관련 알림 3종.
  *   1) 자동결제 예정일 사전 안내 (마감 10일 전 ~ 당일, 3일 이내는 강조)
  *   2) 결제 실패 + 자동 강퇴 안내
@@ -20,7 +20,7 @@ import com.example.spendolive.notification.service.NotificationService;
  *
  * 주의 - 이 스케줄러는 OttServiceImpl.processScheduledOttJobs()나 OttRepositoryImpl의
  * 기존 배치 SQL(EXPIRE_OVERDUE_PAYMENTS_*, CLOSE_EFFECTIVE_ROOMS_* 등)을 전혀 건드리지 않는다.
- * 
+ *
  * 그 배치(OttScheduleTask, 매일 새벽 1시 정각)가 남기는 결과값(kicked_at, left_at, closed_at 같은
  * 타임스탬프 컬럼)을 "오늘 자로 바뀐 것"만 조회해서 알림만 별도로 얹는 방식.
  */
@@ -117,9 +117,9 @@ public class OttNotificationScheduler {
     // 2-1) 나가기 예약 실제 처리 완료 (ROOM_LEAVE_KICK)
     // =========================================================
 
-    // OttRepositoryImpl.PROCESS_LEAVE_RESERVATIONS_LEAVE_MEMBER_SQL이 오늘 자로 OUT 처리한 멤버를 조회.
+    // OttRepositoryImpl.PROCESS_LEAVE_RESERVATIONS_LEAVE_MEMBER_SQL이 오늘 자로 OUT 처리한 멤버를 조회
     // 방 자체가 폐쇄(CLOSED)돼서 집단으로 OUT 처리된 경우는 제외함(그건 환불완료 알림에서 따로 다룸) -
-    // 방장이 방을 없애서 나간 게 아니라, 본인이 예약해서 자발적으로 나간 경우만 여기서 알림.
+    // 방장이 방을 없애서 나간 게 아니라, 본인이 예약해서 자발적으로 나간 경우만 여기서 알림
     private static final String FIND_TODAY_SELF_LEFT_MEMBERS_SQL = """
             SELECT rm.member_login_id, rm.room_id, r.room_name
             FROM ott_room_member_tb rm

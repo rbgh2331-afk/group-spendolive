@@ -103,7 +103,6 @@ public class MyPageController {
     public ModelAndView mypage(HttpSession session) throws Exception {
         MemberVO sessionMember = (MemberVO) session.getAttribute("memberInfo");
 
-        
         MyPageDTO myPage = myPageService.getMyPage(sessionMember.getId());
         MemberVO memberInfo = myPage.getMemberInfo();
         if (memberInfo == null) {
@@ -118,7 +117,7 @@ public class MyPageController {
         mav.addObject("profileInitial", myPage.getProfileInitial());
         mav.addObject("thisMonthExpenseTotal", myPage.getThisMonthExpenseTotal());
 
-        // 이번 달 예산과 사용률을 마이페이지 JSP에 전달한다.
+        // 이번 달 예산과 사용률을 마이페이지 JSP에 전달
         mav.addObject("thisMonthBudget", myPage.getThisMonthBudget());
         mav.addObject("thisMonthBudgetPercent", myPage.getThisMonthBudgetPercent());
         mav.addObject("accountConnected", myPage.isAccountConnected());
@@ -129,10 +128,10 @@ public class MyPageController {
            ========================================================= */
         mav.addObject("accountList", myPage.getAccountList());
         mav.addObject("cardList", myPage.getCardList());
-        // STATUS가 YES인 주계좌만 상단 계좌관리 카드에 전달한다.
+        // STATUS가 YES인 주계좌만 상단 계좌관리 카드에 전달
         mav.addObject("currentAccount", findPrimaryAccount(myPage));
         mav.addObject("bankNameMap", BANK_NAME_MAP);
-        // CARD_COMPANY 원본 코드는 유지하고 JSP에서 카드사명으로 표시한다.
+        // CARD_COMPANY 원본 코드는 유지하고 JSP에서 카드사명으로 표시
         mav.addObject("cardCompanyNameMap", CARD_COMPANY_NAME_MAP);
         mav.addObject("warning_count", myPage.getWarning_count());
         mav.addObject("myReportCount", myPage.getMyReportCount());
@@ -150,7 +149,7 @@ public class MyPageController {
                                      @RequestParam(value = "passwordChecked", required = false) String passwordChecked,
                                      HttpSession session) {
         ModelAndView mav = new ModelAndView();
-        // [내 담당 로그인 공통화] 화면 진입 로그인 안내는 공통 JS에서 처리하므로 Controller의 중복 로그인 redirect 검사는 제거한다.
+        // 화면 진입 로그인 안내는 공통 JS에서 처리하므로 Controller의 중복 로그인 redirect 검사는 제거한다
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
 
         try {
@@ -206,7 +205,6 @@ public class MyPageController {
         return mav;
     }
 
-
     /* =========================================================
        [마이페이지 계좌·카드 연결 추가 시작]
        마이페이지 계좌 목록의 제목 수정 요청을 처리한다.
@@ -234,7 +232,7 @@ public class MyPageController {
 
         return mav;
     }
-    /* [마이페이지 계좌·카드 연결 추가 끝] */
+    /* */
 
     /* [기존 일반 POST 호환]
        JavaScript가 비활성화되거나 AJAX 공통 스크립트 로드에 실패해도 카드 이름을 수정할 수 있게 한다. */
@@ -260,7 +258,7 @@ public class MyPageController {
         return mav;
     }
 
-    // 마이페이지 계좌 목록에서 선택한 계좌를 주계좌로 변경한다.
+    // 마이페이지 계좌 목록에서 선택한 계좌를 주계좌로 변경
     @PostMapping("/mypage/account/primary/update.do")
     public ModelAndView updatePrimaryAccount(@RequestParam("accountIdx") int accountIdx,
                                              HttpSession session) {
@@ -328,10 +326,10 @@ public class MyPageController {
         }
 
         try {
-            // [회원탈퇴 개선] 본인 탈퇴 전용 서비스에서 방·참여·환불 조건을 먼저 확인한다.
+            // 본인 탈퇴 전용 서비스에서 방·참여·환불 조건을 먼저 확인
             MyPageDTO result = myPageService.withdrawSelfMember(loginMember.getId());
 
-            // [회원탈퇴 개선] 탈퇴 불가 사유를 한 번에 표시할 수 있도록 건수를 Flash Attribute로 전달한다.
+            // 탈퇴 불가 사유를 한 번에 표시할 수 있도록 건수를 Flash Attribute로 전달
             if (!result.isWithdrawEligible()) {
                 redirectAttributes.addFlashAttribute("withdrawBlocked", true);
                 redirectAttributes.addFlashAttribute("ownedRoomCount", result.getOwnedRoomCount());
@@ -341,7 +339,7 @@ public class MyPageController {
                 return mav;
             }
 
-            // [회원탈퇴 개선] 모든 조건을 통과하고 익명화가 완료된 경우에만 현재 세션을 종료한다.
+            // 모든 조건을 통과하고 익명화가 완료된 경우에만 현재 세션을 종료
             session.invalidate();
             mav.setViewName("redirect:/member/loginForm.do?withdraw=Y");
         } catch (Exception e) {

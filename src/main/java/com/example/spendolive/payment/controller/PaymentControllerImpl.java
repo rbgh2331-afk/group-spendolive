@@ -167,7 +167,7 @@ public class PaymentControllerImpl implements PaymentController {
     }
 
     /**
-     * 등록된 카드로 자동결제를 실행하고 JSON 결과를 반환합니다.
+     * 등록된 카드로 자동결제를 실행하고 JSON 결과를 반환
      * 결제는 조회가 아니므로 GET이 아닌 POST로만 받습니다.
      */
     @Override
@@ -199,8 +199,7 @@ public class PaymentControllerImpl implements PaymentController {
         try {
             PaymentAmountDTO paymentAmount = paymentService.executeRoomPayment(userId, room_id);
 
-            // Toss 결제가 끝난 뒤에만 실제 OTT 방 멤버로 입장 처리합니다.
-
+            // Toss 결제가 끝난 뒤에만 실제 OTT 방 멤버로 입장 처리
 
             return ResponseEntity.ok(new PaymentAjaxResponse(
                     true,
@@ -213,7 +212,7 @@ public class PaymentControllerImpl implements PaymentController {
                     roomUrl));
 
         } catch (PaymentProcessException e) {
-            // 이미 결제된 요청은 재결제하지 않고 기존 결제 결과를 사용합니다.
+            // 이미 결제된 요청은 재결제하지 않고 기존 결제 결과를 사용
             if ("ALREADY_PAID".equals(e.getCode())
                     || "ALREADY_MEMBER".equals(e.getCode())) {
                 ottService.completePaidRoomEntry((long) room_id, userId);
@@ -281,11 +280,11 @@ public class PaymentControllerImpl implements PaymentController {
         if (isPaidStatus(paymentStatus)) {
             try{
             ottService.completePaidRoomEntry((long) room_id, userId);
-            }catch(Exception e){
-                SettlementPaymentVO payment = paymentService.getSettlement_PaymentByRoomId(userId,room_id);
-            
+            }catch (Exception e) {
+                SettlementPaymentVO payment = paymentService.getSettlement_PaymentByRoomId(userId, room_id);
+
                 paymentService.updatePaymentstatusRefund(payment);
-                
+
                 return ResponseEntity.ok(new PaymentAjaxResponse(
                     false,
                     "PAYMENT_FAILED",
@@ -352,12 +351,12 @@ public class PaymentControllerImpl implements PaymentController {
     }
     @Override
     @PostMapping("/updatePrimaryCard.do")
-    public ResponseEntity<PaymentAjaxResponse> updatePrimaryCard(@RequestParam("card_idx") String card_idxstr,@RequestHeader(value = "Referer", required = false) String referer,  HttpServletRequest request,HttpSession session) throws Exception {
+    public ResponseEntity<PaymentAjaxResponse> updatePrimaryCard(@RequestParam("card_idx") String card_idxstr, @RequestHeader(value = "Referer", required = false) String referer,  HttpServletRequest request, HttpSession session) throws Exception {
         int card_idx = Integer.parseInt(card_idxstr);
         MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
         String userId = memberVO.getId();
         try{
-        memberService.updatePrimaryCard(userId,card_idx);
+        memberService.updatePrimaryCard(userId, card_idx);
         return ResponseEntity
                     .ok(new PaymentAjaxResponse(
                             true,
@@ -366,7 +365,7 @@ public class PaymentControllerImpl implements PaymentController {
                             "SUCCESS",
                             null,
                             null));
-        }catch(PaymentProcessException e){
+        }catch (PaymentProcessException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new PaymentAjaxResponse(
@@ -380,11 +379,11 @@ public class PaymentControllerImpl implements PaymentController {
     }
     @Override
     @PostMapping("/deleteCard.do")
-    public ResponseEntity<PaymentAjaxResponse> deleteCard(@RequestParam("card_idx") int card_idx,  HttpServletRequest request,HttpSession session) throws Exception {
+    public ResponseEntity<PaymentAjaxResponse> deleteCard(@RequestParam("card_idx") int card_idx,  HttpServletRequest request, HttpSession session) throws Exception {
         MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
         String id = memberVO.getId();
         try{
-        paymentService.deleteCard(card_idx,id);
+        paymentService.deleteCard(card_idx, id);
         return ResponseEntity.ok(new PaymentAjaxResponse(
                             true,
                             "DELETE_COMPLETED",
@@ -392,7 +391,7 @@ public class PaymentControllerImpl implements PaymentController {
                             "SUCCESS",
                             null,
                             "/spendolive/mypage.do"));
-        }catch(PaymentProcessException e){
+        }catch (PaymentProcessException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new PaymentAjaxResponse(
@@ -406,11 +405,11 @@ public class PaymentControllerImpl implements PaymentController {
     }
     @Override
     @PostMapping("/deleteAccount.do")
-    public ResponseEntity<PaymentAjaxResponse> deleteAccount(@RequestParam("account_idx") int account_idx,  HttpServletRequest request,HttpSession session) throws Exception {
+    public ResponseEntity<PaymentAjaxResponse> deleteAccount(@RequestParam("account_idx") int account_idx,  HttpServletRequest request, HttpSession session) throws Exception {
         MemberVO memberVO = (MemberVO) session.getAttribute("memberInfo");
         String id = memberVO.getId();
         try{
-        paymentService.deleteAccount(account_idx,id);
+        paymentService.deleteAccount(account_idx, id);
         return ResponseEntity.ok(new PaymentAjaxResponse(
                             true,
                             "DELETE_COMPLETED",
@@ -418,7 +417,7 @@ public class PaymentControllerImpl implements PaymentController {
                             "SUCCESS",
                             null,
                             "/spendolive/mypage.do"));
-        }catch(PaymentProcessException e){
+        }catch (PaymentProcessException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new PaymentAjaxResponse(

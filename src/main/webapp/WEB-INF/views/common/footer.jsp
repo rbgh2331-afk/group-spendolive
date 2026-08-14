@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
+<%-- 공통 푸터 --%>
 <footer class="site-footer">
     <div class="container footer-layout">
         <div class="company-info">

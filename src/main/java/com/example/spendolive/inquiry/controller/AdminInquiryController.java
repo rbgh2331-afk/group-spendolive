@@ -42,8 +42,7 @@ public class AdminInquiryController {
         this.inquiryService = inquiryService;
     }
 
-
-    // 세션에 저장된 memberInfo가 있고, role이 "ADMIN"인지 확인.
+    // 세션에 저장된 memberInfo가 있고, role이 "ADMIN"인지 확인
     // 아래 모든 요청 처리 메서드가 맨 앞에서 이걸로 관리자인지부터 검사함
     private boolean isAdmin(HttpSession session) {
         MemberVO m = (MemberVO) session.getAttribute("memberInfo");
@@ -63,7 +62,7 @@ public class AdminInquiryController {
 
     /* ─── 전체 문의 목록 ──────────────────────────────────── */
     // GET /admin/inquiry/list.do?page=&status=
-    // 페이지네이션 + 상태 필터(전체/대기/완료/검토중)를 같이 처리.
+    // 페이지네이션 + 상태 필터(전체/대기/완료/검토중)를 같이 처리
     // startNumber 계산이 핵심: 목록이 최신순(내림차순)으로 나오는데 번호는
     // "오래된 문의부터 1번"으로 매기고 싶어서, 전체 개수에서 거꾸로 세어 내려가는 방식으로 구함
     // (예: 전체 20건, 1페이지(최신 10건)면 맨 위 줄이 20번, 아래로 내려갈수록 감소)

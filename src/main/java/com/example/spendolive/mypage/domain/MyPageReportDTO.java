@@ -3,6 +3,9 @@ package com.example.spendolive.mypage.domain;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 마이페이지 신고 내역 전달 객체
+ */
 @Getter
 @Setter
 public class MyPageReportDTO {

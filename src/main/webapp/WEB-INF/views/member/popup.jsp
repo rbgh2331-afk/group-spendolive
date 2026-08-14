@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%-- 회원 공통 팝업 --%>
 <div id="memberStatusOverlay"
                     class="status-overlay"
                     role="dialog"
@@ -7,7 +8,7 @@
                     aria-describedby="memberStatusMessage"
                     hidden>
                     <div class="status-box">
-                    
+
                     <div id="memberStatusSpinner"
                             class="status-spinner"
                             aria-hidden="true"></div>
@@ -46,7 +47,7 @@
                     aria-describedby="adminmemberStatusMessage"
                     hidden>
                     <div class="status-box">
-                    
+
                     <div id="adminmemberStatusSpinner"
                             class="status-spinner"
                             aria-hidden="true"></div>

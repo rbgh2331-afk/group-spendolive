@@ -41,7 +41,7 @@ CREATE TABLE warning_tb (
     status         CHAR(1) DEFAULT 'N' NOT NULL,
     created_at     DATE DEFAULT SYSDATE NOT NULL,
 
-   
+
     CONSTRAINT fk_warning_member FOREIGN KEY (member_id) REFERENCES member_tb(id),
     CONSTRAINT fk_warning_report FOREIGN KEY (report_id) REFERENCES report_tb(report_id),
     CONSTRAINT ck_warning_status CHECK (status IN ('Y', 'N'))

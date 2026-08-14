@@ -74,7 +74,7 @@
                 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
             </footer>
         </div>
-      
+
         <%-- 페이지 전용 팝업/스크립트는 각 JSP에서만 로드한다. 공통 레이아웃에는 실제 공통 자원만 둔다. --%>
         <jsp:include page="/WEB-INF/views/common/font.jsp" />
         <jsp:include page="/WEB-INF/views/common/chatbotWidget.jsp" />

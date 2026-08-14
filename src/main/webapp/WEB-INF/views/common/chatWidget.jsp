@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- 공통 채팅 위젯 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="chat-floating-widget">

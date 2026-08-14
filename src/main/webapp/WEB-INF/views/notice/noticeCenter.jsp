@@ -79,8 +79,8 @@
                         </thead>
 
                         <tbody id="noticeTableBody">
-                            
-                                  
+
+
                         </tbody>
                     </table>
                     </div>

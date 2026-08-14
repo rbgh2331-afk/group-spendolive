@@ -343,7 +343,7 @@ CREATE TABLE ott_service_tb (
     CONSTRAINT pk_ott_service PRIMARY KEY (ott_service_id),
     CONSTRAINT uk_ott_service_name UNIQUE (service_name),
     CONSTRAINT ck_ott_service_share CHECK (share_yn IN ('Y', 'N')),
-   
+
 );
 
 CREATE SEQUENCE seq_ott_service START WITH 1 INCREMENT BY 1 NOCACHE;

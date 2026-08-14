@@ -4,59 +4,59 @@
    지출관리 화면 확장, 인라인 수정, 분석 카드, 월별 요약
    ========================================================= */
 /* Expense page width + inline edit layout fix */
-#expense-form > .container {width: min(90rem, calc(100% - 4rem));}
+#expense-form > .container {width:min(90rem, calc(100% - 4rem));}
 #expense-form .expense-layout {grid-template-columns:22.5rem minmax(0, 1fr);gap:1.375rem;align-items:stretch;}
 /* [최근 지출 높이 통일] 같은 행의 빠른 등록 카드와 최근 지출 카드를 같은 높이로 맞춘다. */
 #expense-form .expense-form,#expense-form .expense-table {min-width:0;height:100% !important;}
 #expense-form .expense-table {display:flex;flex-direction:column;overflow:hidden;}
 #expense-form .table-wrap {width:100%;overflow-x:auto;flex:1 1 auto;}
-#expense-form .expense-table table {min-width: 57.5rem;table-layout: auto;}
-#expense-form .expense-table th,#expense-form .expense-table td {padding: 0.875rem 0.5rem;}
-#expense-form .edit-mode {margin-top: 0;padding: 0.625rem 0.6875rem;border-radius: 0.75rem;min-height: 2.625rem;}
-#expense-form input.edit-mode[type="date"] {min-width: 9.0625rem;}
-#expense-form input.edit-mode[name="expenseTitle"] {min-width: 8.4375rem;}
-#expense-form select.edit-expense-type {min-width: 5.5rem;}
-#expense-form select.edit-category {min-width: 6.25rem;}
-#expense-form input.edit-mode[name="amount"] {min-width: 6.5625rem;}
-#expense-form select.edit-mode[name="paymentMethod"] {min-width: 7.1875rem;}
-#expense-form select.edit-repeat-cycle {min-width: 5.625rem;}
+#expense-form .expense-table table {min-width:57.5rem;table-layout:auto;}
+#expense-form .expense-table th,#expense-form .expense-table td {padding:0.875rem 0.5rem;}
+#expense-form .edit-mode {margin-top:0;padding:0.625rem 0.6875rem;border-radius:0.75rem;min-height:2.625rem;}
+#expense-form input.edit-mode[type="date"] {min-width:9.0625rem;}
+#expense-form input.edit-mode[name="expenseTitle"] {min-width:8.4375rem;}
+#expense-form select.edit-expense-type {min-width:5.5rem;}
+#expense-form select.edit-category {min-width:6.25rem;}
+#expense-form input.edit-mode[name="amount"] {min-width:6.5625rem;}
+#expense-form select.edit-mode[name="paymentMethod"] {min-width:7.1875rem;}
+#expense-form select.edit-repeat-cycle {min-width:5.625rem;}
 @media (max-width: 65rem) {
-    #expense-form > .container {width: min(100% - 2.5rem, 71.25rem);}
+    #expense-form > .container {width:min(100% - 2.5rem, 71.25rem);}
     #expense-form .expense-layout {grid-template-columns:1fr;align-items:start;}
     #expense-form .expense-form,#expense-form .expense-table {height:auto !important;}
     #expense-form .expense-table table {min-width:57.5rem;}
 }
 /* Expense analytics section */
-#expense-analytics > .container {width: min(90rem, calc(100% - 4rem));}
-#expense-analytics .section-title {margin-bottom: 1.5rem;}
-#expense-analytics .section-desc {margin: 0.625rem 0 0;max-width: 47.5rem;}
-#expense-analytics .analytics-grid {grid-template-columns: 1fr 1.05fr 1fr;}
-#expense-analytics .analytics-card {min-height: 22.5rem;}
-#expense-analytics .analytics-card h3 {display: flex;justify-content: space-between;align-items: center;gap: 0.625rem;}
-#expense-analytics .expense-month-chart {margin-top: 1.125rem;}
-.category-analysis-list {display: grid;gap: 0.875rem;padding: 0;margin: 1.125rem 0 0;list-style: none;}
-.category-analysis-list li {padding: 0.875rem;border: 1px solid var(--line);border-radius: 0.9375rem;background: var(--cream);}
-.category-analysis-head {display: flex;justify-content: space-between;align-items: center;gap: 0.625rem;margin-bottom: 0.5625rem;}
-.category-analysis-head strong {color: var(--olive-dark);}
-.category-analysis-head span {color: var(--muted);font-weight: 900;}
-.category-progress {height: 0.625rem;border-radius: 999px;overflow: hidden;background: #e8ecd8;}
-.category-progress span {display: block;height: 100%;min-width: 0.25rem;border-radius: inherit;background: linear-gradient(90deg, var(--olive), var(--sage));}
-.category-analysis-list p {margin: 0.5625rem 0 0;color: var(--muted);font-size: 0.8125rem;font-weight: 900;text-align: right;}
-.expense-ranking-list li div {display: grid;gap: 0.25rem;}
-.expense-ranking-list li span {color: var(--muted);font-size: 0.75rem;font-weight: 850;}
-.expense-ranking-list li em {white-space: nowrap;}
-.empty-analytics {margin: 1.75rem 0 0;padding: 1.25rem;border: 1px dashed var(--line);border-radius: 1rem;color: var(--muted);text-align: center;background: var(--cream);}
+#expense-analytics > .container {width:min(90rem, calc(100% - 4rem));}
+#expense-analytics .section-title {margin-bottom:1.5rem;}
+#expense-analytics .section-desc {margin:0.625rem 0 0;max-width:47.5rem;}
+#expense-analytics .analytics-grid {grid-template-columns:1fr 1.05fr 1fr;}
+#expense-analytics .analytics-card {min-height:22.5rem;}
+#expense-analytics .analytics-card h3 {display:flex;justify-content:space-between;align-items:center;gap:0.625rem;}
+#expense-analytics .expense-month-chart {margin-top:1.125rem;}
+.category-analysis-list {display:grid;gap:0.875rem;padding:0;margin:1.125rem 0 0;list-style:none;}
+.category-analysis-list li {padding:0.875rem;border:1px solid var(--line);border-radius:0.9375rem;background:var(--cream);}
+.category-analysis-head {display:flex;justify-content:space-between;align-items:center;gap:0.625rem;margin-bottom:0.5625rem;}
+.category-analysis-head strong {color:var(--olive-dark);}
+.category-analysis-head span {color:var(--muted);font-weight:900;}
+.category-progress {height:0.625rem;border-radius:999px;overflow:hidden;background:#e8ecd8;}
+.category-progress span {display:block;height:100%;min-width:0.25rem;border-radius:inherit;background:linear-gradient(90deg, var(--olive), var(--sage));}
+.category-analysis-list p {margin:0.5625rem 0 0;color:var(--muted);font-size:0.8125rem;font-weight:900;text-align:right;}
+.expense-ranking-list li div {display:grid;gap:0.25rem;}
+.expense-ranking-list li span {color:var(--muted);font-size:0.75rem;font-weight:850;}
+.expense-ranking-list li em {white-space:nowrap;}
+.empty-analytics {margin:1.75rem 0 0;padding:1.25rem;border:1px dashed var(--line);border-radius:1rem;color:var(--muted);text-align:center;background:var(--cream);}
 @media (max-width: 65rem) {
-    #expense-analytics > .container {width: min(100% - 2.5rem, 71.25rem);}
-    #expense-analytics .analytics-grid {grid-template-columns: 1fr;}
+    #expense-analytics > .container {width:min(100% - 2.5rem, 71.25rem);}
+    #expense-analytics .analytics-grid {grid-template-columns:1fr;}
 }
 /* Expense top monthly type summary */
-.expense-type-summary-list div {grid-template-columns: 0.875rem 4.25rem 1fr;}
-.expense-type-summary-list strong {justify-self: end;font-size: 1.125rem;white-space: nowrap;}
-.expense-type-summary-list p {white-space: nowrap;}
+.expense-type-summary-list div {grid-template-columns:0.875rem 4.25rem 1fr;}
+.expense-type-summary-list strong {justify-self:end;font-size:1.125rem;white-space:nowrap;}
+.expense-type-summary-list p {white-space:nowrap;}
 @media (max-width: 43.75rem) {
-    .expense-type-summary-list div {grid-template-columns: 0.875rem 1fr;}
-    .expense-type-summary-list strong {grid-column: 2 / 3;justify-self: start;}
+    .expense-type-summary-list div {grid-template-columns:0.875rem 1fr;}
+    .expense-type-summary-list strong {grid-column:2 / 3;justify-self:start;}
 }
 /* 선택한 달의 예산 입력 영역 */
 .monthly-budget-form {display:grid;gap:0.625rem;margin:0 0 1.25rem;padding:1rem;border:1px solid var(--line);border-radius:1rem;background:var(--cream);}

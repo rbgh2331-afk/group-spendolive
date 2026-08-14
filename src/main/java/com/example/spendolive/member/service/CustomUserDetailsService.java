@@ -20,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        
+
         // 1. DB에서 ID로 회원 조회 (비밀번호 비교 X)
         MemberVO member = memberRepository.selectMemberById(id);
 

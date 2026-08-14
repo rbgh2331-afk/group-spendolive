@@ -99,7 +99,7 @@ public class InquiryRepository {
     // ────────────────────────────────────────────────────────────
 
     /**
-     * inquiry_tb에 INSERT하고, 생성된 inquiry_id를 반환한다.
+     * inquiry_tb에 INSERT하고, 생성된 inquiry_id를 반환
      * (첨부파일을 inquiry_file_tb에 연결하려면 이 inquiry_id가 필요하기 때문에
      *  시퀀스 값을 먼저 뽑아서 INSERT문에 명시적으로 넣는 방식을 사용)
      */

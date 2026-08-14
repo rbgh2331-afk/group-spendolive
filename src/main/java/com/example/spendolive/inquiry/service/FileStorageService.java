@@ -40,8 +40,8 @@ public class FileStorageService {
     }
 
     /**
-     * 첨부파일들을 디스크에 저장하고, DB insert에 쓸 InquiryFileVO 목록을 만들어 반환한다.
-     * DB insert 자체는 호출부(InquiryService)에서 트랜잭션 안에서 처리한다.
+     * 첨부파일들을 디스크에 저장하고, DB insert에 쓸 InquiryFileVO 목록을 만들어 반환
+     * DB insert 자체는 호출부(InquiryService)에서 트랜잭션 안에서 처리
      *
      * @param inquiry_id  이미 생성된 문의 번호 (inquiry_tb PK)
      * @param attachments 폼에서 넘어온 첨부파일 배열 (null/빈 파일 섞여 있어도 됨)

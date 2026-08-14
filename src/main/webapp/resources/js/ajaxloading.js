@@ -4,7 +4,7 @@
  * 사용자 클릭으로 실행되는 AJAX 요청의 로딩 팝업, 버튼 잠금, 응답 형식 검사,
  * 세션 만료 및 공통 오류 처리를 한 곳에서 담당한다.
  * 자동 알림 조회·채팅 폴링·챗봇·결제 전용 상태창처럼 별도 표시가 필요한 요청은
- * options.loading = false 또는 기존 순정 fetch를 사용해 전역 팝업에서 제외한다.
+ * options.loading = false 또는 기존 순정 fetch를 사용해 전역 팝업에서 제외
  */
 
 (function (window, document) {

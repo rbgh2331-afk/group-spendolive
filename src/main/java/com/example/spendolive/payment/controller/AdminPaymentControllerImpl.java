@@ -1,6 +1,5 @@
 package com.example.spendolive.payment.controller;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
@@ -40,10 +39,10 @@ public class AdminPaymentControllerImpl implements AdminPaymentController{
     }
     @Override
     @GetMapping("/list.do")
-    public ModelAndView listUpSettlement(@RequestParam(value = "status", required = false) String status,HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView listUpSettlement(@RequestParam(value = "status", required = false) String status, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
         session = request.getSession();
-        if(status==null){status = "READY";}
-        
+        if (status==null) {status = "READY";}
+
         try {
             List<OttRoomDTO> settlementList = paymentService.selectTodaysettlement(status);
             ModelAndView mav = layout("/WEB-INF/views/admin/settlement/settlement.jsp");
@@ -57,10 +56,10 @@ public class AdminPaymentControllerImpl implements AdminPaymentController{
     }
     @Override
     @GetMapping("/paymentlist.do")
-    public ModelAndView paymentlistUpSettlement(@RequestParam(value = "status", required = false) String status,HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView paymentlistUpSettlement(@RequestParam(value = "status", required = false) String status, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
         session = request.getSession();
-        if(status==null){status = "READY";}
-        
+        if (status==null) {status = "READY";}
+
         try {
             List<OttRoomMemberDTO> paymentList = paymentService.selectTodaysettlementmember(status);
             ModelAndView mav = layout("/WEB-INF/views/admin/settlement/payment.jsp");
@@ -74,10 +73,10 @@ public class AdminPaymentControllerImpl implements AdminPaymentController{
     }
     @Override
     @GetMapping("/paymentdetaillist.do")
-    public ModelAndView paymentdetaillistUpSettlement(@RequestParam(value = "status", required = false) String status,HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView paymentdetaillistUpSettlement(@RequestParam(value = "status", required = false) String status, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
         session = request.getSession();
-        if(status==null){status = "READY";}
-        
+        if (status==null) {status = "READY";}
+
         try {
             List<SettlementPaymentVO> paymentdetailList = paymentService.selectpaymentAll();
             ModelAndView mav = layout("/WEB-INF/views/admin/settlement/paymentdetail.jsp");
@@ -93,10 +92,10 @@ public class AdminPaymentControllerImpl implements AdminPaymentController{
     @PostMapping("/pay.do")
     public ResponseEntity<PaymentAjaxResponse> pay(@RequestParam("room_id") int room_id, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
         session = request.getSession();
-        
+
         try {
             String msg = paymentService.updateExcrow(room_id);
-            
+
             return ResponseEntity.ok(new PaymentAjaxResponse(
                     true,
                     "SETTLEMENT_COMPLETED",
@@ -137,15 +136,14 @@ public class AdminPaymentControllerImpl implements AdminPaymentController{
     @Override
     @PostMapping("/paymenting.do")
     public ResponseEntity<PaymentAjaxResponse> payment(
-        @RequestParam("member_login_id") String member_login_id,@RequestParam("room_id") String room_idStr,
+        @RequestParam("member_login_id") String member_login_id, @RequestParam("room_id") String room_idStr,
             HttpServletRequest request, HttpServletResponse response,
             HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
-
 
         int room_id = Integer.parseInt(room_idStr);
 
         try {
-            // 사용자 결제와 동일한 PaymentService 금액 계산 규칙(1/N + 플랫폼 수수료 3%)을 사용한다.
+            // 사용자 결제와 동일한 PaymentService 금액 계산 규칙(1/N + 플랫폼 수수료 3%)을 사용
             PaymentAmountDTO paymentAmount = paymentService.getPaymentAmount(room_id);
             paymentService.executeAutomaticPayment(
                     member_login_id,
@@ -162,8 +160,7 @@ public class AdminPaymentControllerImpl implements AdminPaymentController{
                     "PAID",
                     null,
                     "/admin/settlement/paymentlist.do"));
-      
-            
+
         } catch (PaymentProcessException e) {
             return ResponseEntity
                     .status(resolveHttpStatus(e.getCode()))
@@ -191,12 +188,12 @@ public class AdminPaymentControllerImpl implements AdminPaymentController{
     @Override
     @PostMapping("/paymentlate.do")
     public ResponseEntity<PaymentAjaxResponse> paymentlate(
-        @RequestParam("member_login_id") String member_login_id ,@RequestParam("room_id") int room_id,@RequestParam("pay_late_day") int pay_late_day,
+        @RequestParam("member_login_id") String member_login_id , @RequestParam("room_id") int room_id, @RequestParam("pay_late_day") int pay_late_day,
             HttpServletRequest request, HttpServletResponse response,
             HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
 
         try {
-            paymentService.updateTodaysettlementroommemberlate(room_id,member_login_id,pay_late_day);
+            paymentService.updateTodaysettlementroommemberlate(room_id, member_login_id, pay_late_day);
             return ResponseEntity.ok(new PaymentAjaxResponse(
                 true,
                 "LATEDAY_COMPLETED",
@@ -204,7 +201,7 @@ public class AdminPaymentControllerImpl implements AdminPaymentController{
                 "COMPLETE",
                 null,
                 "/admin/settlement/paymentlist.do"));
-            
+
         } catch (PaymentProcessException e) {
             return ResponseEntity
                     .status(resolveHttpStatus(e.getCode()))
@@ -237,7 +234,7 @@ public class AdminPaymentControllerImpl implements AdminPaymentController{
             HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
 
         try {
-            
+
             paymentService.executeRoomRefund(payment);
             return ResponseEntity.ok(new PaymentAjaxResponse(
                     true,

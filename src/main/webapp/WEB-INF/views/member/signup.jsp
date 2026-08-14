@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- 회원가입 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="requestURI" value="${pageContext.request.requestURI}" />
 <!DOCTYPE html>
@@ -80,7 +81,7 @@
         </div>
 
         <c:choose>
-            <c:when test="${login_type == 'KAKAO'}"> 
+            <c:when test="${login_type == 'KAKAO'}">
             <form action="${contextPath}/member/addmember.do" method="post" onsubmit="return joinCheckKakao()">
             <div class="auth-grid-2">
                 <div class="auth-form-group">
@@ -104,7 +105,7 @@
                     <input id="email" name="email"type="email" placeholder="example@email.com" required>
                     <button id="emailButton" class="auth-btn auth-btn-light" type="button">인증요청</button>
                 </div>
-             
+
 
             <div class="auth-form-group is-hidden" id="emailAuthArea">
                 <label for="emailAuthCode">인증번호 입력</label>
@@ -112,17 +113,17 @@
                     <input id="emailAuthCode" type="text" placeholder="6자리 인증번호를 입력하세요" >
                     <button class="auth-btn auth-btn-light" type="button" onclick="verifyEmail()">인증확인</button>
                 </div>
-               
+
                 <p id="emailAuthResult" class="auth-result-text">이메일로 발송된 인증번호를 입력해 주세요.</p>
             </div>
-        
+
             <div class="auth-form-group">
                 <label for="phone">전화번호</label>
                 <div class="auth-input-row">
                     <input id="phone" name="phone" type="tel" placeholder="010-0000-0000" required>
                     <button id="phoneButton" class="auth-btn auth-btn-light" type="button">인증요청</button>
                 </div>
-                
+
 
             <div class="auth-form-group is-hidden" id="phoneAuthArea">
                 <label for="phoneAuthCode">전화번호 인증번호 입력</label>
@@ -137,8 +138,8 @@
             <input id="login_type" type="hidden" name="login_type" value="${login_type}">
             </c:when>
         <c:otherwise>
-         
-        
+
+
         <form action="${contextPath}/member/addmember.do" method="post" onsubmit="return joinCheck()">
         <input type="hidden" name="login_type" value="LOCAL">
             <div class="auth-grid-2">
@@ -172,7 +173,7 @@
                     <input id="email" name="email"type="email" placeholder="example@email.com" required>
                     <button id="emailButton" class="auth-btn auth-btn-light" type="button">인증요청</button>
                 </div>
-                
+
             <br>
             <div class="auth-form-group is-hidden" id="emailAuthArea">
                 <label for="emailAuthCode">인증번호 입력</label>
@@ -180,7 +181,7 @@
                     <input id="emailAuthCode" type="text" placeholder="6자리 인증번호를 입력하세요" >
                     <button class="auth-btn auth-btn-light" type="button" onclick="verifyEmail()">인증확인</button>
                 </div>
-               
+
                 <p id="emailAuthResult" class="auth-result-text">이메일로 발송된 인증번호를 입력해 주세요.</p>
             </div>
                 <div class="auth-form-group">
@@ -189,7 +190,7 @@
                     <input id="phone" name="phone" type="tel" placeholder="010-0000-0000" required>
                     <button id="phoneButton" class="auth-btn auth-btn-light" type="button">인증요청</button>
                 </div>
-                
+
             <div class="auth-form-group is-hidden" id="phoneAuthArea">
                 <label for="phoneAuthCode">전화번호 인증번호 입력</label>
                 <div class="auth-input-row">
@@ -206,12 +207,12 @@
                     </label>
                     <input id="password" type="password"name="password" placeholder="비밀번호를 입력하세요" required>
                 </div>
-                <div class="auth-form-group">  
+                <div class="auth-form-group">
                     <label for="passwordCheck">
                         비밀번호 확인
                     </label>
                     <input id="passwordCheck" type="password" placeholder="비밀번호를 다시 입력하세요" required>
-                
+
                 </div>
                 </div>
                 <div class="auth-form-group">
@@ -410,8 +411,8 @@ SpendOlive(이하 '서비스')는 개인정보 보호법, 정보통신망 이용
 
                       </textarea>
             </div>
-          
-            
+
+
            </c:otherwise>
         </c:choose>
             <br>
@@ -435,7 +436,7 @@ SpendOlive(이하 '서비스')는 개인정보 보호법, 정보통신망 이용
                     aria-describedby="emailStatusMessage"
                     hidden>
                     <div class="status-box">
-                    
+
                     <div id="signupStatusSpinner"
                             class="status-spinner"
                             aria-hidden="true"></div>
@@ -485,7 +486,7 @@ var msg = "${msg}";
     }
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
-        // 현재 엔터를 친 요소가 input 태그인지 확인 
+        // 현재 엔터를 친 요소가 input 태그인지 확인
         // (textarea나 button에서 엔터를 칠 때는 정상 작동하게 두기 위함)
         if (event.target.tagName === 'INPUT') {
             event.preventDefault(); // 기본 동작(submit) 막기

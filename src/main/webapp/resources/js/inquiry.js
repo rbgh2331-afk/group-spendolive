@@ -41,7 +41,7 @@
     function initInquiryListPage() {
         syncStateFromDom();
 
-        // 이벤트 위임: #inqBoardArea 안의 필터·페이지 버튼 클릭을 한 곳에서 처리.
+        // 이벤트 위임: #inqBoardArea 안의 필터·페이지 버튼 클릭을 한 곳에서 처리
         // (조각이 교체돼도 #inqBoardArea 자체는 유지되므로 리스너 재등록 불필요)
         boardArea.addEventListener("click", function (e) {
             const filterBtn = e.target.closest(".filter-btn[data-status]");
@@ -170,7 +170,7 @@
         submitBtn.disabled = true;
         submitBtn.textContent = "등록 중...";
 
-        // FormData면 파일 첨부(multipart)가 자동 처리됨. Content-Type은 브라우저가 설정하게 둠.
+        // FormData면 파일 첨부(multipart)가 자동 처리됨. Content-Type은 브라우저가 설정하게 둠
         const formData = new FormData(writeForm);
 
         fetch("/spendolive/inquiry/ajax/write.do", {

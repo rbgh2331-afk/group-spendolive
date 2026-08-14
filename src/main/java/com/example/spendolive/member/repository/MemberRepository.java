@@ -12,21 +12,21 @@ import com.example.spendolive.member.domain.MemberVO;
 
 public interface MemberRepository {
 
-	public void insertNewMember(MemberVO memberVO) throws DataAccessException;
-	public boolean checkId(String id) throws DataAccessException;
-	public boolean checkPhone(String phone) throws DataAccessException;
-	public boolean checkEmail(String email) throws DataAccessException;
-	public void updateOpenBankingInfo(String userId,String accessToken,String userSeqNo, String fintech_num, String bank_code, String account_num, int balance, String accountHolderNam)throws DataAccessException;
-	public void updateTossInfo(String userId, String card_num, String card_company, String billingkey)throws DataAccessException;
+    public void insertNewMember(MemberVO memberVO) throws DataAccessException;
+    public boolean checkId(String id) throws DataAccessException;
+    public boolean checkPhone(String phone) throws DataAccessException;
+    public boolean checkEmail(String email) throws DataAccessException;
+    public void updateOpenBankingInfo(String userId, String accessToken, String userSeqNo, String fintech_num, String bank_code, String account_num, int balance, String accountHolderNam)throws DataAccessException;
+    public void updateTossInfo(String userId, String card_num, String card_company, String billingkey)throws DataAccessException;
     public MemberVO selectMemberById(String id) throws DataAccessException;
     public void updateMyInfo(MemberVO memberVO, String newPassword) throws DataAccessException;
-	public void updateMember_account_status(String id)throws DataAccessException;
-	public void updateMember_card_status(String id)throws DataAccessException;
-	public List<MemberCardVO> selectCardById(String userId)throws DataAccessException;
+    public void updateMember_account_status(String id)throws DataAccessException;
+    public void updateMember_card_status(String id)throws DataAccessException;
+    public List<MemberCardVO> selectCardById(String userId)throws DataAccessException;
     public List<MemberAccountVO> selectAccountById(String userId)throws DataAccessException;
-	public int updatePrimaryCard(String userId, int cardIdx) throws DataAccessException;
+    public int updatePrimaryCard(String userId, int cardIdx) throws DataAccessException;
 
-    // 로그인 회원이 소유한 카드의 표시 이름만 수정한다.
+    // 로그인 회원이 소유한 카드의 표시 이름만 수정
     public int updateCardName(String userId, int cardIdx, String cardName) throws DataAccessException;
     /* =========================================================
        [마이페이지 계좌·카드 연결 추가]
@@ -35,33 +35,33 @@ public interface MemberRepository {
        ========================================================= */
     public int updateAccountName(String userId, int accountIdx, String accountName)throws DataAccessException;
 
-    // 선택한 계좌만 주계좌(YES)로 바꾸고 같은 회원의 나머지 계좌는 NO로 변경한다.
+    // 선택한 계좌만 주계좌(YES)로 바꾸고 같은 회원의 나머지 계좌는 NO로 변경
     public int updatePrimaryAccount(String userId, int accountIdx)throws DataAccessException;
-	public void applyWarningPenalty(String userId, int penaltyDays)throws DataAccessException;
-	public List<MemberVO> selectMemberAll() throws DataAccessException;
+    public void applyWarningPenalty(String userId, int penaltyDays)throws DataAccessException;
+    public List<MemberVO> selectMemberAll() throws DataAccessException;
 
-	/* =========================================================
-	   [추가 기능] 아이디/비밀번호 찾기용 Repository 메서드
-	   ---------------------------------------------------------
-	   member_tb를 직접 조회/수정하는 구간이다.
-	   휴대폰 번호는 하이픈 유무와 상관없이 비교하기 위해 구현체에서 숫자만 남겨 비교한다.
-	   ========================================================= */
-	// 휴대폰 번호로 ACTIVE 회원의 id 조회
-	public String findIdByPhone(String phone) throws DataAccessException;
+    /* =========================================================
+       [추가 기능] 아이디/비밀번호 찾기용 Repository 메서드
+       ---------------------------------------------------------
+       member_tb를 직접 조회/수정하는 구간이다.
+       휴대폰 번호는 하이픈 유무와 상관없이 비교하기 위해 구현체에서 숫자만 남겨 비교한다.
+       ========================================================= */
+    // 휴대폰 번호로 ACTIVE 회원의 id 조회
+    public String findIdByPhone(String phone) throws DataAccessException;
 
-	// 입력한 id가 ACTIVE 회원으로 존재하는지 확인
-	public boolean existsActiveId(String id) throws DataAccessException;
+    // 입력한 id가 ACTIVE 회원으로 존재하는지 확인
+    public boolean existsActiveId(String id) throws DataAccessException;
 
-	// id + 휴대폰 번호가 같은 ACTIVE 회원 정보인지 확인
-	public boolean existsActiveMemberByIdAndPhone(String id, String phone) throws DataAccessException;
+    // id + 휴대폰 번호가 같은 ACTIVE 회원 정보인지 확인
+    public boolean existsActiveMemberByIdAndPhone(String id, String phone) throws DataAccessException;
 
-	// 인증 완료 후 비밀번호 변경
-	public void updatePasswordById(String id, String newPassword) throws DataAccessException;
-	public void inserttrandetail(MemberTranVO tran)throws DataAccessException;
-	public void updatebalance(int tran_amt, int idx) throws DataAccessException;
+    // 인증 완료 후 비밀번호 변경
+    public void updatePasswordById(String id, String newPassword) throws DataAccessException;
+    public void inserttrandetail(MemberTranVO tran)throws DataAccessException;
+    public void updatebalance(int tran_amt, int idx) throws DataAccessException;
 
-	// 로그인 회원이 소유한 특정 계좌의 거래내역을 최신순으로 조회한다.
-	public List<MemberTranVO> selectTransactionsByAccount(String userId, int accountIdx)
-			throws DataAccessException;
-	public void deleteCard(int card_idx,String id)throws DataAccessException;
+    // 로그인 회원이 소유한 특정 계좌의 거래내역을 최신순으로 조회
+    public List<MemberTranVO> selectTransactionsByAccount(String userId, int accountIdx)
+            throws DataAccessException;
+    public void deleteCard(int card_idx, String id)throws DataAccessException;
 }

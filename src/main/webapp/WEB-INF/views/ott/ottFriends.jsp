@@ -14,7 +14,7 @@
 <section id="ottFriendsPage" class="page-hero"
          data-context-path="${contextPath}"
          data-kakao-key="${fn:escapeXml(kakaoJavascriptKey)}">
-    <div class="container ">    
+    <div class="container ">
         <p class="eyebrow">FRIENDS SHARE ROOM</p>
         <h1>가족 · 지인 공유방</h1>
         <p class="hero-text">

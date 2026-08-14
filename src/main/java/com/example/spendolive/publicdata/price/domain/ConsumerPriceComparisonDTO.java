@@ -5,17 +5,17 @@ import java.util.List;
 
 public class ConsumerPriceComparisonDTO {
 
-    // [생필품 가격 비교] 선택한 상품과 실제 가격 조사일을 화면에 전달한다.
+    // 선택한 상품과 실제 가격 조사일을 화면에 전달
     private String goodId;
     private String goodName;
     private String inspectDay;
 
-    // [생필품 가격 비교] 판매점 가격을 기준으로 계산한 요약값이다.
+    // 판매점 가격을 기준으로 계산한 요약값이다
     private int lowestPrice;
     private int averagePrice;
     private int highestPrice;
 
-    // [생필품 가격 비교] 낮은 가격순으로 정렬한 판매점 목록이다.
+    // 낮은 가격순으로 정렬한 판매점 목록이다
     private List<StorePrice> stores = new ArrayList<>();
 
     public ConsumerPriceComparisonDTO() {}
@@ -47,7 +47,7 @@ public class ConsumerPriceComparisonDTO {
 
     public static class StorePrice {
 
-        // [생필품 가격 비교] 판매점별 가격과 할인 여부를 화면에 표시한다.
+        // 판매점별 가격과 할인 여부를 화면에 표시
         private String entpId;
         private String storeName;
         private String roadAddress;

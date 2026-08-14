@@ -5,62 +5,62 @@
 /* =========================================================
    OTT 페이지 개선 + 공통 채팅 위젯
    ========================================================= */
-.ott-sub-hero {/* 캘린더(page-hero)와 동일한 배경 톤으로 통일 */ background: radial-gradient(circle at 18% 8%, rgba(122,127,54,.16), transparent 36%), radial-gradient(circle at 82% 20%, rgba(196,138,44,.11), transparent 38%);}
-.ott-stat-grid {display: grid;grid-template-columns: repeat(3, minmax(0, 1fr));gap: 1rem;margin-bottom: 1.5rem;}
-.ott-stat-card {background: #ffffff;border: 1px solid #e2eadf;border-radius: 1.375rem;padding: 1.25rem;box-shadow: 0 0.75rem 1.875rem rgba(66, 94, 58, 0.08);}
-.ott-stat-card span {display: block;font-size: 0.8125rem;color: #66735f;margin-bottom: 0.5rem;}
-.ott-stat-card strong {display: block;font-size: 2.125rem;color: #33512e;line-height: 1;}
-.ott-stat-card p,.card-desc {color: #6a7567;line-height: 1.7;}
-.ott-service-logo-card {min-height: 9.75rem;}
-.ott-logo-strip {display: grid;grid-template-columns: repeat(6, 2.75rem);gap: 0.625rem;align-items: center;margin: 0.625rem 0 0.75rem;}
-.ott-logo-strip img {width: 2.75rem;height: 2.75rem;border-radius: 0.8125rem;object-fit: cover;box-shadow: 0 0.5rem 1rem rgba(33, 42, 31, 0.14);}
-.ott-choice-grid {display: grid;grid-template-columns: repeat(2, minmax(0, 1fr));gap: 1.375rem;}
-.ott-choice-card,.ott-tab-panel {border-radius: 1.625rem;border: 1px solid #e1ecdf;box-shadow: 0 1.125rem 2.75rem rgba(52, 74, 48, 0.08);}
-.ott-guide-grid {display: grid;gap: 0.75rem;margin: 1.375rem 0;}
-.ott-guide-grid div {background: #f8fbf6;border: 1px solid #e5eee3;border-radius: 1.125rem;padding: 0.875rem;}
-.ott-guide-grid strong,.ott-guide-grid span {display: block;}
-.ott-guide-grid span {margin-top: 0.25rem;color: #6b7568;font-size: 0.875rem;}
-.ott-page-actions {display: flex;gap: 0.625rem;flex-wrap: wrap;margin-top: 1.5rem;}
-.ott-form-submit {grid-column: 1 / -1;margin-top: 0.375rem;}
-.ott-room-card-list,.status-list {display: grid;gap: 0.75rem;}
-.ott-room-card,.apply-manage-row {display: flex;align-items: center;justify-content: space-between;gap: 0.875rem;background: #f9fcf7;border: 1px solid #e4eee2;border-radius: 1.125rem;padding: 1rem;}
-.ott-room-card strong,.apply-manage-row strong {color: #2f482b;}
-.ott-room-card p,.apply-manage-row p {margin: 0.375rem 0 0;color: #697568;}
-.ott-room-card small,.apply-manage-row small {color: #87917f;}
-.apply-price-box {display: grid;justify-items: end;gap: 0.375rem;white-space: nowrap;}
-.status-pill {display: inline-flex;align-items: center;justify-content: center;min-width: 5.25rem;height: 1.75rem;padding: 0 0.625rem;border-radius: 999px;font-size: 0.75rem;font-weight: 800;background: #eef6ed;color: #41613b;}
-.status-pill.RECRUITING {background: #fff4d7;color: #8a6500;}
-.status-pill.ACTIVE {background: #e8f7ec;color: #21703b;}
-.status-pill.END {background: #f1f1f1;color: #777777;}
-.apply-price-box span {color: #798675;font-size: 0.8125rem;}
-.apply-price-box b {color: #2f512d;}
-.empty-box {background: #f8fbf6;border: 1px dashed #c9d8c4;border-radius: 1.125rem;padding: 1.5rem;text-align: center;color: #758071;}
-.status-row.wide {display: flex;align-items: center;justify-content: space-between;gap: 0.75rem;}
-.status-row small {color: #7d8878;}
-.chat-floating-widget {position: fixed;right: 1.75rem;bottom: 1.75rem;z-index: 1000;}
-.chat-widget-check {display: none;}
-.chat-widget-button {width: 3.875rem;height: 3.875rem;border-radius: 1.5rem;background: #355c32;color: #ffffff;display: flex;align-items: center;justify-content: center;font-size: 1.75rem;box-shadow: 0 1rem 2.375rem rgba(31, 54, 29, 0.3);cursor: pointer;position: relative;transition: transform .15s ease;}
-.chat-widget-button:hover {transform: scale(1.06);}
-.chat-widget-button em {position: absolute;right: -0.3125rem;top: -0.4375rem;min-width: 1.4375rem;height: 1.4375rem;padding: 0 0.375rem;border-radius: 999px;background: #ff5b45;color: #ffffff;font-size: 0.75rem;font-style: normal;font-weight: 900;display: flex;align-items: center;justify-content: center;border: 2px solid #ffffff;}
-.chat-widget-panel {position: absolute;right: 0;bottom: 4.75rem;width: 21.25rem;max-height: 30rem;overflow: auto;background: #ffffff;border: 1px solid #e0eadc;border-radius: 1.625rem;box-shadow: 0 1.375rem 3.75rem rgba(34, 52, 31, 0.22);padding: 1.125rem;opacity: 0;transform: translateY(0.75rem) scale(0.96);pointer-events: none;transition: 0.2s ease;}
-.chat-widget-check:checked ~ .chat-widget-panel {opacity: 1;transform: translateY(0) scale(1);pointer-events: auto;}
-.chat-widget-head {display: flex;justify-content: space-between;gap: 0.75rem;align-items: flex-start;margin-bottom: 0.875rem;}
-.chat-widget-head h3 {margin: 0.125rem 0 0;}
-.chat-widget-close {width: 2rem;height: 2rem;border-radius: 50%;display: inline-flex;align-items: center;justify-content: center;background: #f0f5ef;cursor: pointer;font-size: 1.375rem;color: #455f41;}
-.chat-room-list {display: grid;gap: 0.625rem;}
-.chat-room-item {display: grid;grid-template-columns: 2.625rem minmax(0, 1fr) auto;gap: 0.625rem;align-items: center;text-decoration: none;color: inherit;background: #f8fbf7;border: 1px solid #e4eee1;border-radius: 1.125rem;padding: 0.75rem;}
-.chat-room-item.unread {background: #f3fbf2;border-color: #cfe4ca;}
-.chat-room-avatar {width: 2.625rem;height: 2.625rem;border-radius: 0.9375rem;background: #e8f3e5;display: flex;align-items: center;justify-content: center;font-weight: 900;}
-.chat-room-item strong {display: block;color: #2f482c;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
-.chat-room-item p {margin: 0.25rem 0 0;color: #6c7768;font-size: 0.8125rem;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
-.chat-unread {min-width: 1.375rem;height: 1.375rem;padding: 0 0.375rem;border-radius: 999px;background: #ff6b50;color: #ffffff;font-size: 0.75rem;display: flex;align-items: center;justify-content: center;font-weight: 900;}
-.chat-login-box {background: #f8fbf7;border-radius: 1.125rem;padding: 1rem;color: #6c7768;}
+.ott-sub-hero {/* 캘린더(page-hero)와 동일한 배경 톤으로 통일 */ background:radial-gradient(circle at 18% 8%, rgba(122,127,54,.16), transparent 36%), radial-gradient(circle at 82% 20%, rgba(196,138,44,.11), transparent 38%);}
+.ott-stat-grid {display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:1rem;margin-bottom:1.5rem;}
+.ott-stat-card {background:#ffffff;border:1px solid #e2eadf;border-radius:1.375rem;padding:1.25rem;box-shadow:0 0.75rem 1.875rem rgba(66, 94, 58, 0.08);}
+.ott-stat-card span {display:block;font-size:0.8125rem;color:#66735f;margin-bottom:0.5rem;}
+.ott-stat-card strong {display:block;font-size:2.125rem;color:#33512e;line-height:1;}
+.ott-stat-card p,.card-desc {color:#6a7567;line-height:1.7;}
+.ott-service-logo-card {min-height:9.75rem;}
+.ott-logo-strip {display:grid;grid-template-columns:repeat(6, 2.75rem);gap:0.625rem;align-items:center;margin:0.625rem 0 0.75rem;}
+.ott-logo-strip img {width:2.75rem;height:2.75rem;border-radius:0.8125rem;object-fit:cover;box-shadow:0 0.5rem 1rem rgba(33, 42, 31, 0.14);}
+.ott-choice-grid {display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:1.375rem;}
+.ott-choice-card,.ott-tab-panel {border-radius:1.625rem;border:1px solid #e1ecdf;box-shadow:0 1.125rem 2.75rem rgba(52, 74, 48, 0.08);}
+.ott-guide-grid {display:grid;gap:0.75rem;margin:1.375rem 0;}
+.ott-guide-grid div {background:#f8fbf6;border:1px solid #e5eee3;border-radius:1.125rem;padding:0.875rem;}
+.ott-guide-grid strong,.ott-guide-grid span {display:block;}
+.ott-guide-grid span {margin-top:0.25rem;color:#6b7568;font-size:0.875rem;}
+.ott-page-actions {display:flex;gap:0.625rem;flex-wrap:wrap;margin-top:1.5rem;}
+.ott-form-submit {grid-column:1 / -1;margin-top:0.375rem;}
+.ott-room-card-list,.status-list {display:grid;gap:0.75rem;}
+.ott-room-card,.apply-manage-row {display:flex;align-items:center;justify-content:space-between;gap:0.875rem;background:#f9fcf7;border:1px solid #e4eee2;border-radius:1.125rem;padding:1rem;}
+.ott-room-card strong,.apply-manage-row strong {color:#2f482b;}
+.ott-room-card p,.apply-manage-row p {margin:0.375rem 0 0;color:#697568;}
+.ott-room-card small,.apply-manage-row small {color:#87917f;}
+.apply-price-box {display:grid;justify-items:end;gap:0.375rem;white-space:nowrap;}
+.status-pill {display:inline-flex;align-items:center;justify-content:center;min-width:5.25rem;height:1.75rem;padding:0 0.625rem;border-radius:999px;font-size:0.75rem;font-weight:800;background:#eef6ed;color:#41613b;}
+.status-pill.RECRUITING {background:#fff4d7;color:#8a6500;}
+.status-pill.ACTIVE {background:#e8f7ec;color:#21703b;}
+.status-pill.END {background:#f1f1f1;color:#777777;}
+.apply-price-box span {color:#798675;font-size:0.8125rem;}
+.apply-price-box b {color:#2f512d;}
+.empty-box {background:#f8fbf6;border:1px dashed #c9d8c4;border-radius:1.125rem;padding:1.5rem;text-align:center;color:#758071;}
+.status-row.wide {display:flex;align-items:center;justify-content:space-between;gap:0.75rem;}
+.status-row small {color:#7d8878;}
+.chat-floating-widget {position:fixed;right:1.75rem;bottom:1.75rem;z-index:1000;}
+.chat-widget-check {display:none;}
+.chat-widget-button {width:3.875rem;height:3.875rem;border-radius:1.5rem;background:#355c32;color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:1.75rem;box-shadow:0 1rem 2.375rem rgba(31, 54, 29, 0.3);cursor:pointer;position:relative;transition:transform .15s ease;}
+.chat-widget-button:hover {transform:scale(1.06);}
+.chat-widget-button em {position:absolute;right:-0.3125rem;top:-0.4375rem;min-width:1.4375rem;height:1.4375rem;padding:0 0.375rem;border-radius:999px;background:#ff5b45;color:#ffffff;font-size:0.75rem;font-style:normal;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #ffffff;}
+.chat-widget-panel {position:absolute;right:0;bottom:4.75rem;width:21.25rem;max-height:30rem;overflow:auto;background:#ffffff;border:1px solid #e0eadc;border-radius:1.625rem;box-shadow:0 1.375rem 3.75rem rgba(34, 52, 31, 0.22);padding:1.125rem;opacity:0;transform:translateY(0.75rem) scale(0.96);pointer-events:none;transition:0.2s ease;}
+.chat-widget-check:checked ~ .chat-widget-panel {opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+.chat-widget-head {display:flex;justify-content:space-between;gap:0.75rem;align-items:flex-start;margin-bottom:0.875rem;}
+.chat-widget-head h3 {margin:0.125rem 0 0;}
+.chat-widget-close {width:2rem;height:2rem;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#f0f5ef;cursor:pointer;font-size:1.375rem;color:#455f41;}
+.chat-room-list {display:grid;gap:0.625rem;}
+.chat-room-item {display:grid;grid-template-columns:2.625rem minmax(0, 1fr) auto;gap:0.625rem;align-items:center;text-decoration:none;color:inherit;background:#f8fbf7;border:1px solid #e4eee1;border-radius:1.125rem;padding:0.75rem;}
+.chat-room-item.unread {background:#f3fbf2;border-color:#cfe4ca;}
+.chat-room-avatar {width:2.625rem;height:2.625rem;border-radius:0.9375rem;background:#e8f3e5;display:flex;align-items:center;justify-content:center;font-weight:900;}
+.chat-room-item strong {display:block;color:#2f482c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-room-item p {margin:0.25rem 0 0;color:#6c7768;font-size:0.8125rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-unread {min-width:1.375rem;height:1.375rem;padding:0 0.375rem;border-radius:999px;background:#ff6b50;color:#ffffff;font-size:0.75rem;display:flex;align-items:center;justify-content:center;font-weight:900;}
+.chat-login-box {background:#f8fbf7;border-radius:1.125rem;padding:1rem;color:#6c7768;}
 @media (max-width: 56.25rem) {
-    .ott-stat-grid,.ott-choice-grid {grid-template-columns: 1fr;}
-    .ott-room-card,.apply-manage-row {align-items: stretch;flex-direction: column;}
-    .apply-price-box {justify-items: start;}
-    .ott-logo-strip {grid-template-columns: repeat(3, 2.75rem);}
-    .chat-widget-panel {right: -0.625rem;width: min(21.25rem, calc(100vw - 2rem));}
+    .ott-stat-grid,.ott-choice-grid {grid-template-columns:1fr;}
+    .ott-room-card,.apply-manage-row {align-items:stretch;flex-direction:column;}
+    .apply-price-box {justify-items:start;}
+    .ott-logo-strip {grid-template-columns:repeat(3, 2.75rem);}
+    .chat-widget-panel {right:-0.625rem;width:min(21.25rem, calc(100vw - 2rem));}
 }
 /* 채팅 시스템 안내 메시지 */
 .chat-message-row.system {justify-content:center;}

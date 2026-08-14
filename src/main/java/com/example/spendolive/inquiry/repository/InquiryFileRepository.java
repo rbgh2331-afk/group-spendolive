@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import com.example.spendolive.inquiry.domain.InquiryFileVO;
 
-
 @Repository
 public class InquiryFileRepository {
     private static final Logger log = LoggerFactory.getLogger(InquiryFileRepository.class);

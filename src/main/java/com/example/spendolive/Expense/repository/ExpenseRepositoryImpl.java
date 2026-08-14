@@ -56,7 +56,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             ORDER BY e.expense_date DESC, e.expense_id DESC
             """;
 
-    // [고정지출 종료월] 조회 월이 종료일을 지난 반복 원본은 자동 생성 대상에서 제외한다.
+    // 조회 월이 종료일을 지난 반복 원본은 자동 생성 대상에서 제외
     private final String selectRepeatBaseExpenseSql = """
         SELECT
             e.expense_id,
@@ -111,7 +111,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             WHERE e.expense_id = ?
             """;
 
-    // [고정지출 종료월] 등록 시 선택한 종료일을 함께 저장한다.
+    // 등록 시 선택한 종료일을 함께 저장
     private final String insertExpenseSql = """
             INSERT INTO expense_tb (
                 member_id,
@@ -128,7 +128,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             ) VALUES (?, ?, ?, ?, ?, ?, ?, NVL(?, 'N'), ?, ?, NVL(?, 'N'))
             """;
 
-    // [고정지출 종료월] 수정 시 종료일 변경 또는 NULL 해제를 반영한다.
+    // 수정 시 종료일 변경 또는 NULL 해제를 반영한다
     private final String updateExpenseSql = """
             UPDATE expense_tb
             SET
@@ -174,7 +174,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             ORDER BY sort_order ASC, category_id ASC
             """;
 
-    // 회원과 연월을 기준으로 월 예산을 조회한다.
+    // 회원과 연월을 기준으로 월 예산을 조회
     private final String selectMonthlyBudgetSql = """
             SELECT NVL(MAX(budget_amount), 0)
             FROM monthly_budget_tb
@@ -182,7 +182,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
               AND budget_month = ?
             """;
 
-    // 같은 달의 예산이 있으면 수정하고 없으면 새로 등록한다.
+    // 같은 달의 예산이 있으면 수정하고 없으면 새로 등록
     private final String saveMonthlyBudgetSql = """
             MERGE INTO monthly_budget_tb budget
             USING (
@@ -318,7 +318,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
         return jdbcTemplate.query(selectCategoryListByTypeSql, categoryRowMapper(), expense_type);
     }
 
-    // 조회 결과가 없으면 예산 0원으로 반환한다.
+    // 조회 결과가 없으면 예산 0원으로 반환
     @Override
     public int selectMonthlyBudget(Long member_id, String budget_month) {
         Integer budgetAmount = jdbcTemplate.queryForObject(
@@ -331,7 +331,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
         return budgetAmount == null ? 0 : budgetAmount;
     }
 
-    // 예산 저장 시 수정일은 SQL에서 현재 날짜로 갱신한다.
+    // 예산 저장 시 수정일은 SQL에서 현재 날짜로 갱신
     @Override
     public void saveMonthlyBudget(Long member_id, String budget_month, int budget_amount) {
         jdbcTemplate.update(
@@ -444,7 +444,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             ExpenseDTO base,
             LocalDate repeatedDate) {
 
-        // [고정지출 종료월] 종료일을 지난 자동 반복 내역은 생성하지 않는다.
+        // 종료일을 지난 자동 반복 내역은 생성하지 않는다
         LocalDate repeatEndDate = toLocalDate(base.getRepeat_end_date());
         if (repeatEndDate != null && repeatedDate.isAfter(repeatEndDate)) {
             return;
@@ -466,7 +466,7 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
 
     /**
      * 수동 등록 내역과 자동 반복 내역이 같은 회차인지 비교하는 키다.
-     * 제목의 앞뒤 공백과 대소문자 차이는 같은 값으로 처리한다.
+     * 제목의 앞뒤 공백과 대소문자 차이는 같은 값으로 처리
      */
     private String makeOccurrenceKey(ExpenseDTO expense, LocalDate expenseDate) {
         return String.valueOf(expense.getCategory_id())
@@ -496,13 +496,12 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
 
         repeated.setRepeat_yn(base.getRepeat_yn());
         repeated.setRepeat_cycle(base.getRepeat_cycle());
-        // [고정지출 종료월] 자동 생성 행에도 원본 종료일을 유지한다.
+        // 자동 생성 행에도 원본 종료일을 유지
         repeated.setRepeat_end_date(base.getRepeat_end_date());
         repeated.setFixed_yn(base.getFixed_yn());
         repeated.setAuto_generated_yn("Y");
         repeated.setCreated_at(base.getCreated_at());
         repeated.setUpdated_at(base.getUpdated_at());
-
 
         return repeated;
     }
@@ -512,7 +511,6 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
             @Override
             public ExpenseDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
                 ExpenseDTO expense = new ExpenseDTO();
-
 
                 expense.setExpense_id(rs.getLong("expense_id"));
                 expense.setMember_id(rs.getLong("member_id"));
@@ -528,13 +526,12 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
 
                 expense.setRepeat_yn(rs.getString("repeat_yn"));
                 expense.setRepeat_cycle(rs.getString("repeat_cycle"));
-                // [고정지출 종료월] DB 종료일을 DTO에 매핑한다.
+                // DB 종료일을 DTO에 매핑한다
                 expense.setRepeat_end_date(rs.getDate("repeat_end_date"));
                 expense.setFixed_yn(rs.getString("fixed_yn"));
                 expense.setAuto_generated_yn("N");
                 expense.setCreated_at(rs.getTimestamp("created_at"));
                 expense.setUpdated_at(rs.getTimestamp("updated_at"));
-
 
                 return expense;
             }
@@ -569,11 +566,11 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
         if (date == null) {
             return null;
         }
-    
+
         if (date instanceof java.sql.Date sqlDate) {
             return sqlDate.toLocalDate();
         }
-    
+
         return date.toInstant()
                    .atZone(ZoneId.systemDefault())
                    .toLocalDate();

@@ -25,22 +25,20 @@ public class CommonModelAdvice {
     public void addCommonModel(Model model, HttpSession session, HttpServletRequest request) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
 
-
         // ── 로그인 여부 + memberInfo 항상 model에 주입 ──────────────
         // header.jsp 등 공통 레이아웃에서 ${isLogOn}, ${memberInfo} 사용
         boolean isLogOn = (memberInfo != null);
         model.addAttribute("isLogOn", isLogOn);
         model.addAttribute("memberInfo", memberInfo);
 
-        
         if (memberInfo == null) {
             model.addAttribute("chatRoomSummaryList", Collections.emptyList());
             model.addAttribute("chatTotalUnreadCount", 0);
             return;
         }
 
-        // AJAX/관리자 요청은 사용자 공통 채팅 위젯을 렌더링하지 않으므로 OTT 조회를 생략한다.
-        // 페이지 이동과 무관한 요청마다 채팅방/미읽음 DB 조회가 반복되는 것을 방지한다.
+        // AJAX/관리자 요청은 사용자 공통 채팅 위젯을 렌더링하지 않으므로 OTT 조회를 생략한다
+        // 페이지 이동과 무관한 요청마다 채팅방/미읽음 DB 조회가 반복되는 것을 방지
         if (isChatWidgetLookupUnnecessary(request)) {
             model.addAttribute("chatRoomSummaryList", Collections.emptyList());
             model.addAttribute("chatTotalUnreadCount", 0);
@@ -57,7 +55,7 @@ public class CommonModelAdvice {
             model.addAttribute("chatTotalUnreadCount", ottService.getUnreadChatCount(loginId));
         } catch (DataAccessException e) {
             // OTT 관련 테이블이 아직 생성되지 않았거나 SQL 스키마가 정리되지 않은 상태여도
-            // 다른 페이지까지 깨지지 않도록 공통 채팅 위젯은 빈 값으로 둔다.
+            // 다른 페이지까지 깨지지 않도록 공통 채팅 위젯은 빈 값으로 둔다
             model.addAttribute("chatRoomSummaryList", Collections.emptyList());
             model.addAttribute("chatTotalUnreadCount", 0);
         }

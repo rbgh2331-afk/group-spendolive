@@ -19,10 +19,7 @@ import com.example.spendolive.notification.domain.NotificationDTO;
 import com.example.spendolive.notification.service.NotificationService;
 
 /**
- * 알림(개인화 알림) API 컨트롤러. 벨 드롭다운(bellIcon.js) + 알림센터 탭(notice.js)이 호출함.
- * - 화면(JSP) 없이 전부 JSON만 반환하는 순수 API.
- * - 모든 메서드가 로그인 여부부터 확인하고, 비로그인이면 빈 값/401/LOGIN_REQUIRED 등으로
- *   메서드마다 다르게 응답함 (호출부마다 처리 방식이 달라서 통일은 안 되어 있음).
+ * 개인 알림 목록, 읽음 처리, 찜 상태 및 미확인 개수 요청을 처리하는 API 컨트롤러
  */
 @RestController
 @RequestMapping("/spendolive/notification")
@@ -30,12 +27,12 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    // 생성자 주입 - 스프링이 빈 등록할 때 이 생성자를 보고 NotificationService 구현체를 자동으로 넣어줌
+    // 알림 서비스 생성자 주입
     public NotificationController(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
 
-    // 알림센터(noticeCenter.jsp) "알림" 탭 전체 목록. 비로그인이면 빈 배열 반환
+    // 알림센터 전체 알림 목록 조회
     @GetMapping("/ajax/list.do")
     public List<NotificationDTO> notificationList(HttpSession session) {
 
@@ -46,14 +43,10 @@ public class NotificationController {
             return Collections.emptyList();
         }
 
-        // ⚠ 디버깅용으로 찍어보던 로그가 그대로 남아있는 것으로 보임. 동작엔 지장 없어서
-        //   로직은 안 건드리고 표시만 해둠
-
         return notificationService.getNotificationList(memberInfo.getId());
     }
 
-    // 벨 드롭다운 전용: 안읽은 알림만 반환. 읽음 처리되면 다음 호출부터 목록에서 사라짐.
-    // (전체 내역이 필요한 알림센터 페이지는 기존 /ajax/list.do 그대로 사용)
+    // 벨 드롭다운 미확인 알림 목록 조회
     @GetMapping("/ajax/unread_list.do")
     public ResponseEntity<List<NotificationDTO>> unreadNotificationList(HttpSession session) {
 
@@ -61,14 +54,14 @@ public class NotificationController {
                 (MemberVO) session.getAttribute("memberInfo");
 
         if (memberInfo == null || memberInfo.getId() == null) {
-            // 비로그인 - 빈 배열이 아니라 401로 구분해서 응답
+            // 비로그인 요청 401 응답
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyList());
         }
 
         return ResponseEntity.ok(notificationService.getUnreadNotificationList(memberInfo.getId()));
 }
 
-    // 헤더 종모양 아이콘의 빨간 배지 숫자용. 비로그인이면 0으로 응답(에러 대신)
+    // 헤더 알림 배지용 미확인 알림 개수 조회
     @GetMapping("/ajax/unread_count.do")
     public Map<String, Integer> unread_count(HttpSession session) {
 
@@ -85,7 +78,7 @@ public class NotificationController {
         return Map.of("unread_count", unread_count);
     }
 
-    // 알림 클릭 시 읽음 처리 (readNotification() JS가 호출)
+    // 알림 읽음 상태 처리
     @PostMapping("/ajax/read.do")
     public Map<String, String> readNotification(
             @RequestParam("notification_id") int notification_id,
@@ -105,7 +98,7 @@ public class NotificationController {
         return Map.of("result", "OK");
     }
 
-    // 알림 찜(star) 토글
+    // 알림 찜 상태 전환
     @PostMapping("/ajax/star.do")
     public Map<String, String> toggleStar(
             @RequestParam("notification_id") int notification_id,

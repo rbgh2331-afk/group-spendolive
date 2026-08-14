@@ -28,7 +28,7 @@ public class OttServiceDTO {
     private Integer extra_member_count;
     private Integer max_member_limit;
     private Double platform_fee_rate;
-    
+
     // 화면 표시용 계산값
     // 사용자 1인 기준 계산값
     private Integer share_amount;

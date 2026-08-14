@@ -20,8 +20,8 @@ import jakarta.servlet.http.HttpSession;
 @AjaxEndpoint
 @RequestMapping("/spendolive/mypage/ajax")
 /**
- * [마이페이지 AJAX 전용 Controller]
- * 회원정보·계좌·카드의 기존 MemberService를 재사용하고 화면 전체 이동 없이 처리 결과를 반환한다.
+ * 
+ * 회원정보·계좌·카드의 기존 MemberService를 재사용하고 화면 전체 이동 없이 처리 결과를 반환
  * 계좌·카드 담당 로직의 Service와 Repository는 수정하지 않았다.
  */
 public class MyPageAjaxController {
@@ -32,14 +32,14 @@ public class MyPageAjaxController {
         this.memberService = memberService;
     }
 
-    // [AJAX 변경] 이메일·전화 인증과 비밀번호 검증이 모두 끝난 뒤에만 회원정보를 저장한다.
+    // 이메일·전화 인증과 비밀번호 검증이 모두 끝난 뒤에만 회원정보를 저장
     @PostMapping("/update.do")
     public ResponseEntity<?> updateProfile(@ModelAttribute MemberVO formMember,
                                            @RequestParam(value = "currentPassword", required = false) String currentPassword,
                                            @RequestParam(value = "passwordConfirm", required = false) String passwordConfirm,
                                            @RequestParam(value = "passwordChecked", required = false) String passwordChecked,
                                            HttpSession session) {
-        // [내 담당 로그인 공통화] 로그인 판정은 공통 JS에서 처리하고 AJAX Controller에서는 세션 회원정보만 사용한다.
+        // 로그인 판정은 공통 JS에서 처리하고 AJAX Controller에서는 세션 회원정보만 사용
         MemberVO loginMember = (MemberVO) session.getAttribute("memberInfo");
         try {
             MemberVO savedMember = memberService.getMemberById(loginMember.getId());
@@ -82,7 +82,7 @@ public class MyPageAjaxController {
         }
     }
 
-    // [AJAX 변경] 계좌 제목을 검증한 뒤 기존 계좌명 수정 Service를 호출한다.
+    // 계좌 제목을 검증한 뒤 기존 계좌명 수정 Service를 호출
     @PostMapping("/account/name/update.do")
     public ResponseEntity<?> updateAccountName(@RequestParam("accountIdx") int accountIdx,
                                                 @RequestParam("accountName") String accountName,
@@ -100,7 +100,7 @@ public class MyPageAjaxController {
         }
     }
 
-    // [AJAX 변경] 주계좌 변경 완료 후 자산관리 영역 갱신 주소를 반환한다.
+    // 주계좌 변경 완료 후 자산관리 영역 갱신 주소를 반환
     @PostMapping("/account/primary/update.do")
     public ResponseEntity<?> updatePrimaryAccount(@RequestParam("accountIdx") int accountIdx, HttpSession session) {
         MemberVO member = (MemberVO) session.getAttribute("memberInfo");
@@ -113,7 +113,7 @@ public class MyPageAjaxController {
         }
     }
 
-    // [AJAX 변경] 카드 표시 이름을 검증한 뒤 로그인 회원이 소유한 카드만 수정한다.
+    // 카드 표시 이름을 검증한 뒤 로그인 회원이 소유한 카드만 수정
     @PostMapping("/card/name/update.do")
     public ResponseEntity<?> updateCardName(@RequestParam("cardIdx") int cardIdx,
                                              @RequestParam("cardName") String cardName,
@@ -138,7 +138,7 @@ public class MyPageAjaxController {
         }
     }
 
-    // [AJAX 변경] 주카드 변경 완료 후 자산관리 영역 갱신 주소를 반환한다.
+    // 주카드 변경 완료 후 자산관리 영역 갱신 주소를 반환
     @PostMapping("/card/primary/update.do")
     public ResponseEntity<?> updatePrimaryCard(@RequestParam("cardIdx") int cardIdx, HttpSession session) {
         MemberVO member = (MemberVO) session.getAttribute("memberInfo");
@@ -150,29 +150,29 @@ public class MyPageAjaxController {
             return ResponseEntity.internalServerError().body(AjaxResponse.failure("SERVER_ERROR", "주카드 변경에 실패했습니다."));
         }
     }
-    // [AJAX 변경] 주카드 변경 완료 후 자산관리 영역 갱신 주소를 반환한다.
+    // 주카드 변경 완료 후 자산관리 영역 갱신 주소를 반환
     @PostMapping("/card/delete.do")
     public ResponseEntity<?> deleteCard(@RequestParam("cardIdx") int cardIdx, HttpSession session) {
         MemberVO member = (MemberVO) session.getAttribute("memberInfo");
         try {
-            memberService.deleteCard(cardIdx,member.getId());
+            memberService.deleteCard(cardIdx, member.getId());
             return ResponseEntity.ok(AjaxResponse.success("카드가 삭제되었습니다.",
                     Map.of("refreshUrl", "/spendolive/mypage.do#asset-manage")));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(AjaxResponse.failure("SERVER_ERROR", "카드가 삭제에 실패했습니다."));
         }
     }
-    // 공백 차이로 불필요한 재인증이 발생하지 않도록 정리한 값끼리 비교한다.
+    // 공백 차이로 불필요한 재인증이 발생하지 않도록 정리한 값끼리 비교
     private boolean isChanged(String newValue, String oldValue) {
         return !(newValue == null ? "" : newValue.trim()).equals(oldValue == null ? "" : oldValue.trim());
     }
 
-    // 인증 완료 플래그와 실제 인증한 값이 현재 요청값과 모두 일치하는지 확인한다.
+    // 인증 완료 플래그와 실제 인증한 값이 현재 요청값과 모두 일치하는지 확인
     private boolean isVerified(HttpSession session, String flag, String value, String requestedValue) {
         return "Y".equals(session.getAttribute(flag)) && requestedValue != null && requestedValue.equals(session.getAttribute(value));
     }
 
-    // 저장이 끝난 인증 정보는 세션에서 제거해 다음 수정에 재사용되지 않게 한다.
+    // 저장이 끝난 인증 정보는 세션에서 제거해 다음 수정에 재사용되지 않게 한다
     private void clearVerification(HttpSession session) {
         String[] keys = {"mypageEmailCode", "mypageEmailTarget", "mypageEmailVerified", "mypageEmailVerifiedValue",
                 "mypagePhoneCode", "mypagePhoneTarget", "mypagePhoneVerified", "mypagePhoneVerifiedValue"};

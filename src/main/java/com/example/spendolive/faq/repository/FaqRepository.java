@@ -68,7 +68,6 @@ public class FaqRepository {
             ORDER BY sort_order ASC, faq_id ASC
         """;
 
-
     // 등록
     private static final String INSERT_SQL = """
             INSERT INTO faq_tb(faq_id, category, question, answer, sort_order, use_yn, created_at)
@@ -162,8 +161,6 @@ public class FaqRepository {
             return Collections.emptyList();
         }
     }
-
-
 
     // 시퀀스(seq_faq)로 새 PK를 미리 받아온 다음 INSERT에 직접 박아넣는 방식
     // (IDENTITY 컬럼 자동증가 대신 시퀀스를 쓰는 이유는 Oracle이라 그런 걸로 보임)

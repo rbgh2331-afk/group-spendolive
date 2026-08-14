@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpSession;
 /**
  * 지출관리 AJAX Controller.
  *
- * 예산 저장과 지출 등록·수정·삭제 요청을 JSON으로 처리한다.
+ * 예산 저장과 지출 등록·수정·삭제 요청을 JSON으로 처리
  * 지출 목록 화면 조회는 ExpenseController가 담당한다.
  */
 @Controller
@@ -52,7 +52,7 @@ public class ExpenseAjaxController {
                                             @RequestParam(value = "budget_amount", required = false) String budgetAmount,
                                             HttpSession session) {
 
-        // [내 담당 로그인 공통화] 로그인 팝업/이동은 공통 JS가 처리하므로 AJAX Controller의 중복 인증 응답 검사를 제거한다.
+        // 로그인 팝업/이동은 공통 JS가 처리하므로 AJAX Controller의 중복 인증 응답 검사를 제거한다
         MemberVO member = (MemberVO) session.getAttribute("memberInfo");
 
         try {
@@ -208,7 +208,7 @@ public class ExpenseAjaxController {
             try {
                 return YearMonth.parse(yearMonth).toString();
             } catch (Exception ignored) {
-                // 잘못된 연월은 아래 현재 연월로 보정한다.
+                // 잘못된 연월은 아래 현재 연월로 보정한다
             }
         }
 
@@ -222,7 +222,7 @@ public class ExpenseAjaxController {
             expenseDTO.setFixed_yn("N");
             expenseDTO.setRepeat_yn("N");
             expenseDTO.setRepeat_cycle(null);
-            // [고정지출 종료월] 변동지출에는 종료일을 저장하지 않는다.
+            // 변동지출에는 종료일을 저장하지 않는다
             expenseDTO.setRepeat_end_date(null);
             expenseDTO.setRepeat_end_month(null);
             return;
@@ -237,11 +237,11 @@ public class ExpenseAjaxController {
             expenseDTO.setRepeat_yn("Y");
         }
 
-        // [고정지출 종료월] 고정 반복지출만 종료월을 날짜로 변환해 저장한다.
+        // 고정 반복지출만 종료월을 날짜로 변환해 저장
         applyRepeatEndDate(expenseDTO);
     }
 
-    // [고정지출 종료월] yyyy-MM 값을 해당 월의 마지막 날짜로 변환하고 시작월보다 빠른 값은 차단한다.
+    // yyyy-MM 값을 해당 월의 마지막 날짜로 변환하고 시작월보다 빠른 값은 차단
     private void applyRepeatEndDate(ExpenseDTO expenseDTO) {
         boolean fixedRepeatExpense = "FIXED".equals(expenseDTO.getExpense_type()) && "Y".equals(expenseDTO.getRepeat_yn());
         String repeatEndMonth = expenseDTO.getRepeat_end_month();

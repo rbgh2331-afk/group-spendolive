@@ -1,4 +1,4 @@
-<%-- [AJAX 변경 주석] 지출 등록·수정·삭제·예산·월 이동 폼에 기존 action을 유지하면서 AJAX 전용 주소와 로딩 문구를 추가했다. --%>
+<%-- 지출 등록·수정·삭제·예산·월 이동 AJAX 영역 --%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>

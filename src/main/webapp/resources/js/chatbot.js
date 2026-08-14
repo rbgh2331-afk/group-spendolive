@@ -8,12 +8,12 @@
 
   function toggle() {
     const isOpen = panel.classList.toggle('show');
-  
+
     if (isOpen) {
       input.focus();
     }
   }
-  
+
   function close() {
     panel.classList.remove('show');
   }

@@ -23,9 +23,9 @@ import jakarta.servlet.http.HttpSession;
 @AjaxEndpoint
 @RequestMapping("/spendolive/ott/ajax")
 /**
- * [OTT 사용자 기능 AJAX 전용 Controller]
- * 방 생성·빠른 참가 확인·정산·나가기 처리를 기존 OttService로 실행하고 JSON으로 결과를 반환한다.
- * 결제사 외부 화면 이동은 AJAX로 대체하지 않고, 빠른 참가 확인이 끝난 뒤 기존 결제 화면으로 이동한다.
+ * 
+ * 방 생성·빠른 참가 확인·정산·나가기 처리를 기존 OttService로 실행하고 JSON으로 결과를 반환
+ * 결제사 외부 화면 이동은 AJAX로 대체하지 않고, 빠른 참가 확인이 끝난 뒤 기존 결제 화면으로 이동
  */
 public class OttAjaxController {
 
@@ -37,7 +37,7 @@ public class OttAjaxController {
         this.duplicateGuard = duplicateGuard;
     }
 
-    // [AJAX 변경] 가족·지인 공유방 생성 요청의 중복 실행과 계좌 미연동을 차단한다.
+    // 가족·지인 공유방 생성 요청의 중복 실행과 계좌 미연동을 차단
     @PostMapping("/friends/create.do")
     public ResponseEntity<?> createFriendRoom(@ModelAttribute OttRoomDTO roomDTO, HttpSession session) {
         MemberVO member = requireLinkedMember(session);
@@ -56,7 +56,7 @@ public class OttAjaxController {
         }
     }
 
-    // [AJAX 변경] 외부 모집방 생성 요청의 중복 실행과 계좌 미연동을 차단한다.
+    // 외부 모집방 생성 요청의 중복 실행과 계좌 미연동을 차단
     @PostMapping("/recruit/create.do")
     public ResponseEntity<?> createRecruitRoom(@ModelAttribute OttRoomDTO roomDTO, HttpSession session) {
         MemberVO member = requireLinkedMember(session);
@@ -75,7 +75,7 @@ public class OttAjaxController {
         }
     }
 
-    // [AJAX 변경] 참가자를 바로 저장하지 않고 참가 가능한 방만 확인한 뒤 결제 주소를 반환한다.
+    // 참가자를 바로 저장하지 않고 참가 가능한 방만 확인한 뒤 결제 주소를 반환
     @PostMapping("/recruit/quick-join.do")
     public ResponseEntity<?> quickJoin(@RequestParam(value = "ott_service_id", required = false) Long ottServiceId,
                                        HttpSession session) {
@@ -98,7 +98,7 @@ public class OttAjaxController {
         }
     }
 
-    // [AJAX 변경] 동일 결제 ID의 연속 처리를 차단하고 실제 저장 후에만 화면 갱신 주소를 반환한다.
+    // 동일 결제 ID의 연속 처리를 차단하고 실제 저장 후에만 화면 갱신 주소를 반환
     @PostMapping("/settlement/pay.do")
     public ResponseEntity<?> paySettlement(@RequestParam("payment_id") Long paymentId,
                                            @RequestParam(value = "returnPage", defaultValue = "recruit") String returnPage,
@@ -118,7 +118,7 @@ public class OttAjaxController {
         }
     }
 
-    // [AJAX 변경] 방 종료 예약은 동일 방에 대한 연속 요청을 막은 뒤 기존 Service를 호출한다.
+    // 방 종료 예약은 동일 방에 대한 연속 요청을 막은 뒤 기존 Service를 호출
     @PostMapping("/room/close-request.do")
     public ResponseEntity<?> closeRoom(@RequestParam("room_id") Long roomId,
                                        @RequestParam(value = "close_notice", required = false) String closeNotice,
@@ -140,7 +140,7 @@ public class OttAjaxController {
         }
     }
 
-    // [AJAX 변경] 나가기 예약 결과 문구와 현재 화면을 다시 불러올 주소를 반환한다.
+    // 나가기 예약 결과 문구와 현재 화면을 다시 불러올 주소를 반환
     @PostMapping("/room/leave-reserve.do")
     public ResponseEntity<?> reserveLeave(@RequestParam("room_id") Long roomId,
                                           @RequestParam(value = "returnPage", defaultValue = "recruit") String returnPage,
@@ -158,7 +158,7 @@ public class OttAjaxController {
         }
     }
 
-    // [AJAX 변경] 나가기 예약 취소 결과 문구와 현재 화면 갱신 주소를 반환한다.
+    // 나가기 예약 취소 결과 문구와 현재 화면 갱신 주소를 반환
     @PostMapping("/room/leave-cancel.do")
     public ResponseEntity<?> cancelLeave(@RequestParam("room_id") Long roomId,
                                          @RequestParam(value = "returnPage", defaultValue = "recruit") String returnPage,
@@ -176,12 +176,12 @@ public class OttAjaxController {
         }
     }
 
-    // [내 담당 로그인 공통화] 로그인 판정은 공통 JS에서 처리하고 AJAX 요청에서는 세션 회원정보만 사용한다.
+    // 로그인 판정은 공통 JS에서 처리하고 AJAX 요청에서는 세션 회원정보만 사용
     private MemberVO requireLinkedMember(HttpSession session) {
         return (MemberVO) session.getAttribute("memberInfo");
     }
 
-    // 가족방과 외부 모집방에서 각각 돌아가야 할 부분 갱신 주소를 구분한다.
+    // 가족방과 외부 모집방에서 각각 돌아가야 할 부분 갱신 주소를 구분한다
     private String refreshRoomUrl(String returnPage) {
         if ("friends".equals(returnPage)) {
             return "/spendolive/ott/friends.do";
@@ -192,7 +192,7 @@ public class OttAjaxController {
         return "/spendolive/ott/recruit.do?tab=manage";
     }
 
-    // 중복 요청은 성공처럼 처리하지 않고 HTTP 409와 공통 실패 코드를 반환한다.
+    // 중복 요청은 성공처럼 처리하지 않고 HTTP 409와 공통 실패 코드를 반환
     private ResponseEntity<AjaxResponse<Void>> duplicateResponse() {
         return ResponseEntity.status(409).body(AjaxResponse.failure("DUPLICATE_REQUEST", "이미 처리 중인 요청입니다. 잠시 후 다시 시도해주세요."));
     }

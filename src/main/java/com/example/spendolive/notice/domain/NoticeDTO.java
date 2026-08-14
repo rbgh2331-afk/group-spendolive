@@ -16,8 +16,5 @@ public class NoticeDTO {
     private String updated_at;       // 최종 수정일
     private String read_yn;          // notice_tb 자체 컬럼 X, notice_read_tb 조인 결과 | 로그인 회원이 읽었으면 Y, 안 읽었으면 N
     private String star_yn;          // notice_tb 자체 컬럼 X, notice_favorite_tb 조인 결과 | 로그인 회원이 찜했으면 Y, 안 했으면 N
-    
 
-    
-   
 }

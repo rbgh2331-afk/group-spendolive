@@ -39,7 +39,7 @@ public class InquiryService {
     }
 
     /**
-     * 문의 등록 + 첨부파일 저장을 한 트랜잭션으로 처리한다.
+     * 문의 등록 + 첨부파일 저장을 한 트랜잭션으로 처리
      * 파일 검증(FileStorageService.storeFiles)에서 예외가 나면 inquiry insert도 롤백된다.
      */
     @Transactional
@@ -51,10 +51,9 @@ public class InquiryService {
         for (InquiryFileVO file : files) {
             inquiryFileRepository.insertFile(file);
         }
-        
 
-        // [홈페이지 전체 알림 기능 설정] 문의 접수 완료 알림.
-        // 딱 맞는 전용 타입이 없어서 NotificationType.PERSONAL(일반 개인 알림)을 재사용함.
+        // 문의 접수 완료 알림
+        // 딱 맞는 전용 타입이 없어서 NotificationType.PERSONAL(일반 개인 알림)을 재사용함
         // 제목=문의 자체 제목, 본문=안내문구만 (공지 알림 표시 패턴과 통일)
         notificationService.createNotification(
                 inquiry.getId(),
@@ -102,7 +101,7 @@ public class InquiryService {
     }
 
     /**
-     * 첨부파일 미리보기/다운로드 요청 시 접근 권한을 확인한다.
+     * 첨부파일 미리보기/다운로드 요청 시 접근 권한을 확인
      * 관리자는 전체 열람 가능, 일반 회원은 본인 문의의 첨부파일만 열람 가능
      */
     public InquiryFileVO getInquiryFile(int file_id, String memberId, boolean isAdmin) {

@@ -65,7 +65,7 @@ public class NotificationPageController {
             return mav;
         }
 
-        // 이 페이지에 직접 들어온 것 자체가 그 알림을 확인한 거라 읽음 처리.
+        // 이 페이지에 직접 들어온 것 자체가 그 알림을 확인한 거라 읽음 처리
         // (bellIcon.js의 readNotificationFromBell()이 이동 전에 이미 read.do를 한 번
         //  호출하긴 하지만, 여기서 또 한 번 처리해도 무해함 - 이미 읽음이면 그냥 갱신 없이 넘어감)
         try {

@@ -24,7 +24,6 @@ import com.example.spendolive.notification.service.OttAlarmService;
 import com.example.spendolive.ott.domain.OttSettlementDTO;
 import com.example.spendolive.ott.repository.OttRepository;
 
-
 // 사용자 OTT 비즈니스 로직 - 조건 판단, 계산, 처리 순서와 트랜잭션 담당
 @Service
 public class OttServiceImpl implements OttService {
@@ -39,7 +38,7 @@ public class OttServiceImpl implements OttService {
     private final OttAlarmService ottAlarmService;
     private final MemberRepository memberRepository;
 
-    // OTT 데이터와 알림, 회원 제재 정보를 생성자에서 한 번 주입받아 모든 OTT 처리에서 재사용한다.
+    // OTT 데이터와 알림, 회원 제재 정보를 생성자에서 한 번 주입받아 모든 OTT 처리에서 재사용
     public OttServiceImpl(OttRepository ottRepository, OttAlarmService ottAlarmService, MemberRepository memberRepository) {
         this.ottRepository = ottRepository;
         this.ottAlarmService = ottAlarmService;
@@ -286,7 +285,7 @@ public class OttServiceImpl implements OttService {
 
         YearMonth targetMonth = parseSettlementMonth(settlement_month);
 
-        // 과거 이용 회차를 새로 열면 날짜와 결제 흐름이 꼬일 수 있으므로 생성하지 않는다.
+        // 과거 이용 회차를 새로 열면 날짜와 결제 흐름이 꼬일 수 있으므로 생성하지 않는다
         if (targetMonth.isBefore(YearMonth.now())) {
             return;
         }
@@ -296,8 +295,8 @@ public class OttServiceImpl implements OttService {
         LocalDate payment_start_date = service_start_date.minusMonths(1);
         LocalDate payment_close_date = service_start_date.minusDays(PAYMENT_CLOSE_DAYS_BEFORE);
 
-        // pay_day도 정산 회차의 실제 결제 마감일과 같은 기준(이용 시작 7일 전)으로 맞춘다.
-        // 월말·2월은 LocalDate 계산 결과의 일자를 사용하므로 30일 고정 보정이 필요 없다.
+        // pay_day도 정산 회차의 실제 결제 마감일과 같은 기준(이용 시작 7일 전)으로 맞춘다
+        // 월말·2월은 LocalDate 계산 결과의 일자를 사용하므로 30일 고정 보정이 필요 없다
         ottRepository.updateActiveMemberPayDay(room_id, payment_close_date.getDayOfMonth());
 
         LocalDate replace_start_date = payment_close_date.plusDays(1);
@@ -335,7 +334,7 @@ public class OttServiceImpl implements OttService {
         if (settlement_id == null) {
             settlement_id = ottRepository.insertSettlement(settlement);
         } else {
-            // 방 생성 시 만들어 둔 READY 정산을 새로 INSERT하지 않고 PAYMENT_OPEN으로 갱신한다.
+            // 방 생성 시 만들어 둔 READY 정산을 새로 INSERT하지 않고 PAYMENT_OPEN으로 갱신
             settlement.setSettlement_id(settlement_id);
             ottRepository.updateSettlement(settlement);
         }
@@ -348,7 +347,7 @@ public class OttServiceImpl implements OttService {
             String memo = room.getRoom_name() + " " + targetMonth + " 이용분 정산";
             ottRepository.insertSettlementPaymentIfAbsent(settlement_id, member, memo);
 
-            // 알림 제목·본문·이동 주소는 OttAlarmService에서 한 곳으로 관리한다.
+            // 알림 제목·본문·이동 주소는 OttAlarmService에서 한 곳으로 관리한다
             ottAlarmService.notifySettlementOpened(
                     member.getMember_login_id(),
                     room.getRoom_name(),
@@ -397,7 +396,7 @@ public class OttServiceImpl implements OttService {
         String settlement_month = mapString(data, "SETTLEMENT_MONTH");
         Integer total_amount = mapInteger(data, "TOTAL_AMOUNT");
 
-        // 결제 완료 사실을 방장에게 알리고, 금액이 null이면 0원으로 안전하게 처리한다.
+        // 결제 완료 사실을 방장에게 알리고, 금액이 null이면 0원으로 안전하게 처리
         ottAlarmService.notifyPaymentCompletedToHost(
                 hostId,
                 loginId,
@@ -432,9 +431,9 @@ public class OttServiceImpl implements OttService {
 
         int share_amount = safeDivide(room.getTotal_price(), room.getMember_limit());
 
-        // 멤버 결제일도 정산 결제 마감일과 동일하게 이용 시작 7일 전으로 계산한다.
+        // 멤버 결제일도 정산 결제 마감일과 동일하게 이용 시작 7일 전으로 계산
         // 단순히 billing_day에서 숫자를 빼지 않고 LocalDate를 사용해
-        // 2월·윤년·31일이 없는 달까지 정확하게 처리한다.
+        // 2월·윤년·31일이 없는 달까지 정확하게 처리
         int pay_day = resolveNextPaymentCloseDate(
                 LocalDate.now(),
                 room.getBilling_day()).getDayOfMonth();
@@ -466,7 +465,7 @@ public class OttServiceImpl implements OttService {
             ottRepository.updateRoomStatus(room_id, "FIRST");//FIRST고정 수정 X
         }
 
-        // 참여 완료 채팅과 알림을 등록한다. 본인은 완료 알림을 받고, 기존 멤버는 입장 알림을 받는다.
+        // 참여 완료 채팅과 알림을 등록한다. 본인은 완료 알림을 받고, 기존 멤버는 입장 알림을 받는다
         String member_name = ottRepository.selectMemberDisplayName(loginId);
         insertSystemChatMessage(room_id, loginId,
                 member_name + "님이 결제를 완료하고 공유방에 입장했습니다.");
@@ -487,7 +486,6 @@ public class OttServiceImpl implements OttService {
                     room_id);
         }
     }
-    
 
     // =========================================================
     // 4. 방 종료와 나가기 예약
@@ -525,7 +523,7 @@ public class OttServiceImpl implements OttService {
                 + close_effective_date.minusDays(1)
                 + "까지 이용할 수 있으며, 이미 결제된 다음 이용분은 자동 환불 처리됩니다.";
         insertSystemChatMessage(room_id, hostId, message);
-        // 방장을 제외한 현재 참여자에게 종료 예정일과 안내 문구를 전달한다.
+        // 방장을 제외한 현재 참여자에게 종료 예정일과 안내 문구를 전달
         for (String memberId : ottRepository.selectActiveRoomMemberIds(room_id)) {
             if (hostId.equals(memberId)) {
                 continue;
@@ -538,7 +536,7 @@ public class OttServiceImpl implements OttService {
                     room_id);
         }
 
-        // 종료를 신청한 방장 본인에게도 접수 완료 알림을 남긴다.
+        // 종료를 신청한 방장 본인에게도 접수 완료 알림을 남긴다
         ottAlarmService.notifySelfLeaveRequested(
                 hostId,
                 room.getRoom_name(),
@@ -586,7 +584,7 @@ public class OttServiceImpl implements OttService {
 
         insertSystemChatMessage(room_id, loginId,
                 loginId + "님이 " + leave_scheduled_date + " 나가기 예약을 했습니다.");
-        // 참여자의 나가기 신청 사실을 방장에게 알린다.
+        // 참여자의 나가기 신청 사실을 방장에게 알린다
         ottAlarmService.notifyMemberLeaveRequestedToHost(
                 room.getHost_login_id(),
                 loginId,
@@ -594,7 +592,7 @@ public class OttServiceImpl implements OttService {
                 leave_scheduled_date,
                 room_id);
 
-        // 신청한 참여자 본인에게도 예약 완료 알림을 남긴다.
+        // 신청한 참여자 본인에게도 예약 완료 알림을 남긴다
         ottAlarmService.notifySelfLeaveRequested(
                 loginId,
                 room.getRoom_name(),
@@ -663,7 +661,7 @@ public class OttServiceImpl implements OttService {
         return null;
     }
 
-    // 경고 패널티 기간이 남아 있으면 메시지 전송만 막고 채팅방 조회는 허용한다.
+    // 경고 패널티 기간이 남아 있으면 메시지 전송만 막고 채팅방 조회는 허용한다
     private String getChatRestrictionMessage(String sender_id) {
         MemberVO member = memberRepository.selectMemberById(sender_id);
         if (member == null || member.getBlocked_until() == null || member.getBlocked_until().isBlank()) {
@@ -736,36 +734,36 @@ public class OttServiceImpl implements OttService {
 
     private void createReadySettlement(Long room_id, String hostId) {
         OttRoomDTO room = ottRepository.selectRoom(room_id);
-    
+
         if (!canHostManageRoom(room, hostId)) {
             return;
         }
-    
+
         LocalDate today = LocalDate.now();
         YearMonth targetMonth = YearMonth.now().plusMonths(1);
-    
+
         if (ottRepository.existsSettlement(
                 room_id,
                 targetMonth.toString())) {
             return;
         }
-    
+
         LocalDate service_start_date =
                 resolveBillingDate(
                         targetMonth,
                         room.getBilling_day());
-    
+
         LocalDate service_end_date =
                 service_start_date.plusMonths(1).minusDays(1);
-    
+
         LocalDate payment_start_date = today;
-    
+
         LocalDate normal_payment_close_date =
                 service_start_date.minusDays(
                         PAYMENT_CLOSE_DAYS_BEFORE);
-    
+
         LocalDate payment_close_date;
-    
+
         /*
          * 원래 결제 마감일이 이미 지났다면
          * 첫 정산에 한해서 서비스 시작 전날까지 결제 가능하게 한다.
@@ -777,13 +775,13 @@ public class OttServiceImpl implements OttService {
             payment_close_date =
                     normal_payment_close_date;
         }
-    
+
         LocalDate replace_start_date =
                 payment_close_date.plusDays(1);
-    
+
         LocalDate replace_end_date =
                 service_start_date.minusDays(1);
-    
+
         /*
          * 첫 정산의 결제 마감일이 서비스 시작 전날이면
          * 대체 모집 기간이 존재하지 않는다.
@@ -792,7 +790,6 @@ public class OttServiceImpl implements OttService {
             replace_start_date = null;
             replace_end_date = null;
         }
-    
 
         OttSettlementDTO settlement = createSettlementDTO(
                 room_id,
@@ -807,7 +804,7 @@ public class OttServiceImpl implements OttService {
                 replace_start_date,
                 replace_end_date,
                 "READY");
-    
+
         ottRepository.insertSettlement(settlement);
     }
 
@@ -830,8 +827,8 @@ public class OttServiceImpl implements OttService {
         settlement.setTotal_price(total_price);
         settlement.setTotal_fee(total_fee);
         settlement.setTotal_pay_amount(total_pay_amount);
-        // 대체 모집 기간이 없는 첫 회차는 replace 날짜가 null일 수 있다.
-        // 날짜를 바로 toString()하면 NullPointerException이 발생하므로 공통 변환 메서드를 사용한다.
+        // 대체 모집 기간이 없는 첫 회차는 replace 날짜가 null일 수 있다
+        // 날짜를 바로 toString()하면 NullPointerException이 발생하므로 공통 변환 메서드를 사용
         settlement.setDue_date(toDateString(payment_close_date));
         settlement.setPayment_start_date(toDateString(payment_start_date));
         settlement.setPayment_close_date(toDateString(payment_close_date));
@@ -843,8 +840,8 @@ public class OttServiceImpl implements OttService {
         return settlement;
     }
 
-    // LocalDate를 DB 저장용 문자열로 변환한다.
-    // 날짜가 존재하지 않는 선택 항목은 null을 그대로 반환한다.
+    // LocalDate를 DB 저장용 문자열로 변환
+    // 날짜가 존재하지 않는 선택 항목은 null을 그대로 반환
     private String toDateString(LocalDate date) {
         return date == null ? null : date.toString();
     }
@@ -900,7 +897,7 @@ public class OttServiceImpl implements OttService {
 
     // 실제 회원 ID를 사용하여 시스템 채팅 메시지 등록
     private void insertSystemChatMessage(Long room_id, String sender_id, String message_content) {
-        // sender_id는 member_tb.id FK이므로 실제 회원 ID를 사용하고 접두어로 시스템 메시지를 구분한다.
+        // sender_id는 member_tb.id FK이므로 실제 회원 ID를 사용하고 접두어로 시스템 메시지를 구분한다
         ottRepository.insertChatMessage(room_id, sender_id, "[SYSTEM] " + message_content);
     }
 
@@ -972,14 +969,14 @@ public class OttServiceImpl implements OttService {
             try {
                 return YearMonth.parse(settlement_month, DateTimeFormatter.ofPattern("yyyy-MM"));
             } catch (DateTimeParseException ignored) {
-                // 잘못된 입력은 다음 달 정산으로 처리한다.
+                // 잘못된 입력은 다음 달 정산으로 처리
             }
         }
         return YearMonth.now().plusMonths(1);
     }
 
     /**
-     * 오늘 이후 가장 가까운 결제 마감일을 계산한다.
+     * 오늘 이후 가장 가까운 결제 마감일을 계산
      * 결제 마감일은 서비스 이용 시작일의 7일 전으로 통일한다.
      */
     private LocalDate resolveNextPaymentCloseDate(LocalDate today, Integer billing_day) {

@@ -18,7 +18,6 @@ public class OttSettlementDTO {
     private Integer total_fee;
     private Integer total_pay_amount;
 
-
     // 결제 및 이용 기간
     private String due_date;
     private String payment_start_date;
@@ -37,7 +36,7 @@ public class OttSettlementDTO {
     private String my_payment_status;
     private Integer my_total_amount;
     private String settlement_status;
-    
+
     // 방장이 보는 팀원별 정산 상태 표시용
     // 팀원별 정산 상태
     private String member_login_id;

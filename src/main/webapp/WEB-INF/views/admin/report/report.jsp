@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- 관리자 신고 관리 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="admin-main" data-admin-page="report" data-admin-title="신고관리">
@@ -79,7 +80,7 @@
         </c:choose>
     </section>
 
-  
+
         <section id="commentArea" class="panel" hidden>
             <div class="panel-header">
                 <div class="panel-title">

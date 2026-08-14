@@ -1,10 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- FAQ 목록 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="faq-page">
     <section class="page-hero ">
-    <div class="container ">  
+    <div class="container ">
             <p class="eyebrow">FAQ</p>
             <h1>자주 묻는 질문</h1>
             <p class="hero-sub">SpendOlive 이용 중 궁금한 점을 빠르게 해결하세요.</p>
@@ -34,7 +35,7 @@
             <button type="button" class="cat-btn" onclick="filterFaqCat(this,'etc')">기타</button>
         </div>
 
-        
+
         <c:forEach var="entry" items="${faqGroups}">
             <p class="section-label">${entry.value[0].categoryLabel}</p>
             <div class="faq-list" data-cat="${entry.key}">

@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * 회원 카드 정보.
  * 카드 이름 기능을 추가하면서 Lombok 생성 메서드에만 의존하지 않도록
- * 명시적인 getter/setter를 사용한다.
+ * 명시적인 getter/setter를 사용
  */
 @Data
 public class MemberCardVO {

@@ -40,7 +40,7 @@ public class SpendOliveController {
     public ModelAndView main(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView mav = layout("/WEB-INF/views/main/main.jsp");
 
-        // 메인 그래프에서 선택한 달의 지출과 예산을 조회한다.
+        // 메인 그래프에서 선택한 달의 지출과 예산을 조회
         addMainDashboardData(
                 mav,
                 request.getSession(),
@@ -54,8 +54,8 @@ public class SpendOliveController {
     public ModelAndView adminmain(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView mav = layout("/WEB-INF/views/admin/main/main.jsp");
 
-        // 관리자 메인 화면에 실제 DB 기준 운영 현황을 표시한다.
-        // 통계 조회에 문제가 생겨도 관리자 메뉴 전체가 500 오류로 막히지 않도록 0건 화면을 유지한다.
+        // 관리자 메인 화면에 실제 DB 기준 운영 현황을 표시
+        // 통계 조회에 문제가 생겨도 관리자 메뉴 전체가 500 오류로 막히지 않도록 0건 화면을 유지
         try {
             AdminDashboardDTO dashboard = adminDashboardService.getDashboardSummary();
             mav.addObject("adminDashboard", dashboard);
@@ -68,8 +68,8 @@ public class SpendOliveController {
     }
     @GetMapping("/text.do")
     public String showTextView() {
-        // /WEB-INF/views/text.jsp 파일을 열어주라는 의미입니다.
-        return "text"; 
+        // /WEB-INF/views/text.jsp 파일을 열어주라는 의미입니다
+        return "text";
     }
     private ModelAndView layout(String bodyPage) {
         ModelAndView mav = new ModelAndView();
@@ -79,8 +79,8 @@ public class SpendOliveController {
     }
     /**
      * 메인 페이지 대시보드 데이터 세팅
-     * - 선택한 달의 고정·변동·OTT 지출과 월 예산을 조회한다.
-     * - 비로그인 상태에서는 기존 랜덤 대시보드를 사용한다.
+     * - 선택한 달의 고정·변동·OTT 지출과 월 예산을 조회
+     * - 비로그인 상태에서는 기존 랜덤 대시보드를 사용
      */
     private void addMainDashboardData(ModelAndView mav,
                                       HttpSession session,
@@ -89,13 +89,13 @@ public class SpendOliveController {
         String selectedYearMonth = normalizeYearMonth(requestedYearMonth);
         YearMonth selectedMonth = YearMonth.parse(selectedYearMonth);
 
-        // JSP의 달 선택 입력창과 제목에 사용할 값이다.
+        // JSP의 달 선택 입력창과 제목에 사용할 값이다
         mav.addObject("mainSelectedYearMonth", selectedYearMonth);
         mav.addObject("mainSelectedMonthLabel", selectedMonth.getMonthValue() + "월");
 
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
 
-        // 비로그인 사용자는 DB 조회 없이 기존 랜덤 값으로 보여준다.
+        // 비로그인 사용자는 DB 조회 없이 기존 랜덤 값으로 보여준다
         if (memberInfo == null) {
             mav.addObject("mainLoggedIn", false);
             mav.addObject("mainFixedTotal", 0);
@@ -111,7 +111,7 @@ public class SpendOliveController {
         int variableTotal = 0;
         int ottTotal = 0;
 
-        // 선택한 달의 예산과 지출 목록을 조회한다.
+        // 선택한 달의 예산과 지출 목록을 조회
         int monthlyBudget = expenseService.getMonthlyBudget(member_id, selectedYearMonth);
         List<ExpenseDTO> expenseList = expenseService.getExpenseList(member_id, selectedYearMonth);
 
@@ -133,7 +133,7 @@ public class SpendOliveController {
         mav.addObject("mainVariableTotal", variableTotal);
         mav.addObject("mainOttTotal", ottTotal);
 
-        // 금액으로 추정하지 않고 선택 월에 사용자가 실제로 관련된 정산 회차를 센다.
+        // 금액으로 추정하지 않고 선택 월에 사용자가 실제로 관련된 정산 회차를 센다
         mav.addObject(
                 "mainOttSettlementCount",
                 ottService.getMySettlementCount(memberInfo.getId(), selectedYearMonth));
@@ -141,7 +141,7 @@ public class SpendOliveController {
         mav.addObject("mainBudget", monthlyBudget);
     }
 
-    // 잘못된 연월 값은 현재 달로 바꿔서 조회 오류를 막는다.
+    // 잘못된 연월 값은 현재 달로 바꿔서 조회 오류를 막는다
     private String normalizeYearMonth(String yearMonth) {
         if (yearMonth == null || yearMonth.isBlank()) {
             return YearMonth.now().toString();

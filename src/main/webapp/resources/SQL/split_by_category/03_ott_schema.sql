@@ -298,7 +298,7 @@ CREATE TABLE settlement_tb (
             'READY',              -- 정산 생성 전/준비 필요 없
             'REQUESTED',          -- 방장이 정산 요청함 필요 없
             'DONE',               -- 기존 호환용 완료
-            'PAYMENT_OPEN',       -- 결제 가능 기간 
+            'PAYMENT_OPEN',       -- 결제 가능 기간
             'REPLACE_RECRUITING', -- 미결제자 추방 후 대체 모집
             'CONFIRMED',          -- 정산 확정
             'CANCELLED',          -- 정산 취소

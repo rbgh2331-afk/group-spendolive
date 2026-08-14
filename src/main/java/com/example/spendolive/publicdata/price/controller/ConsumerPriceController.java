@@ -30,7 +30,7 @@ public class ConsumerPriceController {
         this.consumerPriceService = consumerPriceService;
     }
 
-    // [생필품 가격 비교] 사용자가 입력한 상품명과 일치하는 상품을 최대 20개 반환한다.
+    // 사용자가 입력한 상품명과 일치하는 상품을 최대 20개 반환
     @GetMapping("/products.do")
     public ResponseEntity<?> searchProducts(@RequestParam(value = "keyword", required = false) String keyword,
                                             HttpSession session) {
@@ -52,7 +52,7 @@ public class ConsumerPriceController {
         }
     }
 
-    // [생필품 가격 비교] 최근 조사일의 판매점별 가격과 최저·평균·최고 가격을 반환한다.
+    // 최근 조사일의 판매점별 가격과 최저·평균·최고 가격을 반환
     @GetMapping("/prices.do")
     public ResponseEntity<?> comparePrices(@RequestParam(value = "goodId", required = false) String goodId,
                                            @RequestParam(value = "goodName", required = false) String goodName,

@@ -122,77 +122,77 @@ button:disabled,
 }
 */
 /* ---------- Form System ---------- */
-.form-control, input, select, textarea {border-color: var(--line); border-radius: 0.875rem; color: var(--text);}
-.form-control:focus, input:focus, select:focus, textarea:focus {border-color: var(--olive); box-shadow: 0 0 0 0.25rem rgba(122, 127, 54, .13);}
-label {color: #3f4c25; font-weight: 900;}
+.form-control, input, select, textarea {border-color:var(--line);border-radius:0.875rem;color:var(--text);}
+.form-control:focus, input:focus, select:focus, textarea:focus {border-color:var(--olive);box-shadow:0 0 0 0.25rem rgba(122, 127, 54, .13);}
+label {color:#3f4c25;font-weight:900;}
 /* ---------- Card System ---------- */
-.card, .summary-card, .feature-card, .info-panel, .analytics-card, .detail-card, .profile-card, .table-card, .admin-card, .ott-choice-card, .ott-tab-panel, .calendar {background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);}
-.card-title, .summary-card h3, .feature-card h3, .info-panel h3, .analytics-card h3, .detail-card h3 {color: var(--text); letter-spacing: -.03em;}
-.card-desc, .section-desc, .summary-card p, .feature-card p, .info-panel p {color: var(--muted); line-height: 1.7;}
+.card, .summary-card, .feature-card, .info-panel, .analytics-card, .detail-card, .profile-card, .table-card, .admin-card, .ott-choice-card, .ott-tab-panel, .calendar {background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);}
+.card-title, .summary-card h3, .feature-card h3, .info-panel h3, .analytics-card h3, .detail-card h3 {color:var(--text);letter-spacing:-.03em;}
+.card-desc, .section-desc, .summary-card p, .feature-card p, .info-panel p {color:var(--muted);line-height:1.7;}
 /* ---------- Tab System ---------- */
-.tab-list, .ott-tab-menu {display: flex; flex-wrap: wrap; gap: 0.625rem;}
-.tab-button, .ott-tab-menu a {display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: 0 1rem; border: 1px solid #dbe7d4; border-radius: 999px; background: #fff; color: #40523d; font-size: 0.875rem; font-weight: 850; text-decoration: none; box-shadow: 0 0.5rem 1.125rem rgba(52, 74, 48, .05); transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;}
-.tab-button:hover, .tab-button.active, .ott-tab-menu a:hover, .ott-tab-menu a.active {background: var(--olive); border-color: var(--olive); color: #fff; transform: translateY(-0.0625rem);}
+.tab-list, .ott-tab-menu {display:flex;flex-wrap:wrap;gap:0.625rem;}
+.tab-button, .ott-tab-menu a {display:inline-flex;align-items:center;justify-content:center;min-height:2.5rem;padding:0 1rem;border:1px solid #dbe7d4;border-radius:999px;background:#fff;color:#40523d;font-size:0.875rem;font-weight:850;text-decoration:none;box-shadow:0 0.5rem 1.125rem rgba(52, 74, 48, .05);transition:background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;}
+.tab-button:hover, .tab-button.active, .ott-tab-menu a:hover, .ott-tab-menu a.active {background:var(--olive);border-color:var(--olive);color:#fff;transform:translateY(-0.0625rem);}
 /* ---------- Badge / Chip System ---------- */
-.chip, em, .tag, .status-pill {display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font-size: 0.75rem; font-weight: 900; line-height: 1;}
+.chip, em, .tag, .status-pill {display:inline-flex;align-items:center;justify-content:center;border-radius:999px;font-size:0.75rem;font-weight:900;line-height:1;}
 /* ---------- Table System ---------- */
-.table-wrap {width: 100%; overflow-x: auto;}
-table {width: 100%; border-collapse: collapse;}
-th {color: var(--muted); font-size: 0.8125rem; font-weight: 900;}
-td {color: var(--text);}
+.table-wrap {width:100%;overflow-x:auto;}
+table {width:100%;border-collapse:collapse;}
+th {color:var(--muted);font-size:0.8125rem;font-weight:900;}
+td {color:var(--text);}
 /* ---------- Layout Helpers ---------- */
-.hidden, .is-hidden {display: none !important;}
-.text-muted {color: var(--muted) !important;}
-.text-olive {color: var(--olive-dark) !important;}
+.hidden, .is-hidden {display:none !important;}
+.text-muted {color:var(--muted) !important;}
+.text-olive {color:var(--olive-dark) !important;}
 @media (max-width: 43.75rem) {
     /* 700px / 16 = 43.75rem */
-    .btn, .auth-btn, .settlement-send-btn {min-height: 2.75rem;}
+    .btn, .auth-btn, .settlement-send-btn {min-height:2.75rem;}
 }
 /* =========================================================
    Header 메뉴 드롭다운 + 왼쪽 사이드 서브메뉴
 ========================================================= */
-.so-menu-wrapper {position: relative;}
-.so-menu-popover {position: absolute; top: calc(100% + 0.625rem); right: 0; min-width: 13.125rem; padding: 0.625rem; margin: 0; list-style: none; background: #ffffff; border: 1px solid var(--line, #dce5c4); border-radius: 1.125rem; box-shadow: 0 1.125rem 2.5rem rgba(40, 49, 28, 0.14); z-index: 1000; display: none;}
-.so-menu-popover.is-open {display: block;}
-.so-menu-item {position: relative;}
-.so-menu-link {display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; width: 100%; padding: 0.75rem 0.875rem; border-radius: 0.75rem; color: #26331f; text-decoration: none; font-size: 0.875rem; line-height: 1.3; white-space: nowrap; transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;}
-.so-menu-link:hover, .so-menu-link.active {background: #eef5dc; color: #7d842c;}
-.so-menu-arrow {font-size: 0.8125rem; color: #8a9140;}
+.so-menu-wrapper {position:relative;}
+.so-menu-popover {position:absolute;top:calc(100% + 0.625rem);right:0;min-width:13.125rem;padding:0.625rem;margin:0;list-style:none;background:#ffffff;border:1px solid var(--line, #dce5c4);border-radius:1.125rem;box-shadow:0 1.125rem 2.5rem rgba(40, 49, 28, 0.14);z-index:1000;display:none;}
+.so-menu-popover.is-open {display:block;}
+.so-menu-item {position:relative;}
+.so-menu-link {display:flex;align-items:center;justify-content:space-between;gap:0.75rem;width:100%;padding:0.75rem 0.875rem;border-radius:0.75rem;color:#26331f;text-decoration:none;font-size:0.875rem;line-height:1.3;white-space:nowrap;transition:background 0.18s ease, color 0.18s ease, transform 0.18s ease;}
+.so-menu-link:hover, .so-menu-link.active {background:#eef5dc;color:#7d842c;}
+.so-menu-arrow {font-size:0.8125rem;color:#8a9140;}
 /* 왼쪽으로 나오는 하위 메뉴 */
-.so-submenu {position: absolute; top: 0; right: calc(100% + 0.5rem); min-width: 11.25rem; padding: 0.625rem; margin: 0; list-style: none; background: #ffffff; border: 1px solid var(--line, #dce5c4); border-radius: 1rem; box-shadow: 0 1.125rem 2.5rem rgba(40, 49, 28, 0.14); display: none; z-index: 1001;}
+.so-submenu {position:absolute;top:0;right:calc(100% + 0.5rem);min-width:11.25rem;padding:0.625rem;margin:0;list-style:none;background:#ffffff;border:1px solid var(--line, #dce5c4);border-radius:1rem;box-shadow:0 1.125rem 2.5rem rgba(40, 49, 28, 0.14);display:none;z-index:1001;}
 /* 마우스 올렸을 때 왼쪽 서브메뉴 표시 */
-.so-menu-item.has-submenu:hover > .so-submenu, .so-menu-item.has-submenu:focus-within > .so-submenu {display: block;}
+.so-menu-item.has-submenu:hover > .so-submenu, .so-menu-item.has-submenu:focus-within > .so-submenu {display:block;}
 /* 서브메뉴 안쪽 링크는 조금 가볍게 */
-.so-submenu .so-menu-link {font-weight: 700; padding: 0.6875rem 0.8125rem;}
+.so-submenu .so-menu-link {font-weight:700;padding:0.6875rem 0.8125rem;}
 /* 실제 모바일 화면에서만 하위 메뉴를 아래쪽 목록 형태로 변경 */
 @media (max-width: 31.25rem) {
-    .so-menu-popover {right: 0; width: min(13.75rem, calc(100vw - 1.5rem)); min-width: 0;}
-    .so-submenu {position: static; top: auto; right: auto; min-width: 0; max-height: 0; margin: 0; padding: 0; overflow: hidden; border: 0; border-radius: 0.75rem; background: #f8fbef; box-shadow: none; opacity: 0; visibility: hidden; pointer-events: none; transform: none;}
-    .so-menu-item.has-submenu:hover > .so-submenu, .so-menu-item.has-submenu:focus-within > .so-submenu {max-height: 20rem; margin-top: 0.375rem; padding: 0.625rem; border: 1px solid var(--line, #dce5c4); opacity: 1; visibility: visible; pointer-events: auto;}
-    .so-menu-arrow {transform: rotate(-90deg);}
+    .so-menu-popover {right:0;width:min(13.75rem, calc(100vw - 1.5rem));min-width:0;}
+    .so-submenu {position:static;top:auto;right:auto;min-width:0;max-height:0;margin:0;padding:0;overflow:hidden;border:0;border-radius:0.75rem;background:#f8fbef;box-shadow:none;opacity:0;visibility:hidden;pointer-events:none;transform:none;}
+    .so-menu-item.has-submenu:hover > .so-submenu, .so-menu-item.has-submenu:focus-within > .so-submenu {max-height:20rem;margin-top:0.375rem;padding:0.625rem;border:1px solid var(--line, #dce5c4);opacity:1;visibility:visible;pointer-events:auto;}
+    .so-menu-arrow {transform:rotate(-90deg);}
 }
 /* =========================================================
    Header 메뉴 자연스러운 애니메이션 + 서브메뉴 끊김 방지
 ========================================================= */
 /* 메인 메뉴 기본 상태 */
-.so-menu-popover {display: block !important; opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-0.5rem) scale(0.98); transform-origin: top right; transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;}
+.so-menu-popover {display:block !important;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-0.5rem) scale(0.98);transform-origin:top right;transition:opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;}
 /* 메뉴 버튼 클릭 시 열림 */
-.so-menu-popover.is-open {opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0) scale(1);}
+.so-menu-popover.is-open {opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0) scale(1);}
 /* 하위 메뉴를 가진 항목 */
-.so-menu-item.has-submenu {position: relative;}
+.so-menu-item.has-submenu {position:relative;}
 /* 왼쪽 서브메뉴 */
-.so-submenu {display: block !important; /* 기존 calc(100% + 8px) 때문에 틈이 생겼다면 이걸로 해결 */ right: calc(100% - 0.125rem); opacity: 0; visibility: hidden; pointer-events: none; transform: translateX(0.5rem) scale(0.98); transform-origin: top right; transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;}
+.so-submenu {display:block !important;/* 기존 calc(100% + 8px) 때문에 틈이 생겼다면 이걸로 해결 */ right:calc(100% - 0.125rem);opacity:0;visibility:hidden;pointer-events:none;transform:translateX(0.5rem) scale(0.98);transform-origin:top right;transition:opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;}
 /* 마우스를 올리면 서브메뉴 부드럽게 표시 */
-.so-menu-item.has-submenu:hover > .so-submenu, .so-menu-item.has-submenu:focus-within > .so-submenu {opacity: 1; visibility: visible; pointer-events: auto; transform: translateX(0) scale(1);}
+.so-menu-item.has-submenu:hover > .so-submenu, .so-menu-item.has-submenu:focus-within > .so-submenu {opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0) scale(1);}
 /* 혹시 아주 미세한 틈이 생겨도 hover가 끊기지 않게 투명 다리 만들기 */
-.so-menu-item.has-submenu::before {content: ""; position: absolute; top: 0; right: 100%; width: 0.75rem; height: 100%; background: transparent;}
+.so-menu-item.has-submenu::before {content:"";position:absolute;top:0;right:100%;width:0.75rem;height:100%;background:transparent;}
 /* 메뉴 항목 hover도 조금 부드럽게 */
-.so-menu-link {transition: background-color 0.16s ease, color 0.16s ease, transform 0.16s ease;}
-.so-menu-link:hover {transform: translateX(-0.125rem);}
+.so-menu-link {transition:background-color 0.16s ease, color 0.16s ease, transform 0.16s ease;}
+.so-menu-link:hover {transform:translateX(-0.125rem);}
 /* 서브메뉴 안에서는 너무 많이 움직이지 않게 */
-.so-submenu .so-menu-link:hover {transform: translateX(-0.125rem);}
+.so-submenu .so-menu-link:hover {transform:translateX(-0.125rem);}
 /*hero 모음*/
-.page-hero {padding: 45px 0 35px;}
+.page-hero {padding:45px 0 35px;}
 /* 기본값 */
-.calendar-page .page-hero {padding: 32px 0 8px;}
-.faq-page .page-hero {padding: 32px 0 8px;}
+.calendar-page .page-hero {padding:32px 0 8px;}
+.faq-page .page-hero {padding:32px 0 8px;}

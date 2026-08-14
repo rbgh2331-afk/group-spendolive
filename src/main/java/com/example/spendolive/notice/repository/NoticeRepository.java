@@ -37,7 +37,7 @@ public class NoticeRepository {
             ORDER BY n.pinned_yn DESC, star_yn DESC, n.notice_id DESC
         """;
 
-    // 관리자 공지 목록 전용: 위 FIND_ALL_SQL과 같은 정렬 기준에 OFFSET/LIMIT만 추가.
+    // 관리자 공지 목록 전용: 위 FIND_ALL_SQL과 같은 정렬 기준에 OFFSET/LIMIT만 추가
     // (관리자 화면은 read_yn/star_yn을 안 쓰지만, mapRowWithReadStar를 그대로 재사용하려고
     //  같은 컬럼 구조를 유지함 — 파라미터로 넘기는 id는 항상 빈 문자열이라 항상 read_yn/star_yn='N')
     private static final String FIND_ALL_PAGED_SQL = FIND_ALL_SQL + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -53,7 +53,7 @@ public class NoticeRepository {
         """;
 
     // 사용자 상세 페이지 전용: 위 FIND_BY_ID_SQL과 같은 단건 조회에
-    // 로그인 회원 기준 읽음(read_yn)/찜(star_yn) 여부까지 같이 계산해서 붙여줌.
+    // 로그인 회원 기준 읽음(read_yn)/찜(star_yn) 여부까지 같이 계산해서 붙여줌
     // (관리자 수정 화면은 read_yn/star_yn이 필요 없어서 기존 FIND_BY_ID_SQL/findById를 그대로 씀)
     private static final String FIND_BY_ID_WITH_STAR_SQL = """
             SELECT
@@ -164,7 +164,6 @@ public class NoticeRepository {
         notice.setStar_yn(rs.getString("star_yn"));
         return notice;
     }
-
 
     // ────────────────────────────────────────────────────────────
     // 조회 / 등록 / 수정 / 삭제 메서드
