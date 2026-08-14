@@ -94,7 +94,7 @@
                     <label for="nickname">
                         닉네임
                     </label>
-                    <input id="nickname"name="nickname" type="text" placeholder="닉네임을 입력하세요" required>
+                    <input id="nickname" name="nickname" type="text" placeholder="닉네임을 입력하세요" required>
                 </div>
             </div>
                <div class="auth-form-group">
@@ -102,7 +102,7 @@
                     이메일
                 </label>
                 <div class="auth-input-row">
-                    <input id="email" name="email"type="email" placeholder="example@email.com" required>
+                    <input id="email" name="email" type="email" placeholder="example@email.com" required>
                     <button id="emailButton" class="auth-btn auth-btn-light" type="button">인증요청</button>
                 </div>
 
@@ -153,7 +153,7 @@
                     <label for="nickname">
                         닉네임
                     </label>
-                    <input id="nickname"name="nickname" type="text" placeholder="닉네임을 입력하세요" required>
+                    <input id="nickname" name="nickname" type="text" placeholder="닉네임을 입력하세요" required>
                 </div>
             </div>
             <div class="auth-form-group">
@@ -170,7 +170,7 @@
                     이메일
                 </label>
                 <div class="auth-input-row">
-                    <input id="email" name="email"type="email" placeholder="example@email.com" required>
+                    <input id="email" name="email" type="email" placeholder="example@email.com" required>
                     <button id="emailButton" class="auth-btn auth-btn-light" type="button">인증요청</button>
                 </div>
 
@@ -205,7 +205,7 @@
                     <label for="password">
                         비밀번호
                     </label>
-                    <input id="password" type="password"name="password" placeholder="비밀번호를 입력하세요" required>
+                    <input id="password" type="password" name="password" placeholder="비밀번호를 입력하세요" required>
                 </div>
                 <div class="auth-form-group">
                     <label for="passwordCheck">
@@ -416,7 +416,7 @@ SpendOlive(이하 '서비스')는 개인정보 보호법, 정보통신망 이용
            </c:otherwise>
         </c:choose>
             <br>
-            <button id="signupButton"class="auth-btn auth-btn-primary" type="submit" >
+            <button id="signupButton" class="auth-btn auth-btn-primary" type="submit" >
                 회원가입
             </button>
         </form>

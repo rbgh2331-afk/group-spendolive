@@ -283,7 +283,7 @@ public class PaymentServiceImpl implements PaymentService{
 
             if (isPaidStatus(currentPaymentStatus)) {
                 throw new PaymentProcessException(
-                        "PAID",
+                        "ALREADY_PAID",
                         "이미 결제가 완료된 방입니다. 참여한 방으로 이동합니다.");
             }
 
@@ -404,7 +404,7 @@ public class PaymentServiceImpl implements PaymentService{
         return paymentStatus == null ? "UNPAID" : paymentStatus;
     }
 
-    // 결제 프로세스 검토 완료
+    // Toss 자동결제 승인 및 결제 내역 저장
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void executeAutomaticPayment(
@@ -618,7 +618,7 @@ public class PaymentServiceImpl implements PaymentService{
             return false;
         }
     }
-    /** Toss 승인은 끝났지만 DB 저장이 실패했을 때 결제를 즉시 취소합니다.  검토 완료*/
+    // Toss 승인 후 DB 저장 실패 시 승인 결제 취소
 
     // 서버 내 OTT방 결제 진행중인지 확인 변수 생성 안에 값이 있다면 진행중인 것
     private String createProcessingKey(String userId, int roomId) {

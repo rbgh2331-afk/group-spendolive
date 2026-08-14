@@ -209,7 +209,7 @@
         if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         const blocks = Array.from(root.children).filter(function (element) {
             // hidden 상태의 탭에는 최초 애니메이션을 걸지 않는다
-            // 숨겨진 탭이 나중에 열릴 때 section 애니메이션과 중복되는 문제를 막는다
+            // 숨겨진 탭이 열릴 때 section 애니메이션 중복 방지
             return !element.hidden && element.matches('.hero,.stat-grid,.content-grid,.panel,.admin-local-tabs,.admin-page-section,#adminBoardArea,.flash-ok,.flash-err');
         }).slice(0, 8);
         blocks.forEach(function (element, index) {

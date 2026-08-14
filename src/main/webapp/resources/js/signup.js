@@ -157,7 +157,7 @@ function showMemberModal(prefix, type, titleText, messageText) {
             }
 
         } catch (error) {
-            console.error("🚨 에러 원인:", error); // 👈 이 코드를 추가해 보세요!
+            console.error("🚨 에러 원인:", error);
     showMemberModal('member','error', '시스템 오류', '중복확인 중 오류가 발생했습니다.');
         }
     });

@@ -74,7 +74,7 @@
                     <p class="mypage-muted">아이디 : <c:out value="${memberInfo.id}" /></p>
                     <p class="mypage-muted">가입일 : <c:out value="${memberInfo.created_at}" /></p>
                 </div>
-                <%-- [마이페이지 화면 전환 추가] 최초에는 숨기고 버튼을 눌렀을 때 회원정보 수정 영역 표시 --%>
+                <%-- 회원정보 수정 영역 열기 버튼 --%>
                 <button type="button" class="btn btn-primary full" onclick="showMyPagePanel('profile-edit')">회원정보 수정</button>
             </article>
 
@@ -166,12 +166,12 @@
                         <strong>${myReportCount}건</strong>
                     </div>
                 </div>
-                <%-- [마이페이지 화면 전환 추가] 버튼을 눌렀을 때 신고·차단 영역 표시 --%>
+                <%-- 신고·차단 내역 영역 열기 버튼 --%>
                 <button type="button" class="btn btn-primary full" onclick="showMyPagePanel('report-manage')">신고/차단 내역 보기</button>
             </article>
         </div>
 
-        <%-- [마이페이지 화면 전환 추가] 최초 진입 시 숨겨지는 회원정보 수정 영역 --%>
+        <%-- 회원정보 수정 영역 --%>
         <article id="profile-edit" class="card mypage-panel mypage-profile-edit mypage-toggle-panel is-hidden">
             <div class="mypage-panel-head">
                 <div>
@@ -279,7 +279,7 @@
             </form>
         </article>
 
-        <%-- [마이페이지 화면 전환 추가] 최초 진입 시 숨겨지는 신고·차단 내역 영역 --%>
+        <%-- 신고·차단 내역 영역 --%>
         <article id="report-manage" class="card mypage-panel mypage-toggle-panel is-hidden">
             <div class="mypage-panel-head">
                 <div>
@@ -310,18 +310,18 @@
                                     <tr>
                                         <td>
 
-                                            <strong>${report.reported_member_nickname}</strong>
-                                            <small>${report.reported_member_id}</small>
+                                            <strong><c:out value="${report.reported_member_nickname}" /></strong>
+                                            <small><c:out value="${report.reported_member_id}" /></small>
 
                                         </td>
-                                        <td class="mypage-reason">${report.report_reason}</td>
+                                        <td class="mypage-reason"><c:out value="${report.report_reason}" /></td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${report.report_status == 'WAIT'}"><span class="chip wait">접수</span></c:when>
                                                 <c:when test="${report.report_status == 'PROCESSING'}"><span class="chip request">처리중</span></c:when>
                                                 <c:when test="${report.report_status == 'COMPLETE'}"><span class="chip done">처리완료</span></c:when>
                                                 <c:when test="${report.report_status == 'REJECT'}"><span class="chip muted-chip">반려</span></c:when>
-                                                <c:otherwise><span class="chip muted-chip">${report.report_status}</span></c:otherwise>
+                                                <c:otherwise><span class="chip muted-chip"><c:out value="${report.report_status}" /></span></c:otherwise>
                                             </c:choose>
                                         </td>
                                         <td>
@@ -486,8 +486,7 @@
 
                         <div class="mypage-asset-item mypage-card-item" data-asset-item>
                             <div class="mypage-asset-main">
-                                <%-- [마이페이지 카드 이름 수정]
-                                     카드사명과 별개로 사용자가 알아보기 쉬운 표시 이름을 저장한다. --%>
+                                <%-- 카드사명과 별개로 사용자가 알아보기 쉬운 표시 이름 저장 --%>
                                 <form action="${contextPath}/spendolive/mypage/card/name/update.do" method="post"
                                       class="mypage-asset-title-form" data-ajax-form
                                       data-ajax-action="/spendolive/mypage/ajax/card/name/update.do"
@@ -528,7 +527,7 @@
                 </div>
             </section>
         </article>
-        <%-- [마이페이지 계좌·카드 연결 추가 끝] --%>
+        <%-- 계좌·카드 관리 영역 끝 --%>
 
         <article class="card mypage-panel">
             <div class="mypage-panel-head">

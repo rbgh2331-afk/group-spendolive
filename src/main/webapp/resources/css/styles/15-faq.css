@@ -115,7 +115,7 @@
 .faq-page .badge.done {background:#e8f2d1;color:var(--olive-dark);}
 /* 답변 완료 */
 .faq-page .badge.review {background:#f0eefd;color:#4a3d9e;}
-/* 검토 중 */
+/* 문의 첨부파일 표시 */
 .faq-page .inq-date {color:var(--muted);font-size:0.75rem;}
 .faq-page .inq-title {font-size:0.9375rem;font-weight:900;margin-bottom:0.375rem;line-height:1.4;}
 /* 문의 내용 미리보기 — 2줄 넘어가면 말줄임(...) 처리 */

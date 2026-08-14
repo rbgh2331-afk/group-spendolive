@@ -68,7 +68,7 @@ public class MemberControllerImpl implements MemberController{
     private String openbankingclientSecret;
     @Override
 
-    // 코드리뷰.4
+    // 일반 로그인 요청 처리
     @RequestMapping(value="/login.do" , method = RequestMethod.POST )
     public ResponseEntity<MemberAjaxResponse> login(@RequestParam Map<String, String> loginMap, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
@@ -152,7 +152,7 @@ public class MemberControllerImpl implements MemberController{
         }
     }
 
-    // 코드리뷰.3 ->loginform.jsp
+    // 로그인 화면 조회 및 소셜 로그인 인증 URL 구성
     @Override
     @RequestMapping(value="/loginForm.do" , method = {RequestMethod.POST, RequestMethod.GET})
     public ModelAndView loginForm(@RequestParam(value = "log", required = false) String log, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -183,7 +183,7 @@ public class MemberControllerImpl implements MemberController{
         return mav;
     }
 
-    // 코드리뷰.2
+    // 회원가입 요청 처리
     @Override
     @RequestMapping(value="/addmember.do" , method = RequestMethod.POST)
     @ResponseBody
@@ -217,8 +217,7 @@ public class MemberControllerImpl implements MemberController{
 
     }
 
-    // 코드리뷰.1 -> signup.jsp -> js
-    //회원가입 페이지 이동 메서드
+    // 회원가입 화면 조회
     @Override
     @RequestMapping(value="/signup.do" , method = RequestMethod.GET)
     public ModelAndView memberForm(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -229,7 +228,7 @@ public class MemberControllerImpl implements MemberController{
         return mav;
     }
 
-    // 코드리뷰.2-1
+    // 이메일 인증번호 발송 요청 처리
     @Override
     @ResponseBody
     @PostMapping("/sendEmail.do")
@@ -287,7 +286,7 @@ public class MemberControllerImpl implements MemberController{
 
         }
 
-    // 코드리뷰.2-2
+    // 이메일 인증번호 검증
     @Override
     @PostMapping("/verifyEmail.do")
     @ResponseBody
@@ -305,8 +304,7 @@ public class MemberControllerImpl implements MemberController{
         return false;
     }
 
-    // 코드리뷰.2-3
-            // 1. 휴대폰 인증번호 발송 요청 처리
+    // 휴대폰 인증번호 발송 요청 처리
         @Override
         @PostMapping("/sendSms.do")
         @ResponseBody
@@ -365,8 +363,7 @@ public class MemberControllerImpl implements MemberController{
 
         }
 
-        // 코드리뷰.2-4
-        // 2. 사용자가 입력한 인증번호 검증 처리
+        // 휴대폰 인증번호 검증
         @Override
         @PostMapping("/verifySms.do")
         @ResponseBody
@@ -433,8 +430,7 @@ public class MemberControllerImpl implements MemberController{
             return memberService.checkPhone(phone);
         }
 
-// 코드리뷰.4-1 -> signup.jsp
-    // 카카오 로그인 콜백 (Redirect URI로 설정된 주소)
+    // 카카오 로그인 콜백 처리
     @Override
     @RequestMapping(value="/kakaoCallback.do", method = RequestMethod.GET)
     public ModelAndView kakaoCallback(@RequestParam(value = "code", required = false) String code,
@@ -588,7 +584,7 @@ try {
 }
 }
     /* =========================================================
-       [추가 기능] 아이디 찾기 - 1단계: 휴대폰 인증번호 발송
+       아이디 찾기 1단계: 휴대폰 인증번호 발송
        ---------------------------------------------------------
        화면 위치: loginForm.jsp > 아이디 찾기 폼 > "인증번호 받기" 버튼
        호출 JS  : sendFindIdSms()
@@ -629,7 +625,7 @@ try {
     }
 
     /* =========================================================
-       [추가 기능] 아이디 찾기 - 2단계: 인증번호 확인 후 아이디 반환
+       아이디 찾기 2단계: 인증번호 확인 후 아이디 반환
        ---------------------------------------------------------
        화면 위치: loginForm.jsp > 아이디 찾기 폼 > "아이디 찾기" 버튼
        호출 JS  : verifyFindIdSms()
@@ -676,7 +672,7 @@ try {
     }
 
     /* =========================================================
-       [추가 기능] 비밀번호 찾기 - 1단계: 아이디/휴대폰 일치 확인 후 인증번호 발송
+       비밀번호 찾기 1단계: 아이디/휴대폰 일치 확인 후 인증번호 발송
        ---------------------------------------------------------
        화면 위치: loginForm.jsp > 비밀번호 찾기 폼 > "인증번호 받기" 버튼
        호출 JS  : sendFindPwSms()
@@ -732,7 +728,7 @@ try {
     }
 
     /* =========================================================
-       [추가 기능] 비밀번호 찾기 - 2단계: 휴대폰 인증 완료 처리
+       비밀번호 찾기 2단계: 휴대폰 인증 완료 처리
        ---------------------------------------------------------
        화면 위치: loginForm.jsp > 비밀번호 찾기 폼 > "인증 확인" 버튼
        호출 JS  : verifyFindPwSms()
@@ -772,7 +768,7 @@ try {
     }
 
     /* =========================================================
-       [추가 기능] 비밀번호 찾기 - 3단계: 새 비밀번호 변경
+       비밀번호 찾기 3단계: 새 비밀번호 변경
        ---------------------------------------------------------
        화면 위치: loginForm.jsp > 비밀번호 찾기 폼 > 새 비밀번호 입력 영역
        호출 JS  : resetPassword()
@@ -833,7 +829,7 @@ try {
     }
 
     /* =========================================================
-       [추가 유틸] 휴대폰 번호 정규화
+       휴대폰 번호 정규화
        ---------------------------------------------------------
        화면에서는 010-1234-5678 또는 01012345678 둘 다 입력될 수 있으므로
        DB 조회 전 숫자만 남겨 같은 형식으로 비교한다.

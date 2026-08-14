@@ -486,8 +486,7 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberProcessException("CONNECTION_FAILED", "서버 연결 실패했습니다.");
 
         }
-         /*
-         권한 문제로 임시데이터로 처리
+        /* OpenBanking 거래내역 조회 권한 제한으로 실제 거래내역 저장 로직 비활성화
         List<Map<String, Object>> resList = (List<Map<String, Object>>) response.getBody().get("res_list");
 
         if (resList == null || resList.isEmpty()) {

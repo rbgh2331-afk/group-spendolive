@@ -114,7 +114,6 @@
                         >처리</button>
             </div>
         </section>
-    </form>
 </div>
 
 <jsp:include page="/WEB-INF/views/ott/popup.jsp" />

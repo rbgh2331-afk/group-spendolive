@@ -28,9 +28,7 @@
 /* 목록 개수가 적어도 카드 높이가 안 줄어들게 */
 .notice-list-section table {width:100%;min-width:37.5rem;table-layout:fixed;border-collapse:collapse;}
 .notice-list-section th,.notice-list-section td {border-bottom:0.0625rem solid var(--line);}
-/* min-width 덕분에 이 너비 밑으론 컬럼이 안 눌리고, .table-wrap의 overflow-x:auto(01-foundation.css)가
-   대신 가로 스크롤을 보여줌 - 예전엔 table이 width:100%로만 강제돼 있어서 스크롤이 생길 수가 없었고,
-   화면이 좁아지면 컬럼들이 그대로 짓눌려 글자가 겹쳐 보였음 */
+/* min-width 이하에서는 .table-wrap의 overflow-x:auto로 가로 스크롤 표시 */
 /* 4번째 컬럼(제목)만 왼쪽 정렬, 나머지(번호/별/구분)는 가운데 정렬 */
 .notice-list-section td:nth-child(4),.notice-list-section th:nth-child(4) {text-align:left;}
 /* 컬럼별 너비 지정 — table-layout:fixed라서 각 열 폭을 명시해야 함 */
@@ -70,8 +68,7 @@
 .notice-detail-content {min-height:16.25rem;line-height:1.9;white-space:pre-line;}
 .notice-detail-actions {margin-top:1.875rem;text-align:right;display:flex;justify-content:center;}
 /* 상세 페이지 찜 버튼 — 목록의 별 버튼과 별개로,상세에서는 정사각 버튼 형태(활성 시 배경까지 채워짐) */
-/* 상세 페이지 찜 버튼 — 알림센터 목록의 찜 버튼(.notice-list-star-btn)과 동일하게
-   배경 없이 별 문자 색상만으로 표시 (예전엔 배경 있는 둥근 사각형 버튼이었음) */
+/* 상세 페이지 찜 버튼은 목록과 동일하게 배경 없이 별 문자 색상으로 표시 */
 .notice-star-btn {border:none;background:transparent;color:var(--muted);width:2.375rem;height:2.375rem;border-radius:50%;font-size:1.625rem;cursor:pointer;margin-right:0.5rem;display:flex;align-items:center;justify-content:center;transition:color .15s ease;}
 .notice-star-btn:hover {color:#f3aa22;}
 .notice-star-btn.active {background:transparent;color:#f3aa22;}

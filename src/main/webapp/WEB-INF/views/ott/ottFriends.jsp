@@ -1,4 +1,4 @@
-<%-- [AJAX 변경 주석] 가족방 생성·나가기·종료·정산 폼을 부분 갱신 가능한 AJAX 폼으로 표시했다. --%>
+<%-- 가족·지인 공유방 생성·나가기·종료·정산 AJAX 영역 --%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>

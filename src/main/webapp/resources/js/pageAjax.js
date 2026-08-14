@@ -1,6 +1,6 @@
 'use strict';
 
-/* [AJAX 변경 주석]
+/* AJAX 처리
  * 사용자 화면의 data-ajax-form 및 data-ajax-navigation을 이벤트 위임으로 처리하고 본문을 부분 갱신
  * 기존 Controller/Service URL과 파라미터는 특별한 문제가 없는 한 그대로 유지
  */

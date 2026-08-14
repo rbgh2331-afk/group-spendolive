@@ -118,7 +118,7 @@
     .mypage-asset-title-form {align-items:stretch;}
     .mypage-asset-title-form input {width:100%;}
 }
-/* [마이페이지 계좌·카드 연결 CSS 추가 끝] */
+/* 계좌·카드 관리 영역 끝 */
 /* 마이페이지 이번 달 지출·예산 요약 */
 .mypage-monthly-expense-amount {display:block;color:var(--olive-dark);font-size:1.75rem;line-height:1.25;}
 .mypage-budget-summary {display:grid;gap:0.5rem;margin:1rem 0;padding:0.875rem;border:1px solid var(--line);border-radius:0.875rem;background:var(--cream);}

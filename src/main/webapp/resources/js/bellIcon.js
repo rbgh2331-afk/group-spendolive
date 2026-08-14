@@ -89,6 +89,15 @@ document.addEventListener("click", function (e) {
     dropdown.classList.remove("show");
 });
 
+function escapeNotificationHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 function loadNotifDropdownList() {
     const list = document.getElementById("notifDropdownList");
     if (!list) return;
@@ -113,10 +122,12 @@ function loadNotifDropdownList() {
             }
             list.innerHTML = data.map(n => `
                 <a href="javascript:void(0)" class="notif-dropdown-item unread"
-                   onclick="readNotificationFromBell(${n.notification_id}, '${(n.link_url || '').replace(/'/g, "\\'")}')">
-                    <strong>${n.title}</strong>
-                    <span>${n.message}</span>
-                    <small>${n.created_at}</small>
+                   data-notification-id="${Number(n.notification_id)}"
+                   data-link-url="${escapeNotificationHtml(n.link_url || "")}"
+                   onclick="readNotificationFromBell(Number(this.dataset.notificationId), this.dataset.linkUrl)">
+                    <strong>${escapeNotificationHtml(n.title)}</strong>
+                    <span>${escapeNotificationHtml(n.message)}</span>
+                    <small>${escapeNotificationHtml(n.created_at)}</small>
                 </a>
             `).join("");
         })

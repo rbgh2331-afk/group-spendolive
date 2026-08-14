@@ -462,7 +462,7 @@ public class OttServiceImpl implements OttService {
         }
 
         if (ottRepository.countActiveRoomMembers(room_id) >= room.getMember_limit()) {
-            ottRepository.updateRoomStatus(room_id, "FIRST");//FIRST고정 수정 X
+            ottRepository.updateRoomStatus(room_id, "FIRST"); // 정원 충족 시 최초 진행 상태로 갱신
         }
 
         // 참여 완료 채팅과 알림을 등록한다. 본인은 완료 알림을 받고, 기존 멤버는 입장 알림을 받는다

@@ -41,7 +41,7 @@ public interface MemberRepository {
     public List<MemberVO> selectMemberAll() throws DataAccessException;
 
     /* =========================================================
-       [추가 기능] 아이디/비밀번호 찾기용 Repository 메서드
+       아이디/비밀번호 찾기 Repository 메서드
        ---------------------------------------------------------
        member_tb를 직접 조회/수정하는 구간이다.
        휴대폰 번호는 하이픈 유무와 상관없이 비교하기 위해 구현체에서 숫자만 남겨 비교한다.

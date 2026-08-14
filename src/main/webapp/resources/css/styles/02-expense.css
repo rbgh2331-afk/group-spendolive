@@ -114,6 +114,11 @@
 .consumer-price-results {display:grid;gap:1rem;padding-top:0.25rem;}
 .consumer-price-result-head {display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;}
 .consumer-price-result-head > div {display:grid;gap:0.25rem;}
+.consumer-price-location-panel {justify-items:stretch;width:14.5rem;}
+.consumer-price-location-panel select,.consumer-price-location-panel .btn {width:14.5rem;min-width:14.5rem;max-width:14.5rem;}
+.consumer-location-status {margin:0;padding:0.625rem 0.75rem;border:1px solid var(--line);border-radius:0.75rem;background:var(--cream);color:var(--muted);font-size:0.75rem;font-weight:800;}
+.consumer-location-status.is-loading {color:var(--olive-dark);}
+.consumer-location-status.is-error {border-color:#e7b2a8;background:#fff6f3;color:#a54332;}
 .consumer-selected-product {color:var(--olive-dark);font-size:1.125rem;font-weight:950;}
 .consumer-price-result-head strong,.consumer-price-result-head small {color:var(--muted);font-size:0.75rem;}
 .consumer-price-summary {display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:0.75rem;}
@@ -135,5 +140,7 @@
     .consumer-price-search-row .btn {width:100%;}
     .consumer-product-list {grid-template-columns:1fr;}
     .consumer-price-result-head {align-items:flex-start;flex-direction:column;}
+    .consumer-price-location-panel {width:min(14.5rem, 100%);}
+    .consumer-price-location-panel select,.consumer-price-location-panel .btn {width:100%;min-width:0;max-width:none;}
     .consumer-price-summary {grid-template-columns:1fr;}
 }

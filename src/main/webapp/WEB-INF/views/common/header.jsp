@@ -223,7 +223,6 @@
                         </li>
                     </ul>
                 </div>
-                </strong>
             </div>
         </div>
     </header>

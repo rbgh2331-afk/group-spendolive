@@ -15,7 +15,7 @@
     <div class="wrap">
         <%-- 첨부파일은 이번 수정에서는 그대로 유지됩니다 (추가/삭제 불가). 첨부파일을 바꾸고 싶다면
              이 문의를 삭제하고 새로 작성해 주세요. --%>
-        <%-- AJAX 전환: inquiry.js가 fetch(ajax/edit.do)로 전송. 첨부파일은 수정 대상 아님 --%>
+        <%-- 문의 수정은 inquiry.js에서 AJAX로 전송하며 첨부파일은 기존 파일을 유지 --%>
         <form class="form-card" id="inquiryEditForm" onsubmit="return false;">
 
             <input type="hidden" name="inquiryNo" id="editInquiryNo" value="${inquiry.inquiry_id}">

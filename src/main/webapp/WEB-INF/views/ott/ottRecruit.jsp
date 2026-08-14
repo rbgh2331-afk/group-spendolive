@@ -1,4 +1,4 @@
-<%-- [AJAX 변경 주석] 검색·빠른 참가·방 생성·나가기·종료·정산을 AJAX 또는 부분 이동 대상으로 표시했다. --%>
+<%-- OTT 모집방 검색·참여·방 관리 AJAX 영역 --%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>

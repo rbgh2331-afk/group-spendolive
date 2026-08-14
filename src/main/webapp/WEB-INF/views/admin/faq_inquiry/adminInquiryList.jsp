@@ -8,8 +8,8 @@
     <div id="adminBoardArea">
         <div class="hero"><div><p class="hero-kicker">ADMIN</p><h1>문의 관리</h1><p>회원이 남긴 문의를 확인하고 답변을 등록합니다.</p></div></div>
 
-        <c:if test="${not empty msg}"><div class="flash-ok">${msg}</div></c:if>
-        <c:if test="${not empty errorMsg}"><div class="flash-err">⚠ ${errorMsg}</div></c:if>
+        <c:if test="${not empty msg}"><div class="flash-ok"><c:out value="${msg}" /></div></c:if>
+        <c:if test="${not empty errorMsg}"><div class="flash-err">⚠ <c:out value="${errorMsg}" /></div></c:if>
 
         <div class="admin-board-tabs">
             <a href="${contextPath}/admin/inquiry/list.do" class="admin-board-tab active">문의사항</a>
@@ -45,10 +45,10 @@
                             <c:otherwise>
                                 <c:forEach var="inq" items="${inquiryList}">
                                     <tr>
-                                        <td>${inq.inquiry_id}</td><td>${inq.category}</td><td>${inq.inquiry_type}</td>
-                                        <td><a href="javascript:void(0)" onclick="openAdminInquiryModal(${inq.inquiry_id})">${inq.title}</a></td>
+                                        <td>${inq.inquiry_id}</td><td><c:out value="${inq.category}" /></td><td><c:out value="${inq.inquiry_type}" /></td>
+                                        <td><a href="javascript:void(0)" onclick="openAdminInquiryModal(${inq.inquiry_id})"><c:out value="${inq.title}" /></a></td>
                                         <td class="admin-attach-cell"><c:if test="${not empty inq.files}"><span class="admin-attach-check" title="첨부파일 있음">📎</span></c:if></td>
-                                        <td><c:choose><c:when test="${not empty inq.writer_nickname}">${inq.writer_nickname}</c:when><c:otherwise>${inq.id}</c:otherwise></c:choose></td>
+                                        <td><c:choose><c:when test="${not empty inq.writer_nickname}"><c:out value="${inq.writer_nickname}" /></c:when><c:otherwise><c:out value="${inq.id}" /></c:otherwise></c:choose></td>
                                         <td><c:choose><c:when test="${inq.statusCode == 'done'}"><span class="badge green">완료</span></c:when><c:when test="${inq.statusCode == 'review'}"><span class="badge blue">검토중</span></c:when><c:otherwise><span class="badge yellow">대기</span></c:otherwise></c:choose></td>
                                         <td>${inq.reg_date}</td>
                                     </tr>
@@ -84,8 +84,8 @@
                     <div class="form-field"><label>첨부파일</label><div class="toolbar-left">
                         <c:forEach var="file" items="${inq.files}">
                             <c:choose>
-                                <c:when test="${file.image}"><img src="${contextPath}/spendolive/inquiry/file/${file.file_id}" alt="${file.origin_name}" class="admin-inquiry-image" onclick="openAdminInquiryLightbox(this.src, '${file.origin_name}')"></c:when>
-                                <c:otherwise><a href="${contextPath}/spendolive/inquiry/file/${file.file_id}" target="_blank" rel="noopener" class="mini-btn">📎 ${file.origin_name}</a></c:otherwise>
+                                <c:when test="${file.image}"><img src="${contextPath}/spendolive/inquiry/file/${file.file_id}" alt="<c:out value='${file.origin_name}' />" class="admin-inquiry-image" onclick="openAdminInquiryLightbox(this.src, this.alt)"></c:when>
+                                <c:otherwise><a href="${contextPath}/spendolive/inquiry/file/${file.file_id}" target="_blank" rel="noopener" class="mini-btn">📎 <c:out value="${file.origin_name}" /></a></c:otherwise>
                             </c:choose>
                         </c:forEach>
                     </div></div>

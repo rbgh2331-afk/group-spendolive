@@ -96,7 +96,7 @@ public class MemberRepositoryImpl implements MemberRepository{
        ========================================================= */
     private final String updateAccountName="update member_account_tb set account_name=? where id=? and account_idx=? ";
 
-    /* [마이페이지 카드 이름 수정]
+    /* 마이페이지 카드 이름 변경
        회원 아이디와 카드 번호를 함께 조건으로 사용해 다른 회원 카드가 수정되지 않게 한다. */
     private final String updateCardName="update member_card_tb set card_name=? where id=? and card_idx=? ";
 
@@ -286,7 +286,7 @@ public class MemberRepositoryImpl implements MemberRepository{
     }
 
     /* =========================================================
-       [추가 기능 구현] 아이디/비밀번호 찾기 Repository 구현부
+       아이디/비밀번호 찾기 Repository 구현부
        ---------------------------------------------------------
        이 아래 메서드들은 로그인 페이지의 아이디 찾기/비밀번호 찾기에서 새로 사용하는 SQL이다.
        공통 기준:

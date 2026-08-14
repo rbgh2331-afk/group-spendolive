@@ -51,16 +51,20 @@ public class ConsumerPriceComparisonDTO {
         private String entpId;
         private String storeName;
         private String roadAddress;
+        private String xMapCoord;
+        private String yMapCoord;
         private int price;
         private String plusOneYn;
         private String discountYn;
 
         public StorePrice() {}
 
-        public StorePrice(String entpId, String storeName, String roadAddress, int price, String plusOneYn, String discountYn) {
+        public StorePrice(String entpId, String storeName, String roadAddress, String xMapCoord, String yMapCoord, int price, String plusOneYn, String discountYn) {
             this.entpId = entpId;
             this.storeName = storeName;
             this.roadAddress = roadAddress;
+            this.xMapCoord = xMapCoord;
+            this.yMapCoord = yMapCoord;
             this.price = price;
             this.plusOneYn = plusOneYn;
             this.discountYn = discountYn;
@@ -72,6 +76,10 @@ public class ConsumerPriceComparisonDTO {
         public void setStoreName(String storeName) { this.storeName = storeName; }
         public String getRoadAddress() { return roadAddress; }
         public void setRoadAddress(String roadAddress) { this.roadAddress = roadAddress; }
+        public String getXMapCoord() { return xMapCoord; }
+        public void setXMapCoord(String xMapCoord) { this.xMapCoord = xMapCoord; }
+        public String getYMapCoord() { return yMapCoord; }
+        public void setYMapCoord(String yMapCoord) { this.yMapCoord = yMapCoord; }
         public int getPrice() { return price; }
         public void setPrice(int price) { this.price = price; }
         public String getPlusOneYn() { return plusOneYn; }

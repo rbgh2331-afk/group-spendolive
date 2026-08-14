@@ -27,7 +27,7 @@
         <div id="inqBoardArea">
 
         <div class="filters">
-            <%-- a href → data-status 버튼으로 변경. inquiry.js가 클릭을 가로채 AJAX 처리 --%>
+            <%-- 상태 필터는 data-status 값을 기준으로 inquiry.js에서 AJAX 처리 --%>
             <button type="button" class="filter-btn ${currentStatus == 'all' ? 'active' : ''}" data-status="all">전체</button>
             <button type="button" class="filter-btn ${currentStatus == 'wait' ? 'active' : ''}" data-status="wait">답변 대기</button>
             <button type="button" class="filter-btn ${currentStatus == 'done' ? 'active' : ''}" data-status="done">답변 완료</button>

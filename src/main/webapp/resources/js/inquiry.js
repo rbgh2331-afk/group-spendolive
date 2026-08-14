@@ -202,7 +202,7 @@
     }
 
     /* ════════════════════════════════════════════════════════
-       [수정 화면]  #inquiryEditForm 이 있을 때
+       문의 수정 화면: #inquiryEditForm이 있을 때
        ════════════════════════════════════════════════════════ */
     const editForm = document.getElementById("inquiryEditForm");
     if (editForm) {

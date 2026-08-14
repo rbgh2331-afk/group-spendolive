@@ -1,4 +1,4 @@
-/* [AJAX 변경 주석]
+/* AJAX 처리
  * 회원정보·계좌·카드 AJAX 폼과 기존 거래내역 요청을 공통 로딩 시스템에 연결
  * 기존 Controller/Service URL과 파라미터는 특별한 문제가 없는 한 그대로 유지
  */
@@ -405,7 +405,7 @@ function closeAccountTransactions() {
     accountTransactionCurrentPage = 1;
     setAccountTransactionPagerVisible(false);
 }
-/* [마이페이지 계좌·카드 연결 JavaScript 추가 끝] */
+/* 계좌·카드 관리 JavaScript 영역 끝 */
 
 (function () {
     const emailInput = document.getElementById('mypageEmail');

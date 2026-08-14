@@ -546,6 +546,19 @@
 
                 <%-- [생필품 가격 비교] 같은 검색어에 여러 상품이 있을 수 있어 선택 목록을 먼저 표시한다. --%>
                 <div id="consumerProductResults" class="consumer-product-results expense-hidden" aria-live="polite"></div>
+                <div id="consumerProductPagination"
+                     class="pagination expense-pagination expense-hidden"
+                     aria-label="생필품 상품 검색 결과 페이지">
+                    <button type="button"
+                            class="pg-btn"
+                            data-consumer-product-page-direction="prev"
+                            aria-label="이전 페이지">‹</button>
+                    <div id="consumerProductPageNumbers" class="expense-page-numbers"></div>
+                    <button type="button"
+                            class="pg-btn"
+                            data-consumer-product-page-direction="next"
+                            aria-label="다음 페이지">›</button>
+                </div>
 
                 <%-- [생필품 가격 비교] 선택 상품의 최저·평균·최고가와 판매점별 가격을 표시한다. --%>
                 <div id="consumerPriceResults" class="consumer-price-results expense-hidden" aria-live="polite">
@@ -554,8 +567,32 @@
                             <span id="consumerSelectedProduct" class="consumer-selected-product"></span>
                             <strong id="consumerInspectDay"></strong>
                         </div>
-                        <small>자료 제공: 한국소비자원 참가격</small>
+                        <div class="consumer-price-location-panel">
+                            <small>자료 제공: 한국소비자원 참가격</small>
+                            <select id="consumerRegionSelect" aria-label="판매점 지역 선택">
+                                <option value="">전체 지역</option>
+                                <option value="seoul">서울</option>
+                                <option value="busan">부산</option>
+                                <option value="daegu">대구</option>
+                                <option value="incheon">인천</option>
+                                <option value="gwangju">광주</option>
+                                <option value="daejeon">대전</option>
+                                <option value="ulsan">울산</option>
+                                <option value="sejong">세종</option>
+                                <option value="gyeonggi">경기</option>
+                                <option value="gangwon">강원</option>
+                                <option value="chungbuk">충북</option>
+                                <option value="chungnam">충남</option>
+                                <option value="jeonbuk">전북</option>
+                                <option value="jeonnam">전남</option>
+                                <option value="gyeongbuk">경북</option>
+                                <option value="gyeongnam">경남</option>
+                                <option value="jeju">제주</option>
+                            </select>
+                            <button type="button" id="consumerNearbyStoreButton" class="btn btn-outline btn-mini">내 주변 매장</button>
+                        </div>
                     </div>
+                    <p id="consumerLocationStatus" class="consumer-location-status">전체 지역 · 거리 정렬은 위치 권한 사용 시 제공</p>
 
                     <div class="consumer-price-summary">
                         <div><span>최저가</span><strong id="consumerLowestPrice">-</strong></div>
@@ -569,12 +606,26 @@
                                 <tr>
                                     <th>판매점</th>
                                     <th>주소</th>
+                                    <th>거리</th>
                                     <th>행사</th>
                                     <th>가격</th>
                                 </tr>
                             </thead>
                             <tbody id="consumerStorePriceRows"></tbody>
                         </table>
+                    </div>
+                    <div id="consumerStorePagination"
+                         class="pagination expense-pagination expense-hidden"
+                         aria-label="생필품 판매점 결과 페이지">
+                        <button type="button"
+                                class="pg-btn"
+                                data-consumer-store-page-direction="prev"
+                                aria-label="이전 페이지">‹</button>
+                        <div id="consumerStorePageNumbers" class="expense-page-numbers"></div>
+                        <button type="button"
+                                class="pg-btn"
+                                data-consumer-store-page-direction="next"
+                                aria-label="다음 페이지">›</button>
                     </div>
                 </div>
             </div>

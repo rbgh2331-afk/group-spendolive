@@ -1,10 +1,8 @@
 /* =========================================================
    공용 알림/확인 모달 (soAlert / soConfirm)
-   - notice.js의 soEnsureModal()이 이 클래스들로 DOM만 만듦
-   - 예전엔 이 CSS가 JS 문자열로 박혀있어서 <style> 태그를 매번 주입했는데,
-     정적 CSS로 빼서 styles.css에서 전역으로 한 번만 로드하게 정리함
-   - notice.js(전역 로드)뿐 아니라 inquiry.js 등 다른 화면도 이 soAlert/soConfirm을
-     그대로 갖다 쓰므로, 사이트 전체에서 공통으로 쓰는 부품임 - 함부로 지우면 안 됨
+   - notice.js의 soEnsureModal()에서 이 클래스 기반 DOM 생성
+   - styles.css에서 전역으로 로드
+   - notice.js, inquiry.js 등 여러 화면에서 공통 사용
    ========================================================= */
 .so-local-overlay {position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:1rem;background:rgba(20, 29, 18, .48);backdrop-filter:blur(2px);}
 .so-local-overlay[hidden] {display:none;}
