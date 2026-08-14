@@ -57,7 +57,7 @@
                                 <div class="room-index-badge">${roomStatus.count}</div>
 
                                 <div class="family-room-info">
-                                    <strong>${room.room_name}</strong>
+                                    <strong><c:out value="${room.room_name}" /></strong>
                                     <p>
                                         ${room.service_name} · ${room.plan_name} · ${room.current_member_count}/${room.member_limit}명 ·
                                         결제일 매월 ${room.billing_day}일
@@ -228,7 +228,7 @@
                                 <c:forEach var="settlement" items="${settlementList}">
                                     <div class="status-row wide settlement-status-row">
                                         <span>
-                                            <strong>${settlement.room_name}</strong><br>
+                                            <strong><c:out value="${settlement.room_name}" /></strong><br>
                                             <small>
                                                 ${settlement.settlement_month} 이용분 · 결제기간 ${settlement.payment_start_date} ~ ${settlement.payment_close_date}<br>
                                                 이용기간 ${settlement.service_start_date} ~ ${settlement.service_end_date}
@@ -265,8 +265,8 @@
                                 <c:forEach var="payment" items="${hostedSettlementPaymentList}">
                                     <div class="team-payment-row">
                                         <span>
-                                            <strong>${payment.room_name}</strong>
-                                            <small>${payment.settlement_month} 이용분 · ${payment.member_name}(${payment.member_login_id})</small>
+                                            <strong><c:out value="${payment.room_name}" /></strong>
+                                            <small>${payment.settlement_month} 이용분 · <c:out value="${payment.member_name}" />(<c:out value="${payment.member_login_id}" />)</small>
                                         </span>
                                         <b><fmt:formatNumber value="${payment.total_amount}" pattern="#,##0" />원</b>
                                         <em class="${payment.payment_status eq 'PAID' or payment.payment_status eq 'CONFIRMED' ? 'done' : 'wait'}">${payment.payment_status}</em>

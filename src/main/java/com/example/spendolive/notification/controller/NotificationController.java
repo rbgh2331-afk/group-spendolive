@@ -48,7 +48,6 @@ public class NotificationController {
 
         // ⚠ 디버깅용으로 찍어보던 로그가 그대로 남아있는 것으로 보임. 동작엔 지장 없어서
         //   로직은 안 건드리고 표시만 해둠
-        System.out.println("로그인 ID = " + memberInfo.getId());
 
         return notificationService.getNotificationList(memberInfo.getId());
     }

@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 
@@ -118,7 +119,7 @@
                                 <option value="">먼저 분류를 선택하세요</option>
                                 <c:forEach var="category" items="${categoryList}">
                                     <option value="${category.category_id}" data-type="${category.expense_type}">
-                                        ${category.category_name}
+                                        <c:out value="${category.category_name}" />
                                     </option>
                                 </c:forEach>
                             </select>
@@ -207,7 +208,7 @@
 
                             <c:forEach var="category" items="${categoryList}">
                                 <option value="${category.category_id}" data-type="${category.expense_type}">
-                                    ${category.category_name}
+                                    <c:out value="${category.category_name}" />
                                 </option>
                             </c:forEach>
                         </select>
@@ -264,12 +265,12 @@
 
                                         <td>
                                             <span class="view-mode">
-                                                ${expense.expense_title}
+                                                <c:out value="${expense.expense_title}" />
                                                 <c:if test="${expense.auto_generated_yn == 'Y'}">
                                                     <span class="tag">자동</span>
                                                 </c:if>
                                             </span>
-                                            <input class="edit-mode expense-hidden" form="editForm${expense.expense_id}" type="text" name="expense_title" value="${expense.expense_title}" required>
+                                            <input class="edit-mode expense-hidden" form="editForm${expense.expense_id}" type="text" name="expense_title" value="${fn:escapeXml(expense.expense_title)}" required>
                                         </td>
 
                                         <td>
@@ -289,11 +290,11 @@
                                         </td>
 
                                         <td>
-                                            <span class="view-mode">${expense.category_name}</span>
+                                            <span class="view-mode"><c:out value="${expense.category_name}" /></span>
                                             <select class="edit-mode edit-category expense-hidden" form="editForm${expense.expense_id}" name="category_id" data-row-id="${expense.expense_id}" required>
                                                 <c:forEach var="category" items="${categoryList}">
                                                     <option value="${category.category_id}" data-type="${category.expense_type}" ${category.category_id == expense.category_id ? 'selected' : ''}>
-                                                        ${category.category_name}
+                                                        <c:out value="${category.category_name}" />
                                                     </option>
                                                 </c:forEach>
                                             </select>
@@ -364,7 +365,7 @@
                                                         <input type="hidden" name="yearMonth" value="${selectedYearMonth}">
                                                         <input type="hidden" id="editRepeatYn${expense.expense_id}" name="repeat_yn" value="${expense.repeat_yn}">
                                                         <input type="hidden" id="editFixedYn${expense.expense_id}" name="fixed_yn" value="${expense.fixed_yn}">
-                                                        <input type="hidden" form="editForm${expense.expense_id}" name="memo" value="${expense.memo}">
+                                                        <input type="hidden" form="editForm${expense.expense_id}" name="memo" value="${fn:escapeXml(expense.memo)}">
                                                     </form>
 
                                                     <div class="expense-action-buttons">
@@ -505,8 +506,8 @@
                                 <c:forEach var="ranking" items="${rankingList}">
                                     <li>
                                         <div>
-                                            <strong>${ranking.expense_title}</strong>
-                                            <span>${ranking.category_name}</span>
+                                            <strong><c:out value="${ranking.expense_title}" /></strong>
+                                            <span><c:out value="${ranking.category_name}" /></span>
                                         </div>
                                         <em>
                                             <fmt:formatNumber value="${ranking.amount}" pattern="#,###" />원

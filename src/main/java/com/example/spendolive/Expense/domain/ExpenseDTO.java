@@ -1,4 +1,4 @@
-package com.example.spendolive.Expense.domain;
+package com.example.spendolive.expense.domain;
 
 import java.util.Date;
 

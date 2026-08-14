@@ -86,3 +86,7 @@
         </c:choose>
     </section>
 </div>
+
+<jsp:include page="/WEB-INF/views/payment/popup.jsp" />
+<script src="${contextPath}/resources/js/app.js"></script>
+<script src="${contextPath}/resources/js/payment.js"></script>

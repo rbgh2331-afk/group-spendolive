@@ -1,5 +1,7 @@
 package com.example.spendolive.mypage.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ import com.example.spendolive.mypage.service.MyPageService;
 @Controller
 @RequestMapping("/spendolive")
 public class MyPageController {
+    private static final Logger log = LoggerFactory.getLogger(MyPageController.class);
 
     /* =========================================================
        [마이페이지 계좌·카드 연결 추가]
@@ -170,7 +173,7 @@ public class MyPageController {
             String newPassword = formMember.getPassword();
             boolean changePassword = newPassword != null && !newPassword.isBlank();
             if (changePassword) {
-                if (currentPassword == null || currentPassword.isBlank() || !currentPassword.equals(savedMember.getPassword())) {
+                if (currentPassword == null || currentPassword.isBlank() || !memberService.matchesPassword(currentPassword, savedMember.getPassword())) {
                     mav.setViewName("redirect:/spendolive/mypage.do?profileError=currentPasswordMismatch#profile-edit");
                     return mav;
                 }
@@ -305,7 +308,7 @@ public class MyPageController {
                     memberService.getTransactionsByAccount(loginMember.getId(), accountIdx);
             return ResponseEntity.ok(transactionList);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("거래내역 조회 중 오류가 발생했습니다.", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "거래내역 조회에 실패했습니다."));

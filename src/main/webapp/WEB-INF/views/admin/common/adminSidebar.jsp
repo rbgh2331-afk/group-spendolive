@@ -104,11 +104,3 @@
         </a>
     </div>
 </aside>
-<jsp:include page="/WEB-INF/views/payment/popup.jsp" />
-<jsp:include page="/WEB-INF/views/ott/popup.jsp" />
-<jsp:include page="/WEB-INF/views/member/popup.jsp" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="${contextPath}/resources/js/app.js"></script>
-<script src="${contextPath}/resources/js/signup.js"></script>
-<script src="${contextPath}/resources/js/payment.js"></script>
-<script src="${contextPath}/resources/js/report.js"></script>                           

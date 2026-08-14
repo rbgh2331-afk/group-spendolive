@@ -117,7 +117,7 @@ public interface OttService {
     void processScheduledOttJobs();
 
     // 채팅 메시지 전송 - 참여 권한 확인 후 메시지 저장
-    void sendChatMessage(Long room_id, String sender_id, String message_content);
+    String sendChatMessage(Long room_id, String sender_id, String message_content);
 
     // 사용자의 채팅방 마지막 읽은 시각 갱신
     void markChatRoomAsRead(Long room_id, String loginId);

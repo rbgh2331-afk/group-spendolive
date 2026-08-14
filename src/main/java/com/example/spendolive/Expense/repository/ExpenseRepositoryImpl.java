@@ -1,4 +1,4 @@
-package com.example.spendolive.Expense.repository;
+package com.example.spendolive.expense.repository;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -17,8 +17,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.example.spendolive.Expense.domain.ExpenseCategoryDTO;
-import com.example.spendolive.Expense.domain.ExpenseDTO;
+import com.example.spendolive.expense.domain.ExpenseCategoryDTO;
+import com.example.spendolive.expense.domain.ExpenseDTO;
 
 @Repository
 public class ExpenseRepositoryImpl implements ExpenseRepository {

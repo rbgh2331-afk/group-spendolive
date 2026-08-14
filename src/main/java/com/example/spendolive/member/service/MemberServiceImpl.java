@@ -1,5 +1,7 @@
 package com.example.spendolive.member.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -11,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -46,16 +47,20 @@ import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class MemberServiceImpl implements MemberService {
+    private static final Logger log = LoggerFactory.getLogger(MemberServiceImpl.class);
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+
+    public MemberServiceImpl(MemberRepository memberRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender) {
+        this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
+    }
 
     @Value("${kakao.client.id}")
     private String restApiKey;
@@ -122,7 +127,7 @@ public class MemberServiceImpl implements MemberService {
             mailSender.send(message);
             return verificationCode;
         } catch (Exception e) {
-            System.out.println("이메일 발송 에러: " + e.getMessage());
+            log.error("{}", "이메일 발송 에러: " + e.getMessage(), e);
             throw new RuntimeException("이메일 전송 중 에러 발생", e);
         }
 
@@ -142,13 +147,12 @@ public class MemberServiceImpl implements MemberService {
             messageService.send(message);
             return verificationCode;
         } catch (SolapiMessageNotReceivedException exception) {
-        // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
-        System.out.println(exception.getFailedMessageList());
-        System.out.println(exception.getMessage());
-        throw new RuntimeException("문자 전송 중 오류 발생");
+        // 문자 발송 실패 상세 목록은 개인정보가 포함될 수 있어 그대로 출력하지 않는다.
+        log.error("문자 인증 발송에 실패했습니다.", exception);
+        throw new RuntimeException("문자 전송 중 오류 발생", exception);
         } catch (Exception exception) { 
-        System.out.println(exception.getMessage());
-        throw new RuntimeException("문자 전송 중 오류 발생");
+        log.error("문자 인증 발송 중 오류가 발생했습니다.", exception);
+        throw new RuntimeException("문자 전송 중 오류 발생", exception);
         } 
 
     }
@@ -317,7 +321,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void updateMyInfo(MemberVO memberVO, String newPassword) throws Exception {
-        memberRepository.updateMyInfo(memberVO, newPassword);
+        String encodedPassword = null;
+        if (newPassword != null && !newPassword.isBlank()) {
+            encodedPassword = passwordEncoder.encode(newPassword);
+        }
+        memberRepository.updateMyInfo(memberVO, encodedPassword);
+    }
+
+    @Override
+    public boolean matchesPassword(String rawPassword, String encodedPassword) {
+        return rawPassword != null
+                && encodedPassword != null
+                && passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
     @Override
@@ -361,8 +376,7 @@ public class MemberServiceImpl implements MemberService {
             throw new RuntimeException("금융결제원 토큰 응답에 필수 정보가 없습니다.");
         }
 
-        System.out.println("발급된 Access Token: " + accessToken);
-        System.out.println("발급된 사용자 일련번호(user_seq_no): " + userSeqNo);
+        // Access Token과 사용자 일련번호는 인증정보이므로 로그로 남기지 않는다.
 //계좌 조회
         String accountUrl =
                 "https://testapi.openbanking.or.kr/v2.0/account/list?user_seq_no="
@@ -418,11 +432,8 @@ public class MemberServiceImpl implements MemberService {
         if (balanceAmt != null) {
             balance = Integer.parseInt(String.valueOf(balanceAmt));
         }
-        System.out.println("💰 실시간 계좌 잔액 확인 완료: " + balance + "원");
     }
-            System.out.println("👉 진짜 24자리 번호 획득: " + fintech_use_num);
-            System.out.println("👉 은행 코드 획득: " + bankCode);
-            System.out.println("👉 계좌번호 획득: " + accountNum);
+            // 핀테크 이용번호, 은행코드, 계좌번호 등 금융 식별정보는 로그로 출력하지 않는다.
             memberRepository.updateOpenBankingInfo(
                 userId,
                 accessToken,
@@ -550,7 +561,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void updatePasswordById(String id, String newPassword) throws Exception {
-        memberRepository.updatePasswordById(id, newPassword);
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("새 비밀번호를 입력해주세요.");
+        }
+        memberRepository.updatePasswordById(id, passwordEncoder.encode(newPassword));
     }
     @Override
     public void deleteCard(int card_idx,String id) throws Exception {

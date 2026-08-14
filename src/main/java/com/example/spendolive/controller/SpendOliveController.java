@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.spendolive.Expense.domain.ExpenseDTO;
+import com.example.spendolive.expense.domain.ExpenseDTO;
 import com.example.spendolive.admin.dashboard.domain.AdminDashboardDTO;
 import com.example.spendolive.admin.dashboard.service.AdminDashboardService;
-import com.example.spendolive.Expense.service.ExpenseService;
+import com.example.spendolive.expense.service.ExpenseService;
 import com.example.spendolive.member.domain.MemberVO;
 import com.example.spendolive.ott.service.OttService;
 

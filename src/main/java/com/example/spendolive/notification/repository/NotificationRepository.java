@@ -1,5 +1,7 @@
 package com.example.spendolive.notification.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import com.example.spendolive.notification.domain.NotificationDTO;
 
 @Repository
 public class NotificationRepository {
+    private static final Logger log = LoggerFactory.getLogger(NotificationRepository.class);
 
     // ────────────────────────────────────────────────────────────
     // SQL 정의
@@ -120,7 +123,7 @@ public class NotificationRepository {
         try {
             return jdbcTemplate.query(FIND_BY_ID_SQL, (rs, rowNum) -> mapRow(rs), id);
         } catch (DataAccessException e) {
-            System.err.println("[NotificationRepository.findById] DB 오류: " + e.getMessage());
+            log.error("{}", "[NotificationRepository.findById] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -131,7 +134,7 @@ public class NotificationRepository {
         try {
             return jdbcTemplate.query(FIND_UNREAD_BY_ID_SQL, (rs, rowNum) -> mapRow(rs), id);
         } catch (DataAccessException e) {
-            System.err.println("[NotificationRepository.findUnreadById] DB 오류: " + e.getMessage());
+            log.error("{}", "[NotificationRepository.findUnreadById] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -143,7 +146,7 @@ public class NotificationRepository {
             Integer count = jdbcTemplate.queryForObject(COUNT_UNREAD_SQL, Integer.class, id);
             return (count != null) ? count : 0;
         } catch (DataAccessException e) {
-            System.err.println("[NotificationRepository.countUnread] DB 오류: " + e.getMessage());
+            log.error("{}", "[NotificationRepository.countUnread] DB 오류: " + e.getMessage(), e);
             return 0;
         }
     }
@@ -154,10 +157,10 @@ public class NotificationRepository {
         try {
             int rows = jdbcTemplate.update(UPDATE_READ_YN_SQL, notificationId, id);
             if (rows == 0) {
-                System.err.println("[NotificationRepository.updateReadYn] 대상 없음: notification_id=" + notificationId);
+                log.warn("{}", "[NotificationRepository.updateReadYn] 대상 없음: notification_id=" + notificationId);
             }
         } catch (DataAccessException e) {
-            System.err.println("[NotificationRepository.updateReadYn] DB 오류: " + e.getMessage());
+            log.error("{}", "[NotificationRepository.updateReadYn] DB 오류: " + e.getMessage(), e);
         }
     }
 
@@ -169,7 +172,7 @@ public class NotificationRepository {
         try {
             jdbcTemplate.update(UPDATE_READ_BY_LINK_URL_SQL, id, linkUrl);
         } catch (DataAccessException e) {
-            System.err.println("[NotificationRepository.updateReadByLinkUrl] DB 오류: " + e.getMessage());
+            log.error("{}", "[NotificationRepository.updateReadByLinkUrl] DB 오류: " + e.getMessage(), e);
         }
     }
 
@@ -181,7 +184,7 @@ public class NotificationRepository {
         } catch (EmptyResultDataAccessException e) {
             return null;
         } catch (DataAccessException e) {
-            System.err.println("[NotificationRepository.findByNotificationId] 오류: " + e.getMessage());
+            log.error("{}", "[NotificationRepository.findByNotificationId] 오류: " + e.getMessage(), e);
             return null;
         }
     }
@@ -192,10 +195,10 @@ public class NotificationRepository {
         try {
             int rows = jdbcTemplate.update(TOGGLE_STAR_SQL, notificationId, id);
             if (rows == 0) {
-                System.err.println("[NotificationRepository.toggleStar] 대상 없음: notification_id=" + notificationId);
+                log.warn("{}", "[NotificationRepository.toggleStar] 대상 없음: notification_id=" + notificationId);
             }
         } catch (DataAccessException e) {
-            System.err.println("[NotificationRepository.toggleStar] DB 오류: " + e.getMessage());
+            log.error("{}", "[NotificationRepository.toggleStar] DB 오류: " + e.getMessage(), e);
         }
     }
 
@@ -204,13 +207,13 @@ public class NotificationRepository {
     public void insertNotification(String id, String type, String title, String message, String linkUrl) {
         if (id == null || id.isBlank() || type == null || type.isBlank()
                 || title == null || title.isBlank() || message == null || message.isBlank()) {
-            System.err.println("[NotificationRepository.insertNotification] 필수 값 누락으로 생성 건너뜀 (id=" + id + ", type=" + type + ")");
+            log.warn("{}", "[NotificationRepository.insertNotification] 필수 값 누락으로 생성 건너뜀 (id=" + id + ", type=" + type + ")");
             return;
         }
         try {
             jdbcTemplate.update(INSERT_NOTIFICATION_SQL, id, type, title, message, linkUrl);
         } catch (DataAccessException e) {
-            System.err.println("[NotificationRepository.insertNotification] DB 오류: " + e.getMessage());
+            log.error("{}", "[NotificationRepository.insertNotification] DB 오류: " + e.getMessage(), e);
         }
     }
 }

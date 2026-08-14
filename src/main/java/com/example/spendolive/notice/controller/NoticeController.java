@@ -1,5 +1,7 @@
 package com.example.spendolive.notice.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +24,7 @@ import com.example.spendolive.notice.service.NoticeService;
 @Controller
 @RequestMapping("/spendolive/notice")
 public class NoticeController {
+    private static final Logger log = LoggerFactory.getLogger(NoticeController.class);
 
     private final NoticeService noticeService;
 
@@ -58,7 +61,7 @@ public class NoticeController {
             mav.addObject("noticeCount",   noticeService.getNoticeCount());
             mav.addObject("importantCount", noticeService.getPinnedCount());
         } catch (Exception e) {
-            System.err.println("[NoticeController.noticeCenter] 공지 로드 실패: " + e.getMessage());
+            log.error("{}", "[NoticeController.noticeCenter] 공지 로드 실패: " + e.getMessage(), e);
             mav.addObject("noticeList",    List.of());
             mav.addObject("noticeCount",   0);
             mav.addObject("importantCount", 0);
@@ -93,7 +96,7 @@ public class NoticeController {
             // 채워진 별로 보이도록 함 (기존엔 star_yn을 안 가져와서 항상 빈 별로만 보였음)
             notice = noticeService.getNoticeDetailForUser(notice_id, memberInfo != null ? memberInfo.getId() : null);
         } catch (Exception e) {
-            System.err.println("[NoticeController.noticeDetail] 조회 실패: " + e.getMessage());
+            log.error("{}", "[NoticeController.noticeDetail] 조회 실패: " + e.getMessage(), e);
         }
 
         if (notice == null) {
@@ -109,7 +112,7 @@ public class NoticeController {
             try {
                 noticeService.readNotice(notice_id, memberInfo.getId());
             } catch (Exception e) {
-                System.err.println("[NoticeController.noticeDetail] 읽음 처리 실패: " + e.getMessage());
+                log.error("{}", "[NoticeController.noticeDetail] 읽음 처리 실패: " + e.getMessage(), e);
             }
         }
 
@@ -131,7 +134,7 @@ public class NoticeController {
         try {
             return noticeService.getNoticeList(id);
         } catch (Exception e) {
-            System.err.println("[NoticeController.ajaxNoticeList] 오류: " + e.getMessage());
+            log.error("{}", "[NoticeController.ajaxNoticeList] 오류: " + e.getMessage(), e);
             return List.of();
         }
     }
@@ -146,7 +149,7 @@ public class NoticeController {
         try {
             return noticeService.getImportantList(id);
         } catch (Exception e) {
-            System.err.println("[NoticeController.ajaxImportantList] 오류: " + e.getMessage());
+            log.error("{}", "[NoticeController.ajaxImportantList] 오류: " + e.getMessage(), e);
             return List.of();
         }
     }
@@ -164,7 +167,7 @@ public class NoticeController {
         try {
             return noticeService.getUnreadNoticeList(memberInfo.getId());
         } catch (Exception e) {
-            System.err.println("[NoticeController.ajaxUnreadNoticeList] 오류: " + e.getMessage());
+            log.error("{}", "[NoticeController.ajaxUnreadNoticeList] 오류: " + e.getMessage(), e);
             return List.of();
         }
     }
@@ -189,7 +192,7 @@ public class NoticeController {
             noticeService.toggleNoticeStar(notice_id, memberInfo.getId());
             return Map.of("result", "OK");
         } catch (Exception e) {
-            System.err.println("[NoticeController.toggleNoticeStar] 오류: " + e.getMessage());
+            log.error("{}", "[NoticeController.toggleNoticeStar] 오류: " + e.getMessage(), e);
             return Map.of("result", "ERROR");
         }
     }
@@ -213,7 +216,7 @@ public class NoticeController {
         try {
             notice = noticeService.getNoticeDetailForUser(notice_id, memberInfo != null ? memberInfo.getId() : null);
         } catch (Exception e) {
-            System.err.println("[NoticeController.ajaxNoticeDetail] 조회 실패: " + e.getMessage());
+            log.error("{}", "[NoticeController.ajaxNoticeDetail] 조회 실패: " + e.getMessage(), e);
             return Map.of("result", "ERROR");
         }
 
@@ -226,7 +229,7 @@ public class NoticeController {
             try {
                 noticeService.readNotice(notice_id, memberInfo.getId());
             } catch (Exception e) {
-                System.err.println("[NoticeController.ajaxNoticeDetail] 읽음 처리 실패: " + e.getMessage());
+                log.error("{}", "[NoticeController.ajaxNoticeDetail] 읽음 처리 실패: " + e.getMessage(), e);
             }
         }
 

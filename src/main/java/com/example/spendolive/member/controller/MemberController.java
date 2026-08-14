@@ -37,5 +37,4 @@ public interface MemberController {
     @RequestParam("state") String state,
     HttpServletRequest request, HttpServletResponse response,
     HttpSession session,RedirectAttributes redirectAttributes) throws UnsupportedEncodingException;
-	public ResponseEntity<MemberAjaxResponse> whitdraw(@RequestParam("id") String id,  HttpServletRequest request, HttpServletResponse response) throws Exception;
 }

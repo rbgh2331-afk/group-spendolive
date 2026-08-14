@@ -1,5 +1,7 @@
 package com.example.spendolive.inquiry.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,6 +14,7 @@ import com.example.spendolive.inquiry.domain.InquiryVO;
 
 @Repository
 public class InquiryRepository {
+    private static final Logger log = LoggerFactory.getLogger(InquiryRepository.class);
 
     // ────────────────────────────────────────────────────────────
     // SQL 정의
@@ -108,7 +111,7 @@ public class InquiryRepository {
                     inquiry.getTitle(), inquiry.getContent());
             return inquiryId.intValue();
         } catch (DataAccessException e) {
-            System.err.println("[InquiryRepository.insertInquiry] DB 오류: " + e.getMessage());
+            log.error("{}", "[InquiryRepository.insertInquiry] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }
@@ -130,7 +133,7 @@ public class InquiryRepository {
             }
             return jdbcTemplate.query(sql, (rs, rowNum) -> mapRow(rs), id, offset, limit);
         } catch (DataAccessException e) {
-            System.err.println("[InquiryRepository.findBymember_id] DB 오류: " + e.getMessage());
+            log.error("{}", "[InquiryRepository.findBymember_id] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -147,7 +150,7 @@ public class InquiryRepository {
                     : jdbcTemplate.queryForObject(sql, Integer.class, id);
             return (count != null) ? count : 0;
         } catch (DataAccessException e) {
-            System.err.println("[InquiryRepository.countBymember_id] DB 오류: " + e.getMessage());
+            log.error("{}", "[InquiryRepository.countBymember_id] DB 오류: " + e.getMessage(), e);
             return 0;
         }
     }
@@ -157,10 +160,10 @@ public class InquiryRepository {
         try {
             return jdbcTemplate.queryForObject(FIND_BY_ID_SQL, (rs, rowNum) -> mapRow(rs), inquiryId);
         } catch (EmptyResultDataAccessException e) {
-            System.err.println("[InquiryRepository.findById] inquiry_id=" + inquiryId + " 존재하지 않음");
+            log.warn("{}", "[InquiryRepository.findById] inquiry_id=" + inquiryId + " 존재하지 않음");
             return null;
         } catch (DataAccessException e) {
-            System.err.println("[InquiryRepository.findById] DB 오류: " + e.getMessage());
+            log.error("{}", "[InquiryRepository.findById] DB 오류: " + e.getMessage(), e);
             return null;
         }
     }
@@ -179,7 +182,7 @@ public class InquiryRepository {
             }
             return jdbcTemplate.query(sql, (rs, rowNum) -> mapRow(rs), offset, limit);
         } catch (DataAccessException e) {
-            System.err.println("[InquiryRepository.findAllForAdmin] DB 오류: " + e.getMessage());
+            log.error("{}", "[InquiryRepository.findAllForAdmin] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -194,7 +197,7 @@ public class InquiryRepository {
                     : jdbcTemplate.queryForObject(sql, Integer.class);
             return (count != null) ? count : 0;
         } catch (DataAccessException e) {
-            System.err.println("[InquiryRepository.countAllForAdmin] DB 오류: " + e.getMessage());
+            log.error("{}", "[InquiryRepository.countAllForAdmin] DB 오류: " + e.getMessage(), e);
             return 0;
         }
     }
@@ -204,7 +207,7 @@ public class InquiryRepository {
         try {
             jdbcTemplate.update(REPLY_SQL, replyContent, status, inquiryId);
         } catch (DataAccessException e) {
-            System.err.println("[InquiryRepository.replyToInquiry] DB 오류: " + e.getMessage());
+            log.error("{}", "[InquiryRepository.replyToInquiry] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }
@@ -219,7 +222,7 @@ public class InquiryRepository {
                     inquiry.getTitle(), inquiry.getContent(),
                     inquiry.getInquiry_id(), inquiry.getId());
         } catch (DataAccessException e) {
-            System.err.println("[InquiryRepository.updateInquiry] DB 오류: " + e.getMessage());
+            log.error("{}", "[InquiryRepository.updateInquiry] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }
@@ -233,7 +236,7 @@ public class InquiryRepository {
         try {
             return jdbcTemplate.update(DELETE_SQL, inquiryId, id);
         } catch (DataAccessException e) {
-            System.err.println("[InquiryRepository.deleteInquiry] DB 오류: " + e.getMessage());
+            log.error("{}", "[InquiryRepository.deleteInquiry] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }

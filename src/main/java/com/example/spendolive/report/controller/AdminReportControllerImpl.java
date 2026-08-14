@@ -3,7 +3,6 @@ package com.example.spendolive.report.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.spendolive.member.domain.MemberVO;
 import com.example.spendolive.report.domain.ReportAjaxResponse;
 import com.example.spendolive.report.domain.ReportVO;
+import com.example.spendolive.report.exception.ReportProcessException;
 import com.example.spendolive.report.service.ReportService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +25,11 @@ import jakarta.servlet.http.HttpSession;
 @Controller("AdminReportController")
 @RequestMapping(value="/admin/report")
 public class AdminReportControllerImpl implements AdminReportController{
-    @Autowired
-    private ReportService reportService;
+    private final ReportService reportService;
+
+    public AdminReportControllerImpl(ReportService reportService) {
+        this.reportService = reportService;
+    }
     @Override
     @GetMapping("/list.do")
     public ModelAndView listUpReport(@RequestParam(value = "status", required = false) String status,HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
@@ -62,12 +65,24 @@ public class AdminReportControllerImpl implements AdminReportController{
                     "SUCCESS",
                     null,
                     "/admin/report/list.do"));
+        } catch (ReportProcessException e) {
+            HttpStatus status = "REPORT_ALREADY_PROCESSED".equals(e.getCode())
+                    ? HttpStatus.CONFLICT
+                    : HttpStatus.BAD_REQUEST;
+            return ResponseEntity.status(status)
+            .body(new ReportAjaxResponse(
+                false,
+                e.getCode(),
+                e.getMessage(),
+                "FAIL",
+                null,
+                "/admin/report/list.do"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(new ReportAjaxResponse(
                 false,
                 "WARINGED_FAILED",
-                e.getMessage(),
+                "신고 처리 중 문제가 발생했습니다.",
                 "FAIL",
                 null,
                 "/admin/report/list.do"));

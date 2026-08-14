@@ -181,7 +181,7 @@
 
                                             <div class="recruit-card-head">
                                                 <div>
-                                                    <h3>${room.room_name}</h3>
+                                                    <h3><c:out value="${room.room_name}" /></h3>
                                                     <p>${room.service_name} · ${room.plan_name}</p>
                                                 </div>
                                                 <div class="recruit-card-badges">
@@ -224,6 +224,7 @@
                                                 <c:when test="${(room.status eq 'RECRUITING' or room.status eq 'REPLACE_RECRUITING') and room.my_application_status eq 'NONE'}">
                                                     <form action="${contextPath}/payment/detail.do" method="post">
                                                         <input type="hidden" name="room_id" value="${room.room_id}">
+                                                        <input type="hidden" name="room_mode" value="RECRUIT">
                                                         <button type="submit" class="btn btn-primary full recruit-apply-button">신청하기</button>
                                                     </form>
                                                 </c:when>
@@ -320,7 +321,7 @@
                                             <div class="ott-room-card manage-room-card">
                                                 <div class="room-index-badge">${roomStatus.count}</div>
                                                 <div class="family-room-info">
-                                                    <strong>${room.room_name}</strong>
+                                                    <strong><c:out value="${room.room_name}" /></strong>
                                                     <p>${room.service_name} · ${room.plan_name} · ${room.current_member_count}/${room.member_limit}명 · 결제일 매월 ${room.billing_day}일</p>
                                                     <small>1인 결제금액 <fmt:formatNumber value="${room.per_person_amount}" pattern="#,##0" />원</small>
                                                 </div>
@@ -346,9 +347,9 @@
                                                             <c:set var="hasParticipant" value="true" />
                                                             <div class="apply-manage-row application-row ACTIVE">
                                                                 <div>
-                                                                    <strong>${member.member_name}</strong>
+                                                                    <strong><c:out value="${member.member_name}" /></strong>
 
-                                                                    <p>아이디: ${member.member_login_id} · 참여일 ${member.joined_at}</p>
+                                                                    <p>아이디: <c:out value="${member.member_login_id}" /> · 참여일 ${member.joined_at}</p>
                                                                     <c:if test="${member.leave_reserved_yn eq 'Y'}">
                                                                         <p class="warn-text">나가기 예약됨 · ${member.leave_scheduled_date} 자동 퇴장 예정</p>
 
@@ -392,7 +393,7 @@
                                             <div class="ott-room-card manage-room-card">
                                                 <div class="room-index-badge">${roomStatus.count}</div>
                                                 <div class="family-room-info">
-                                                    <strong>${room.room_name}</strong>
+                                                    <strong><c:out value="${room.room_name}" /></strong>
                                                     <p>${room.service_name} · ${room.plan_name} · ${room.current_member_count}/${room.member_limit}명 · 결제일 매월 ${room.billing_day}일</p>
                                                     <small>1인 결제금액 <fmt:formatNumber value="${room.per_person_amount}" pattern="#,##0" />원 · 방장 ${room.host_nickname}</small>
                                                 </div>
@@ -455,7 +456,7 @@
                                             <c:forEach var="settlement" items="${settlementList}">
                                                 <div class="status-row wide settlement-status-row">
                                                     <span>
-                                                        <strong>${settlement.room_name}</strong><br>
+                                                        <strong><c:out value="${settlement.room_name}" /></strong><br>
                                                         <small>
                                                             ${settlement.settlement_month} 이용분 · ${settlement.my_role}<br>
                                                             결제기간 ${settlement.payment_start_date} ~ ${settlement.payment_close_date}<br>
@@ -494,8 +495,8 @@
                                                 <div class="team-payment-row">
                                                     <span>
 
-                                                        <strong>${payment.room_name}</strong>
-                                                        <small>${payment.settlement_month} 이용분 · ${payment.member_name}(${payment.member_login_id})</small>
+                                                        <strong><c:out value="${payment.room_name}" /></strong>
+                                                        <small>${payment.settlement_month} 이용분 · <c:out value="${payment.member_name}" />(<c:out value="${payment.member_login_id}" />)</small>
 
                                                     </span>
                                                     <b><fmt:formatNumber value="${payment.total_amount}" pattern="#,##0" />원</b>

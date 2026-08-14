@@ -1,5 +1,7 @@
 package com.example.spendolive.notice.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +24,7 @@ import com.example.spendolive.notice.service.NoticeService;
 @Controller
 @RequestMapping("/admin/notice")
 public class AdminNoticeController {
+    private static final Logger log = LoggerFactory.getLogger(AdminNoticeController.class);
 
     private final NoticeService noticeService;
 
@@ -81,7 +84,7 @@ public class AdminNoticeController {
             );
             return ResponseEntity.ok(body);
         } catch (Exception e) {
-            System.err.println("[AdminNoticeController.ajaxList] 오류: " + e.getMessage());
+            log.error("{}", "[AdminNoticeController.ajaxList] 오류: " + e.getMessage(), e);
             return ResponseEntity.internalServerError()
                     .body(Map.of("result", "ERROR", "message", "공지 목록을 불러오는 중 오류가 발생했습니다."));
         }
@@ -106,7 +109,7 @@ public class AdminNoticeController {
         try {
             notice = noticeService.getNoticeDetail(notice_id);
         } catch (Exception e) {
-            System.err.println("[AdminNoticeController.ajaxDetail] 오류: " + e.getMessage());
+            log.error("{}", "[AdminNoticeController.ajaxDetail] 오류: " + e.getMessage(), e);
         }
 
         if (notice == null) {

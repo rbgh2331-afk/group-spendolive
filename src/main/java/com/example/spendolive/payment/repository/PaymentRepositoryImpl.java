@@ -3,7 +3,6 @@ package com.example.spendolive.payment.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,8 +15,7 @@ import com.example.spendolive.payment.domain.*;
 
 @Repository
 public class PaymentRepositoryImpl implements PaymentRepository{
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 //insert
 
     // 사전 생성된 결제 행이 없는 예외적인 경우에만 새 결제 행을 등록합니다.
@@ -222,7 +220,6 @@ public class PaymentRepositoryImpl implements PaymentRepository{
         }, today,endday, status);
     }catch (org.springframework.dao.EmptyResultDataAccessException e) {
         // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-        System.out.println("spl오류");
         return null; 
     }
 } 
@@ -244,7 +241,6 @@ public List<OttRoomMemberDTO> selectTodaysettlementMember(int today,int endday, 
     }, today,endday, status);
 }catch (org.springframework.dao.EmptyResultDataAccessException e) {
     // ◀ [수정] 조회가 안 되면(로그인 실패) 에러를 터뜨리지 말고 null을 안전하게 리턴!
-    System.out.println("spl오류");
     return null; 
 }
 } 

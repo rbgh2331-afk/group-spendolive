@@ -1,6 +1,7 @@
 package com.example.spendolive.ott.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -12,6 +13,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.spendolive.member.domain.MemberVO;
+import com.example.spendolive.member.repository.MemberRepository;
 import com.example.spendolive.ott.domain.OttChatMessageDTO;
 import com.example.spendolive.ott.domain.OttChatRoomDTO;
 import com.example.spendolive.ott.domain.OttRoomDTO;
@@ -29,13 +32,18 @@ public class OttServiceImpl implements OttService {
     private static final double PLATFORM_FEE_RATE = 3.0;
     private static final int PAYMENT_CLOSE_DAYS_BEFORE = 7;
 
+    private static final DateTimeFormatter BLOCKED_UNTIL_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter BLOCKED_UNTIL_DISPLAY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private final OttRepository ottRepository;
     private final OttAlarmService ottAlarmService;
+    private final MemberRepository memberRepository;
 
-    // OTT 데이터와 알림 서비스를 생성자에서 한 번 주입받아 모든 OTT 처리에서 재사용한다.
-    public OttServiceImpl(OttRepository ottRepository, OttAlarmService ottAlarmService) {
+    // OTT 데이터와 알림, 회원 제재 정보를 생성자에서 한 번 주입받아 모든 OTT 처리에서 재사용한다.
+    public OttServiceImpl(OttRepository ottRepository, OttAlarmService ottAlarmService, MemberRepository memberRepository) {
         this.ottRepository = ottRepository;
         this.ottAlarmService = ottAlarmService;
+        this.memberRepository = memberRepository;
     }
 
     // =========================================================
@@ -636,18 +644,46 @@ public class OttServiceImpl implements OttService {
 
     // 채팅 권한과 메시지 내용을 검증한 뒤 메시지 등록
     @Override
-    public void sendChatMessage(Long room_id, String sender_id, String message_content) {
+    public String sendChatMessage(Long room_id, String sender_id, String message_content) {
         if (room_id == null || !isValidLogin(sender_id)
                 || !ottRepository.canUseChatRoom(room_id, sender_id)) {
-            return;
+            return null;
+        }
+
+        String restrictionMessage = getChatRestrictionMessage(sender_id);
+        if (restrictionMessage != null) {
+            return restrictionMessage;
         }
 
         String normalizedMessage = normalizeChatMessage(message_content);
         if (normalizedMessage == null) {
-            return;
+            return null;
         }
         ottRepository.insertChatMessage(room_id, sender_id, normalizedMessage);
-        
+        return null;
+    }
+
+    // 경고 패널티 기간이 남아 있으면 메시지 전송만 막고 채팅방 조회는 허용한다.
+    private String getChatRestrictionMessage(String sender_id) {
+        MemberVO member = memberRepository.selectMemberById(sender_id);
+        if (member == null || member.getBlocked_until() == null || member.getBlocked_until().isBlank()) {
+            return null;
+        }
+
+        LocalDateTime blockedUntil;
+        try {
+            blockedUntil = LocalDateTime.parse(member.getBlocked_until(), BLOCKED_UNTIL_FORMATTER);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+
+        if (!blockedUntil.isAfter(LocalDateTime.now())) {
+            return null;
+        }
+
+        return "경고 " + member.getWarning_count() + "회로 인해 "
+                + blockedUntil.format(BLOCKED_UNTIL_DISPLAY_FORMATTER)
+                + "까지 채팅 이용이 제한됩니다.";
     }
 
     // 채팅 권한 확인 후 마지막 읽은 시각 갱신

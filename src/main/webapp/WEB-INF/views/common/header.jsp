@@ -28,7 +28,7 @@
             </nav>
             <div class="admin-actions">
                 <strong><a class="btn btn-light" href="${contextPath}/member/logout.do">로그아웃</a>
-                        ${memberInfo.member_name}님</strong>
+                        <c:out value="${memberInfo.member_name}" />님</strong>
             </div>
         </div>
     </header>
@@ -37,7 +37,7 @@
     <header class="site-header">
         <div class="container header-inner">
             <a href="${contextPath}/spendolive/main.do" class="logo">
-                <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+                <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" class="brand-logo-img">
                 <span>SpendOlive</span>
             </a>
 
@@ -70,8 +70,7 @@
                         <span class="bell-icon">🔔</span>
 
                         <span id="notificationBadge"
-                            class="notification-badge"
-                            style="display:none;"></span>
+                            class="notification-badge is-hidden"></span>
                     </button>
 
                     <%-- 종 아이콘 클릭 시 뜨는 최근 알림 미리보기. 최근 5개는 그냥 보이고,
@@ -99,7 +98,7 @@
                         </c:when>
                     </c:choose>
                         <strong><a class="btn btn-light" href="${contextPath}/member/logout.do">로그아웃</a>
-                        ${memberInfo.member_name}님</strong>
+                        <c:out value="${memberInfo.member_name}" />님</strong>
                     </c:when>
                     <c:otherwise>
                         <a class="btn btn-light" href="${contextPath}/member/loginForm.do">로그인</a>
@@ -205,18 +204,18 @@
                             <ul class="so-submenu">
                                 <li>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/member/openBankingIntegratedAuth.do">
+                                    href="${contextPath}/member/openBankingIntegratedAuth.do" onclick="return loginYn('openBankingIntegratedAuth', ${isLogOn})">
                                         통합 계좌 연동
                                     </a>
                                     <a class="so-menu-link"
-                                    href="${contextPath}/member/openBankingAuth.do">    
+                                    href="${contextPath}/member/openBankingAuth.do" onclick="return loginYn('openBankingAuth', ${isLogOn})">    
                                         계좌 연동
                                     </a>
                                 </li>
                                 <li>
                                     <a class="so-menu-link"
                                     href="javascript:void(0);"
-                                    onclick="requestBillingAuth()">
+                                    onclick="return loginYn('tosscard', ${isLogOn})">
                                         카드 등록
                                     </a>
                                 </li>
@@ -230,6 +229,11 @@
     </header>
     </c:otherwise>
     </c:choose>
+    <div id="billingMemberData" class="is-hidden"
+         data-customer-key="${fn:escapeXml(memberInfo.id)}"
+         data-customer-email="${fn:escapeXml(memberInfo.email)}"
+         data-customer-name="${fn:escapeXml(memberInfo.member_name)}"
+         data-flash-message="${fn:escapeXml(msg)}"></div>
     <script src="https://js.tosspayments.com/v2/standard"></script>
  
     <script>
@@ -253,7 +257,8 @@
         }
     })();
         const clientKey = "test_ck_4yKeq5bgrp29GNZ7765L3GX0lzW6";
-        const customerKey = "${memberInfo.id}";
+        const billingMemberData = document.getElementById("billingMemberData");
+        const customerKey = billingMemberData?.dataset.customerKey || "";
         const tossPayments = TossPayments(clientKey);
        
         //@docs https://docs.tosspayments.com/sdk/v2/js#tosspaymentspayment
@@ -266,16 +271,17 @@
             const contextPath = "${contextPath}";
              if(customerKey === ""){
             alert("로그인해 주세요");
+            return;
             }
             await payment.requestBillingAuth({
             method: "CARD", // 자동결제(빌링)는 카드만 지원합니다
             successUrl: window.location.origin + contextPath + "/payment/callback.do", 
             failUrl: window.location.origin + contextPath + "/payment/fail.do",
-            customerEmail: '${memberInfo.email}',
-            customerName: '${memberInfo.member_name}',
+            customerEmail: billingMemberData?.dataset.customerEmail || "",
+            customerName: billingMemberData?.dataset.customerName || "",
             });
         }
-        var msg = "${msg}";
+        var msg = billingMemberData?.dataset.flashMessage || "";
 if(msg && msg !== "") {
     alert(msg);
 }

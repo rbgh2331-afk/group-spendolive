@@ -1,5 +1,7 @@
 package com.example.spendolive.notification.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import com.example.spendolive.notification.service.NotificationService;
 @Controller
 @RequestMapping("/spendolive/notification")
 public class NotificationPageController {
+    private static final Logger log = LoggerFactory.getLogger(NotificationPageController.class);
 
     private final NotificationService notificationService;
 
@@ -52,7 +55,7 @@ public class NotificationPageController {
         try {
             notification = notificationService.getNotificationDetail(notification_id, memberInfo.getId());
         } catch (Exception e) {
-            System.err.println("[NotificationPageController.detail] 조회 실패: " + e.getMessage());
+            log.error("{}", "[NotificationPageController.detail] 조회 실패: " + e.getMessage(), e);
         }
 
         if (notification == null) {
@@ -68,7 +71,7 @@ public class NotificationPageController {
         try {
             notificationService.readNotification(notification_id, memberInfo.getId());
         } catch (Exception e) {
-            System.err.println("[NotificationPageController.detail] 읽음 처리 실패: " + e.getMessage());
+            log.error("{}", "[NotificationPageController.detail] 읽음 처리 실패: " + e.getMessage(), e);
         }
 
         ModelAndView mav = new ModelAndView("common/layout");

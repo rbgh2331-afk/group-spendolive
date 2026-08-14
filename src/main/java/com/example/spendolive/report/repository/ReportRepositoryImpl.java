@@ -3,7 +3,6 @@ package com.example.spendolive.report.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -12,8 +11,11 @@ import com.example.spendolive.report.domain.WarningVO;
 
 @Repository
 public class ReportRepositoryImpl implements ReportRepository {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    public ReportRepositoryImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     private final String insertReport = "INSERT INTO report_tb (room_id, reporter_id, reported_member_id, report_reason, report_status)"
                                         +" VALUES (?,?,?,?, 'WAIT') ";
@@ -23,8 +25,10 @@ public class ReportRepositoryImpl implements ReportRepository {
                                         +"from report_tb where report_status=? ";
                                                                          
     private final String updateComment = "UPDATE report_tb SET admin_comment =? , processed_at =SYSDATE , report_status =? WHERE report_id=? ";
-    private final String insertWarning = "INSERT INTO warning_tb (member_id, report_id, warning_reason, status, created_at)"
-                                        +" VALUES (?,?,?,?,SYSDATE) ";
+    private final String completeReportIfWaiting = "UPDATE report_tb SET admin_comment =?, processed_at =SYSDATE, report_status ='COMPLETE' "
+                                                 + "WHERE report_id =? AND report_status ='WAIT' ";
+    private final String insertWarning = "INSERT INTO warning_tb (member_id, report_id, warning_reason, penalty_days, status, created_at)"
+                                        +" VALUES (?,?,?,?,?,SYSDATE) ";
     
     @Override
     public void insertReport(ReportVO reportInfo){
@@ -79,8 +83,13 @@ public class ReportRepositoryImpl implements ReportRepository {
         jdbcTemplate.update(updateComment, comment, "COMPLETE", report_id);
     }
     @Override
+    public int completeReportIfWaiting(String comment, int report_id){
+        return jdbcTemplate.update(completeReportIfWaiting, comment, report_id);
+    }
+    @Override
     public void insertWarning(WarningVO warning){
-        jdbcTemplate.update(insertWarning,warning.getMember_id(), warning.getReport_id(),warning.getWarning_reason(), warning.getStatus());
+        jdbcTemplate.update(insertWarning, warning.getMember_id(), warning.getReport_id(), warning.getWarning_reason(),
+                warning.getPenalty_days(), warning.getStatus());
     }
 
 }

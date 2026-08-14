@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="faq-page">
@@ -17,17 +18,17 @@
             <a class="btn btn-outline" href="${contextPath}/spendolive/inquiry/list.do">← 목록으로</a>
         </div>
 
-        <div class="inq-card" style="cursor:default">
+        <div class="inq-card inq-card-static">
             <div class="inq-top">
-                <span class="inq-category">${inquiry.categoryLabel} · ${inquiry.inquiryTypeLabel}</span>
+                <span class="inq-category"><c:out value="${inquiry.categoryLabel}" /> · <c:out value="${inquiry.inquiryTypeLabel}" /></span>
                 <div class="inq-meta">
-                    <span class="badge ${inquiry.statusCode}">${inquiry.statusLabel}</span>
+                    <span class="badge ${inquiry.statusCode}"><c:out value="${inquiry.statusLabel}" /></span>
                     <span class="inq-date">${inquiry.reg_date}</span>
                 </div>
             </div>
 
-            <div class="inq-title" style="font-size:18px;margin-top:8px">${inquiry.title}</div>
-            <div class="inq-preview" style="white-space:pre-line;-webkit-line-clamp:unset">${inquiry.content}</div>
+            <div class="inq-title inq-title-detail"><c:out value="${inquiry.title}" /></div>
+            <div class="inq-preview inq-preview-full"><c:out value="${inquiry.content}" /></div>
 
             <c:if test="${not empty inquiry.files}">
                 <div class="inq-attachments">
@@ -35,12 +36,12 @@
                         <c:choose>
                             <c:when test="${file.image}">
                                 <img src="${contextPath}/spendolive/inquiry/file/${file.file_id}"
-                                     alt="${file.origin_name}" class="inq-thumb"
-                                     onclick="openInqLightbox(this.src, '${file.origin_name}')">
+                                     alt="${fn:escapeXml(file.origin_name)}" class="inq-thumb"
+                                     onclick="openInqLightbox(this.src, this.alt)">
                             </c:when>
                             <c:otherwise>
                                 <a href="${contextPath}/spendolive/inquiry/file/${file.file_id}"
-                                   target="_blank" class="inq-file-link">📎 ${file.origin_name}</a>
+                                   target="_blank" class="inq-file-link">📎 <c:out value="${file.origin_name}" /></a>
                             </c:otherwise>
                         </c:choose>
                     </c:forEach>
@@ -50,16 +51,16 @@
 
         <c:choose>
             <c:when test="${inquiry.hasReply}">
-                <div class="inq-card" style="cursor:default;margin-top:14px;background:#f8fbf7">
+                <div class="inq-card inq-reply-card">
                     <div class="inq-top">
                         <span class="inq-category">관리자 답변</span>
                         <span class="inq-date">${inquiry.reply_date}</span>
                     </div>
-                    <div class="inq-preview" style="white-space:pre-line;-webkit-line-clamp:unset;margin-top:8px">${inquiry.reply_content}</div>
+                    <div class="inq-preview inq-preview-full-spaced"><c:out value="${inquiry.reply_content}" /></div>
                 </div>
             </c:when>
             <c:otherwise>
-                <div class="empty-box" style="margin-top:14px">
+                <div class="empty-box empty-box-spaced">
                     <p>아직 답변이 등록되지 않았습니다. 조금만 기다려 주세요.</p>
                 </div>
             </c:otherwise>

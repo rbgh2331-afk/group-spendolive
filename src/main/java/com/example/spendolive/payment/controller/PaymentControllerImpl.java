@@ -1,9 +1,10 @@
 package com.example.spendolive.payment.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,13 +35,17 @@ import jakarta.servlet.http.HttpSession;
 @Controller("paymentController")
 @RequestMapping(value = "/payment")
 public class PaymentControllerImpl implements PaymentController {
+    private static final Logger log = LoggerFactory.getLogger(PaymentControllerImpl.class);
 
-    @Autowired
-    private PaymentService paymentService;
-    @Autowired
-    private MemberService memberService;
-    @Autowired
-    private OttService ottService;
+    private final PaymentService paymentService;
+    private final MemberService memberService;
+    private final OttService ottService;
+
+    public PaymentControllerImpl(PaymentService paymentService, MemberService memberService, OttService ottService) {
+        this.paymentService = paymentService;
+        this.memberService = memberService;
+        this.ottService = ottService;
+    }
     private static final Map<String, String> CARD_COMPANY_NAME_MAP = Map.ofEntries(
         Map.entry("3K", "기업 BC"),
         Map.entry("46", "광주은행"),
@@ -80,11 +85,10 @@ public class PaymentControllerImpl implements PaymentController {
         MemberVO memberVO = session == null
                 ? null
                 : (MemberVO) session.getAttribute("memberInfo");
-        List<MemberCardVO> cardList = memberService.getCardById(memberVO.getId());
-        
         if (!isLoggedIn(memberVO)) {
             return new ModelAndView("redirect:/member/loginForm.do");
         }
+        List<MemberCardVO> cardList = memberService.getCardById(memberVO.getId());
         if (!hasLinkedCard(session)) {
             redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 카드 등록이 필요합니다.");
             return new ModelAndView("redirect:/spendolive/main.do");
@@ -144,7 +148,7 @@ public class PaymentControllerImpl implements PaymentController {
             return "redirect:/spendolive/main.do";
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("카드 등록 최종 승인 중 오류가 발생했습니다.", e);
             redirectAttributes.addFlashAttribute(
                     "msg",
                     "카드 등록 최종 승인 중 오류가 발생했습니다.");
@@ -234,7 +238,7 @@ public class PaymentControllerImpl implements PaymentController {
                             null));
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("결제 요청 처리 중 오류가 발생했습니다.", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new PaymentAjaxResponse(

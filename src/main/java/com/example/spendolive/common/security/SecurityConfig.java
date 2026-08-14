@@ -28,7 +28,7 @@ public class SecurityConfig {
             // 3. 허용할 URL 및 정적 자원 설정
             .authorizeHttpRequests(auth -> auth
             // 4. /admin 권한 ADMIN 확인 후 이동
-                .requestMatchers("/spendolive/admin/**").hasRole("ADMIN")
+                .requestMatchers("/spendolive/admin/**", "/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
             )
             // 5. 권한 미보유 시 main 화면 redirect

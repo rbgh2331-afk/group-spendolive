@@ -70,7 +70,7 @@
                                         <c:otherwise>
                                             <button type="button"
                                                 class="btn btn-primary adminsettlementSubmitButton"
-                                                data-room_id="${room.room_id}" data-member_login_id="${room.host_login_id}">정산금 보내기</button>
+                                                data-room_id="${room.room_id}" data-host_id="${room.host_login_id}">정산금 보내기</button>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
@@ -84,3 +84,7 @@
         </c:choose>
     </section>
 </div>
+
+<jsp:include page="/WEB-INF/views/payment/popup.jsp" />
+<script src="${contextPath}/resources/js/app.js"></script>
+<script src="${contextPath}/resources/js/payment.js"></script>

@@ -1,5 +1,7 @@
 package com.example.spendolive.inquiry.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +27,7 @@ import com.example.spendolive.inquiry.domain.InquiryFileVO;
  */
 @Service
 public class FileStorageService {
+    private static final Logger log = LoggerFactory.getLogger(FileStorageService.class);
 
     private static final List<String> ALLOWED_EXT = List.of("png", "jpg", "jpeg", "gif", "pdf");
     private static final long MAX_FILE_SIZE = 5L * 1024 * 1024; // 5MB, inquiryWrite.jsp 안내 문구와 동일
@@ -111,11 +114,11 @@ public class FileStorageService {
                      try {
                          Files.deleteIfExists(p);
                      } catch (IOException e) {
-                         System.err.println("[FileStorageService.deleteInquiryFiles] 파일 삭제 실패: " + p + " - " + e.getMessage());
+                         log.error("{}", "[FileStorageService.deleteInquiryFiles] 파일 삭제 실패: " + p + " - " + e.getMessage(), e);
                      }
                  });
         } catch (IOException e) {
-            System.err.println("[FileStorageService.deleteInquiryFiles] 디렉토리 정리 실패: inquiry_id=" + inquiry_id + " - " + e.getMessage());
+            log.error("{}", "[FileStorageService.deleteInquiryFiles] 디렉토리 정리 실패: inquiry_id=" + inquiry_id + " - " + e.getMessage(), e);
         }
     }
 

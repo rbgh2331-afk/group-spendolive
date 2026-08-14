@@ -1,4 +1,7 @@
 package com.example.spendolive.member.controller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -9,7 +12,6 @@ import java.util.UUID;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,15 +42,19 @@ import com.example.spendolive.mypage.service.MyPageService;
 
 
 @Controller("memberController")
-@ControllerAdvice
 @RequestMapping(value="/member")
 public class MemberControllerImpl implements MemberController{
-    @Autowired
-    private MemberService memberService;
-    @Autowired
-    private MyPageService mypageService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private static final Logger log = LoggerFactory.getLogger(MemberControllerImpl.class);
+
+    private final MemberService memberService;
+    private final MyPageService mypageService;
+    private final PasswordEncoder passwordEncoder;
+
+    public MemberControllerImpl(MemberService memberService, MyPageService mypageService, PasswordEncoder passwordEncoder) {
+        this.memberService = memberService;
+        this.mypageService = mypageService;
+        this.passwordEncoder = passwordEncoder;
+    }
     @Value("${kakao.client.id}")
     private String kakaoclientId;
     @Value("${kakao.redirect.uri}")
@@ -114,7 +119,7 @@ public class MemberControllerImpl implements MemberController{
                 if ("mypage".equals(log)) {
                     url = "/spendolive/mypage.do";
                 } else if ("expense".equals(log)) {
-                    url = "/spendolive/expense.do";
+                    url = "/spendolive/expense/list.do";
                 } else if ("ott".equals(log)) {
                     url = "/spendolive/ott.do";
                 } else {
@@ -139,7 +144,7 @@ public class MemberControllerImpl implements MemberController{
                 url));
               
         }else {
-            url = "/spendolive/member/loginForm.do";
+            url = "/member/loginForm.do";
             return ResponseEntity.ok(new MemberAjaxResponse(
                 false,
                 "LOGIN_FAILED",
@@ -204,7 +209,7 @@ public class MemberControllerImpl implements MemberController{
                 null,
                 "/member/loginForm.do"));
         }catch(Exception e) {
-            e.printStackTrace();
+            log.error("회원 요청 처리 중 오류가 발생했습니다.", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MemberAjaxResponse(
@@ -252,7 +257,7 @@ public class MemberControllerImpl implements MemberController{
                 email,
                 null));}
             }catch (Exception e) {
-            e.printStackTrace();
+            log.error("이메일 확인 처리 중 오류가 발생했습니다.", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MemberAjaxResponse(
@@ -280,7 +285,7 @@ public class MemberControllerImpl implements MemberController{
                             null));
             
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("이메일 인증 처리 중 오류가 발생했습니다.", e);
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body(new MemberAjaxResponse(
@@ -332,7 +337,7 @@ public class MemberControllerImpl implements MemberController{
                     phone,
                     null));
                 }catch (Exception e) {
-                e.printStackTrace();
+                log.error("전화번호 확인 처리 중 오류가 발생했습니다.", e);
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body(new MemberAjaxResponse(
@@ -360,7 +365,7 @@ public class MemberControllerImpl implements MemberController{
                                 null));
                 
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("전화번호 인증 처리 중 오류가 발생했습니다.", e);
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body(new MemberAjaxResponse(
@@ -418,7 +423,7 @@ public class MemberControllerImpl implements MemberController{
                             id,
                             null));
             }catch (Exception e) {
-                e.printStackTrace();
+                log.error("아이디 확인 처리 중 오류가 발생했습니다.", e);
                 return ResponseEntity
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body(new MemberAjaxResponse(
@@ -467,7 +472,6 @@ public class MemberControllerImpl implements MemberController{
             HttpSession session = request.getSession();
             
             if(memberService.checkId(id)){
-                System.out.println(id);
                 session.setAttribute("login_type", "KAKAO");
                 session.setAttribute("id", id);
                 session.setAttribute("member_name", userInfo.get("nickname")); 
@@ -501,7 +505,7 @@ public class MemberControllerImpl implements MemberController{
                     if ("mypage".equals(log)) {
                         mav.setViewName("redirect:/spendolive/mypage.do");
                     } else if ("expense".equals(log)) {
-                        mav.setViewName("redirect:/spendolive/expense.do");
+                        mav.setViewName("redirect:/spendolive/expense/list.do");
                     } else if ("ott".equals(log)) {
                         mav.setViewName("redirect:/spendolive/ott.do");
                     } else {
@@ -510,7 +514,7 @@ public class MemberControllerImpl implements MemberController{
                     session.removeAttribute("log");
                 }      
             } catch (Exception e) {
-                e.printStackTrace(); 
+                log.error("카카오 로그인 연동 중 오류가 발생했습니다.", e); 
                 redirectAttributes.addFlashAttribute("msg", "카카오 로그인 연동 중 서버 오류가 발생했습니다."); 
                 return new ModelAndView("member/loginForm");
             }
@@ -605,32 +609,6 @@ try {
     redirectAttributes.addFlashAttribute("msg", "계좌 인증에 실패하였습니다. 다시 시도해 주세요."); 
     return new ModelAndView("redirect:/spendolive/main.do");
 }
-}
-//강제탈퇴(관리자) 
-@Override
-@PostMapping("/whitdraw.do")
-@ResponseBody
-public ResponseEntity<MemberAjaxResponse> whitdraw(@RequestParam("id") String id,  HttpServletRequest request, HttpServletResponse response) throws Exception {
-    request.setCharacterEncoding("utf-8");
-    try {
-            mypageService.withdrawMember(id);
-                return ResponseEntity.ok(new MemberAjaxResponse(
-                    true,
-                    "WITHDRAW_COMPLETED",
-                    "탈퇴가 완료되었습니다.",
-                    "SUCCESS",
-                    id,
-                    "/admin/member/list.do"));
-    }catch (Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MemberAjaxResponse(
-                        false,
-                        "WHITDRAW_FAILED",
-                        "탈퇴에 실패 하였습니다.",
-                        "FAILED",
-                        id,
-                        "/admin/member/list.do"));
-    }
 }
     /* =========================================================
        [추가 기능] 아이디 찾기 - 1단계: 휴대폰 인증번호 발송

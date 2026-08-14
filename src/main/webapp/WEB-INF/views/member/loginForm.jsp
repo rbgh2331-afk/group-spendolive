@@ -14,27 +14,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
-<style>
-    /* =========================================================
-       [추가 UI] 로그인/아이디 찾기/비밀번호 찾기 폼 전환용 CSS
-       ---------------------------------------------------------
-       기존 로그인 카드 안에서 화면 이동 없이 폼만 바꾸기 위해 사용한다.
-       .auth-switch-panel은 기본 숨김이고, .active가 붙은 패널만 보인다.
-       ========================================================= */
-    .auth-switch-panel { display: none; }
-    .auth-switch-panel.active { display: block; }
-    .auth-find-links { display: flex; align-items: center; gap: 8px; }
-    .auth-find-links a { color: var(--olive-dark); font-weight: 800; text-decoration: none; }
-    .auth-find-links a:hover { text-decoration: underline; }
-    .auth-back-login { margin-top: 12px; }
-    .auth-reset-box { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
-</style>
 </head>
 <body class="auth-body">
     <div class="auth-wrap">
         <aside class="auth-brand-panel">
         <a href="${contextPath}/spendolive/main.do" class="auth-logo">
-            <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+            <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" class="brand-logo-img">
             <span>
                 SpendOlive
             </span>
@@ -189,7 +174,7 @@
                 </div>
             </div>
 
-            <div id="findPwStepReset" class="auth-reset-box" style="display:none;">
+            <div id="findPwStepReset" class="auth-reset-box is-hidden">
                 <div class="auth-form-group">
                     <label for="newPassword">새 비밀번호</label>
                     <input id="newPassword" type="password" placeholder="새 비밀번호를 입력하세요">

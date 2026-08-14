@@ -37,7 +37,7 @@ public interface MemberRepository {
 
     // 선택한 계좌만 주계좌(YES)로 바꾸고 같은 회원의 나머지 계좌는 NO로 변경한다.
     public int updatePrimaryAccount(String userId, int accountIdx)throws DataAccessException;
-	public void updateWarning(String userId, int count)throws DataAccessException;
+	public void applyWarningPenalty(String userId, int penaltyDays)throws DataAccessException;
 	public List<MemberVO> selectMemberAll() throws DataAccessException;
 
 	/* =========================================================

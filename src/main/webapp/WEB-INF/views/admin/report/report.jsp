@@ -50,7 +50,7 @@
                                 <td>${status.count}</td>
                                 <td><c:out value="${report.reporter_id}" /></td>
                                 <td><c:out value="${report.reported_member_id}" /></td>
-                                <td><div style="max-width:420px;white-space:pre-wrap;"><c:out value="${report.report_reason}" /></div></td>
+                                <td><div class="admin-report-reason"><c:out value="${report.report_reason}" /></div></td>
                                 <td><c:out value="${report.created_at}" /></td>
                                 <td>
                                     <c:choose>
@@ -93,7 +93,7 @@
             <input type="hidden" id="formReportMemberId" name="reported_member_id" value="">
             <input type="hidden" id="formReportId" name="report_id" value="">
 
-            <div class="form-grid" style="grid-template-columns:minmax(180px, .35fr) minmax(0, 1fr);">
+            <div class="form-grid admin-report-form-grid">
                 <div class="form-field">
                     <label for="reportResult">처리 상태</label>
                     <select class="form-input" name="result" id="reportResult">
@@ -108,10 +108,14 @@
                               placeholder="처리 결과를 입력하세요." required></textarea>
                 </div>
             </div>
-            <div class="toolbar" style="justify-content:flex-end;margin-bottom:0;">
+            <div class="toolbar admin-toolbar-bottom">
                  <button type="button" class="mini-btn warning waringSubmitButton"
                         >처리</button>
             </div>
         </section>
     </form>
 </div>
+
+<jsp:include page="/WEB-INF/views/ott/popup.jsp" />
+<script src="${contextPath}/resources/js/app.js"></script>
+<script src="${contextPath}/resources/js/report.js"></script>

@@ -21,7 +21,7 @@ public interface AdminPaymentController {
             HttpServletRequest request, HttpServletResponse response,
             HttpSession session, RedirectAttributes redirectAttributes) throws Exception;
     public ResponseEntity<PaymentAjaxResponse> paymentlate(
-        @RequestParam("member_login_id") String member_login_id ,@RequestParam("room_id") int room_id,@RequestParam("pay_late_day") int pay_ㅍlate_day,
+        @RequestParam("member_login_id") String member_login_id ,@RequestParam("room_id") int room_id,@RequestParam("pay_late_day") int pay_late_day,
             HttpServletRequest request, HttpServletResponse response,
             HttpSession session, RedirectAttributes redirectAttributes) throws Exception;
     public ResponseEntity<PaymentAjaxResponse> calcelpayment(
@@ -30,10 +30,10 @@ public interface AdminPaymentController {
         HttpSession session, RedirectAttributes redirectAttributes) throws Exception;
         public ModelAndView paymentdetaillistUpSettlement(@RequestParam(value = "status", required = false) String status,HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception;
         public ResponseEntity<PaymentAjaxResponse> paymentStatus(
-            @RequestParam(value = "room_id", required = false) int roomId,
-            @RequestParam(value = "member_login_id", required = false)  String member_login_id,
-            @RequestParam(value = "host_id", required = false) String host_id,
-            @RequestParam(value = "payment", required = false) SettlementPaymentVO payment,
+            @RequestParam(value = "room_id", required = false) Integer roomId,
+            @RequestParam(value = "member_login_id", required = false) String memberLoginId,
+            @RequestParam(value = "host_id", required = false) String hostId,
+            @RequestParam(value = "payment_id", required = false) Integer paymentId,
             HttpServletRequest request,
             HttpSession session) throws Exception;
  

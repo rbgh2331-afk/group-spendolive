@@ -9,10 +9,9 @@
 
         <%-- 오류 메시지 --%>
         <c:if test="${not empty errorMsg}">
-            <div style="max-width:760px;margin:40px auto;background:#fee2e2;border:1px solid #fca5a5;
-                        color:#991b1b;padding:16px 20px;border-radius:10px;font-weight:500;">
-                ⚠ ${errorMsg}
-                <div style="margin-top:12px;">
+            <div class="notif-error-box">
+                ⚠ <c:out value="${errorMsg}" />
+                <div class="notif-error-actions">
                     <a href="${contextPath}/spendolive/notice/center.do" class="btn btn-primary">목록으로</a>
                 </div>
             </div>
@@ -36,7 +35,7 @@
                     </c:choose>
                 </div>
 
-                <h1 class="notif-detail-title">${notification.title}</h1>
+                <h1 class="notif-detail-title"><c:out value="${notification.title}" /></h1>
 
                 <div class="notif-detail-meta">
                     <span>수신일 ${notification.created_at}</span>
@@ -45,7 +44,7 @@
 
                 </div>
 
-                <div class="notif-detail-message">${notification.message}</div>
+                <div class="notif-detail-message"><c:out value="${notification.message}" /></div>
 
                 <div class="notif-detail-actions">
                     <a href="${contextPath}/spendolive/notice/center.do?tab=alert" class="btn btn-primary">

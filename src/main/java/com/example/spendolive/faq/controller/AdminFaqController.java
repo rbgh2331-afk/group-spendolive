@@ -1,5 +1,7 @@
 package com.example.spendolive.faq.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,7 @@ import com.example.spendolive.member.domain.MemberVO;
 @Controller
 @RequestMapping("/spendolive/admin/faq")
 public class AdminFaqController {
+    private static final Logger log = LoggerFactory.getLogger(AdminFaqController.class);
 
     private final FaqService faqService;
 
@@ -100,7 +103,7 @@ public class AdminFaqController {
             faqService.insertFaq(faq);
             return ResponseEntity.ok(Map.of("result", "OK", "message", "FAQ가 등록되었습니다."));
         } catch (DataAccessException e) {
-            System.err.println("[AdminFaqController.ajaxInsert] 등록 실패: " + e.getMessage());
+            log.error("{}", "[AdminFaqController.ajaxInsert] 등록 실패: " + e.getMessage(), e);
             return ResponseEntity.internalServerError()
                     .body(Map.of("result", "ERROR", "message", "등록 중 오류가 발생했습니다."));
         }
@@ -138,7 +141,7 @@ public class AdminFaqController {
             faqService.updateFaq(faq);
             return ResponseEntity.ok(Map.of("result", "OK", "message", "FAQ가 수정되었습니다."));
         } catch (Exception e) {
-            System.err.println("[AdminFaqController.ajaxUpdate] 수정 실패: " + e.getMessage());
+            log.error("{}", "[AdminFaqController.ajaxUpdate] 수정 실패: " + e.getMessage(), e);
             return ResponseEntity.internalServerError()
                     .body(Map.of("result", "ERROR", "message", "수정 중 오류가 발생했습니다."));
         }

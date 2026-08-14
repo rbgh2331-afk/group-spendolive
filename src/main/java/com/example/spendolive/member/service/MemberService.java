@@ -56,6 +56,7 @@ public interface MemberService {
     MemberVO getMemberById(String id) throws Exception;
 
     void updateMyInfo(MemberVO memberVO, String newPassword) throws Exception;
+    boolean matchesPassword(String rawPassword, String encodedPassword);
 
     // 로그인 페이지의 아이디·비밀번호 찾기 기능에서 사용한다.
     String findIdByPhone(String phone) throws Exception;

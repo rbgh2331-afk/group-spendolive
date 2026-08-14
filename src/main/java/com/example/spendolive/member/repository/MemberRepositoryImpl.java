@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,8 +15,7 @@ import com.example.spendolive.member.domain.MemberVO;
 import java.time.LocalDateTime;
 @Repository
 public class MemberRepositoryImpl implements MemberRepository{
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 //insert
     private final String signup = "INSERT INTO member_tb(id, email, password, member_name, nickname, phone,login_type ,verify_type) values(?,?,?,?,?,?,?,?)";
     // 새로 연동한 계좌는 사용자가 직접 선택하기 전까지 주계좌가 아니므로 STATUS를 NO로 저장한다.
@@ -33,7 +31,7 @@ public class MemberRepositoryImpl implements MemberRepository{
 
   private final String selectMemberAllSql =
     "SELECT member_id, id, email, password, member_name, nickname, "
-  + "phone, login_type, blocked_until, warning_count, role, status, "
+  + "phone, login_type, TO_CHAR(blocked_until, 'YYYY-MM-DD HH24:MI:SS') AS blocked_until, warning_count, role, status, "
   + "verify_type, account_status, card_status, "
   + "TO_CHAR(created_at, 'YYYY-MM-DD') AS created_at, "
   + "TO_CHAR(updated_at, 'YYYY-MM-DD') AS updated_at, "
@@ -49,7 +47,7 @@ public class MemberRepositoryImpl implements MemberRepository{
    
     private final String selectMemberByIdSql =
     "SELECT member_id, id, email, password, member_name, nickname, "
-  + "phone, login_type, blocked_until, warning_count, role, status, "
+  + "phone, login_type, TO_CHAR(blocked_until, 'YYYY-MM-DD HH24:MI:SS') AS blocked_until, warning_count, role, status, "
   + "verify_type, account_status, card_status, "
   + "TO_CHAR(created_at, 'YYYY-MM-DD') AS created_at, "
   + "TO_CHAR(updated_at, 'YYYY-MM-DD') AS updated_at, "
@@ -84,7 +82,13 @@ public class MemberRepositoryImpl implements MemberRepository{
     private final String updatemember_account_Status = "UPDATE member_tb SET account_status = 'YES' WHERE id = ?";
     private final String updatemember_card_Status = "UPDATE member_tb SET card_status = 'YES' WHERE id = ?";
 
-    private final String updateWarning="update member_tb set warning_count=? where id=? ";
+    private final String applyWarningPenalty = """
+            UPDATE member_tb
+            SET warning_count = warning_count + 1,
+                warninged_at = SYSDATE,
+                blocked_until = SYSDATE + ?
+            WHERE id = ?
+            """;
    
     private final String updatebalance="update member_account_tb set balance=(balance + ?) where account_idx=? ";
     /* =========================================================
@@ -455,8 +459,8 @@ public class MemberRepositoryImpl implements MemberRepository{
         return jdbcTemplate.update(updateCardName, cardName, userId, cardIdx);
     }
     @Override
-    public void updateWarning(String userId, int count){
-        jdbcTemplate.update(updateWarning, count+1, userId);
+    public void applyWarningPenalty(String userId, int penaltyDays){
+        jdbcTemplate.update(applyWarningPenalty, penaltyDays, userId);
     }
     @Override
     public List<MemberVO> selectMemberAll() throws DataAccessException {

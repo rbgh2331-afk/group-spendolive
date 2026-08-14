@@ -1,28 +1,35 @@
 /* =========================================================
    13. 캘린더 (지출 관리 달력)
    ========================================================= */
-
 /* FullCalendar 기본 이벤트 박스 무력화-전부 투명 처리 */
-.fc .fc-daygrid-event-harness {background: transparent !important;}.fc .fc-daygrid-event,.fc .fc-h-event {background: transparent !important;border: none !important;padding: 0 !important;}.fc .fc-daygrid-event:hover,.fc .fc-h-event:hover {background: #d8643d;}.fc .fc-event-main {padding: 0;color: #fff;}
+.fc .fc-daygrid-event-harness {background: transparent !important;}
+.fc .fc-daygrid-event,.fc .fc-h-event {background: transparent !important;border: none !important;padding: 0 !important;}
+.fc .fc-daygrid-event:hover,.fc .fc-h-event:hover {background: #d8643d;}
+.fc .fc-event-main {padding: 0;color: #fff;}
 /* 아래 두 블록은 위 규칙과 내용이 겹치는 보강 규칙 —
  FullCalendar 버전/뷰(월간·주간)에 따라 우선순위가 다르게 먹는
  경우가 있어서 !important 없는 버전으로 한 번 더 명시해둠 */
- .fc .fc-daygrid-event,.fc .fc-h-event {border: none;padding: 0;background: transparent;}.fc .fc-event-main {padding: 0;}
+.fc .fc-daygrid-event,.fc .fc-h-event {border: none;padding: 0;background: transparent;}
+.fc .fc-event-main {padding: 0;}
 /* 지출 칩 기본 골격. 색상은 아래 .chip-type-* 클래스가 덮어씀 */
-.calendar-expense-chip {display: flex;flex-direction: column;gap: 0.125rem;margin-top: 0.1875rem;padding: 0.3125rem 0.5rem;font-size: 0.8125rem;line-height: 1.35;overflow: hidden;color: #fff;background: #d97757;border-radius: 0.5rem;}.calendar-expense-chip .chip-amount {font-weight: 900;font-size: 0.8125rem;color: #fff;}.calendar-expense-chip .chip-category {color: rgba(255, 255, 255, .85);font-size: 0.6875rem;}
+.calendar-expense-chip {display: flex;flex-direction: column;gap: 0.125rem;margin-top: 0.1875rem;padding: 0.3125rem 0.5rem;font-size: 0.8125rem;line-height: 1.35;overflow: hidden;color: #fff;background: #d97757;border-radius: 0.5rem;}
+.calendar-expense-chip .chip-amount {font-weight: 900;font-size: 0.8125rem;color: #fff;}
+.calendar-expense-chip .chip-category {color: rgba(255, 255, 255, .85);font-size: 0.6875rem;}
 /* 지출 분류별 칩 색상 */
-.calendar-expense-chip.chip-type-fixed {background: var(--olive);}.calendar-expense-chip.chip-type-variable {background: #d97757;}.calendar-expense-chip.chip-type-ott {background: #4a6fa5;}
+.calendar-expense-chip.chip-type-fixed {background: var(--olive);}
+.calendar-expense-chip.chip-type-variable {background: #d97757;}
+.calendar-expense-chip.chip-type-ott {background: #4a6fa5;}
 /* 각 분류의 hover 색상 */
-.calendar-expense-chip.chip-type-fixed:hover {background: #6c7217;filter: brightness(0.93);}.calendar-expense-chip.chip-type-variable:hover {background: #be5b3a;filter: brightness(0.93);}.calendar-expense-chip.chip-type-ott:hover {background: #2156a5;filter: brightness(0.93);}
+.calendar-expense-chip.chip-type-fixed:hover {background: #6c7217;filter: brightness(0.93);}
+.calendar-expense-chip.chip-type-variable:hover {background: #be5b3a;filter: brightness(0.93);}
+.calendar-expense-chip.chip-type-ott:hover {background: #2156a5;filter: brightness(0.93);}
 /* 캘린더 페이지 전용 2단 레이아웃(캘린더 + 사이드컬럼) */
 .calendar-page-layout {display:grid;grid-template-columns:1fr 19rem;gap:1.125rem;align-items:start;}
-
 /* 이전달/+지출등록/다음달 버튼 줄 (01-foundation.css에서 이동함 - 캘린더 페이지 전용이라) */
 .calendar-controls {display:flex;gap:0.5rem;flex-wrap:wrap;margin-left:0.625rem;}
 /* 사이드 카드("오늘 할 일", "이번 달 주요 지출") 공통 스타일 (01-foundation.css에서 이동함) */
 .side-panel {height:auto !important;padding:1.5rem;}
 .side-panel h3 {margin:0 0 1rem;}
-
 /* 아래 전부 01-foundation.css에서 이동함 (캘린더 페이지 전용) */
 .calendar {height:auto !important;overflow:hidden;}
 .calendar-header {display:flex;justify-content:space-between;align-items:center;gap:1.25rem;padding:1.375rem 1.5rem;color:#fff;background:linear-gradient(135deg,var(--olive-dark),var(--olive));font-size:1.5rem;font-weight:950;}
@@ -35,21 +42,38 @@
 .side-event span {color:var(--muted);font-size:0.8125rem;}
 .fc-daygrid-day-number {cursor: pointer;transition: font-weight 0.1s;}
 .fc-daygrid-day-number:hover {font-weight: 900;color: var(--olive-dark);}
-
 /* 사이드 패널(이전달/+지출등록/다음달 버튼 + 오늘 할 일 + 이번 달 주요 지출) 세로 나열. */
 .side-column {display: flex;flex-direction: column;gap: 1.25rem;}
 /* FullCalendar 날짜 칸 높이 고정 */
 .fc .fc-daygrid-day-frame {height: 7.8125rem;}
 /* FullCalendar "+N개" 더보기 링크*/
-.fc .fc-daygrid-more-link {display: inline-block;margin-top: 0.1875rem;padding: 0.1875rem 0.5rem;border-radius: 0.5rem;background: #ecf1b8;border: 0.0625rem solid var(--line);color: var(--olive-dark);font-size: 0.75rem;font-weight: 900;}.fc .fc-daygrid-more-link:hover {background: var(--olive-soft);text-decoration: none;}
+.fc .fc-daygrid-more-link {display: inline-block;margin-top: 0.1875rem;padding: 0.1875rem 0.5rem;border-radius: 0.5rem;background: #ecf1b8;border: 0.0625rem solid var(--line);color: var(--olive-dark);font-size: 0.75rem;font-weight: 900;}
+.fc .fc-daygrid-more-link:hover {background: var(--olive-soft);text-decoration: none;}
 /*"+N개" 클릭 시 뜨는 팝오버*/
-.fc .fc-popover {border: 0.0625rem solid var(--line);border-radius: 1rem;box-shadow: var(--shadow);overflow: hidden;}.fc .fc-popover-header {padding: 0.625rem 0.875rem;background: linear-gradient(135deg, var(--olive-dark), var(--olive));color: #fff;font-weight: 900;}.fc .fc-popover-title {color: #fff;}.fc .fc-popover-close {color: #fff;opacity: .85;font-size: 1rem;}.fc .fc-popover-close:hover {opacity: 1;}.fc .fc-popover-body {padding: 0.5rem;background: #fff;max-height: 11rem;   /* 대략 3개 높이 */
-   overflow-y: auto;    /* 넘치면 스크롤 */}.fc .fc-popover-body .calendar-expense-chip {margin: 0.25rem 0.125rem;}
+.fc .fc-popover {border: 0.0625rem solid var(--line);border-radius: 1rem;box-shadow: var(--shadow);overflow: hidden;}
+.fc .fc-popover-header {padding: 0.625rem 0.875rem;background: linear-gradient(135deg, var(--olive-dark), var(--olive));color: #fff;font-weight: 900;}
+.fc .fc-popover-title {color: #fff;}
+.fc .fc-popover-close {color: #fff;opacity: .85;font-size: 1rem;}
+.fc .fc-popover-close:hover {opacity: 1;}
+.fc .fc-popover-body {padding: 0.5rem;background: #fff;max-height: 11rem; /* 대략 3개 높이 */ overflow-y: auto; /* 넘치면 스크롤 */}
+.fc .fc-popover-body .calendar-expense-chip {margin: 0.25rem 0.125rem;}
 /* 사이드패널(이번 달 주요 지출) 페이지네이션*/
-.side-pager {display: flex;gap: 0.25rem;justify-content: center;margin: 0.75rem 0 1rem;}.pager-num-btn {min-width: 1.375rem;height: 1.375rem;padding: 0 0.3125rem;border: 0.0625rem solid var(--line);border-radius: 0.4375rem;background: #fff;color: var(--muted);font-weight: 800;font-size: 0.6875rem;cursor: pointer;transition: .15s ease;}.pager-num-btn:hover {border-color: var(--olive);color: var(--olive-dark);}.pager-num-btn.active {background: var(--olive);border-color: var(--olive);color: #fff;box-shadow: 0 0.25rem 0.625rem rgba(122, 127, 54, .25);}
+.side-pager {display: flex;gap: 0.25rem;justify-content: center;margin: 0.75rem 0 1rem;}
+.pager-num-btn {min-width: 1.375rem;height: 1.375rem;padding: 0 0.3125rem;border: 0.0625rem solid var(--line);border-radius: 0.4375rem;background: #fff;color: var(--muted);font-weight: 800;font-size: 0.6875rem;cursor: pointer;transition: .15s ease;}
+.pager-num-btn:hover {border-color: var(--olive);color: var(--olive-dark);}
+.pager-num-btn.active {background: var(--olive);border-color: var(--olive);color: #fff;box-shadow: 0 0.25rem 0.625rem rgba(122, 127, 54, .25);}
 /* 이번 달 지출 내역이 하나도 없을 때 사이드패널에 뜨는 안내 문구 */
 .empty-text {padding: 0.875rem;border-radius: 0.9375rem;background: var(--cream);border: 0.0625rem dashed var(--line);color: var(--muted);font-size: 0.8125rem;text-align: center;margin: 0;}
 /*주말 색상 */
-.fc .fc-col-header-cell.fc-day-sun {color: var(--red);}.fc .fc-col-header-cell.fc-day-sat {color: #4d6f8f;}.fc .fc-day-sun .fc-daygrid-day-number {color: var(--red);}.fc .fc-day-sat .fc-daygrid-day-number {color: #4d6f8f;}
+.fc .fc-col-header-cell.fc-day-sun {color: var(--red);}
+.fc .fc-col-header-cell.fc-day-sat {color: #4d6f8f;}
+.fc .fc-day-sun .fc-daygrid-day-number {color: var(--red);}
+.fc .fc-day-sat .fc-daygrid-day-number {color: #4d6f8f;}
 /*사이드패널 카드 (이번 달 주요 지출 목록 한 줄)*/
-.side-event {display: block;padding: 0.75rem 0.875rem;margin-bottom: 0.5rem;border-radius: 0.75rem;background: #fff;border: 0.0625rem solid #e5e2d8;}.side-event:last-child {margin-bottom: 0;}.side-event strong {display: block;font-size: 0.875rem;font-weight: 900;margin-bottom: 0.25rem;color: #22261a;}.side-event span {display: block;font-size: 0.8125rem;color: var(--muted);}.side-event.type-fixed {background: rgba(122, 127, 54, 0.18);border-left: 0.1875rem solid var(--olive);}.side-event.type-variable {background: rgba(217, 119, 87, 0.18);border-left: 0.1875rem solid #d97757;}.side-event.type-ott {background: rgba(74, 111, 165, 0.18);border-left: 0.1875rem solid #4a6fa5;}
+.side-event {display: block;padding: 0.75rem 0.875rem;margin-bottom: 0.5rem;border-radius: 0.75rem;background: #fff;border: 0.0625rem solid #e5e2d8;}
+.side-event:last-child {margin-bottom: 0;}
+.side-event strong {display: block;font-size: 0.875rem;font-weight: 900;margin-bottom: 0.25rem;color: #22261a;}
+.side-event span {display: block;font-size: 0.8125rem;color: var(--muted);}
+.side-event.type-fixed {background: rgba(122, 127, 54, 0.18);border-left: 0.1875rem solid var(--olive);}
+.side-event.type-variable {background: rgba(217, 119, 87, 0.18);border-left: 0.1875rem solid #d97757;}
+.side-event.type-ott {background: rgba(74, 111, 165, 0.18);border-left: 0.1875rem solid #4a6fa5;}

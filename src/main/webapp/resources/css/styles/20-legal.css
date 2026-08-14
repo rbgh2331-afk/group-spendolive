@@ -1,0 +1,14 @@
+body {font-family:"Pretendard",-apple-system,sans-serif;color:#333;line-height:1.6;background-color:#f9fafb;margin:0;padding:2.5rem 1.25rem;}
+.policy-container {max-width:50rem;margin:0 auto;background:#fff;padding:2.5rem;border-radius:.75rem;box-shadow:0 .25rem .375rem rgba(0,0,0,.05);}
+.tabs {display:flex;border-bottom:.125rem solid #e5e7eb;margin-bottom:1.875rem;}
+.tab {padding:.75rem 1.5rem;font-size:1rem;font-weight:600;color:#6b7280;cursor:pointer;border-bottom:.125rem solid transparent;margin-bottom:-.125rem;transition:all .2s;}
+.tab:hover {color:#111827;}
+.tab.active {color:#111827;border-bottom-color:#111827;}
+.policy-section {display:none;}
+.policy-section.active {display:block;}
+.policy-section h3 {font-size:1.125rem;margin-top:2.1875rem;margin-bottom:.625rem;color:#111827;}
+.policy-section p {font-size:.9375rem;color:#4b5563;margin-bottom:.625rem;}
+.policy-section ul {font-size:.9375rem;color:#4b5563;margin-top:.3125rem;margin-bottom:.9375rem;padding-left:1.5rem;}
+.policy-section li {margin-bottom:.25rem;}
+.date-info {margin-top:2.5rem;padding-top:1.25rem;border-top:.0625rem solid #e5e7eb;font-size:.875rem;color:#9ca3af;}
+.intro-text {font-size:.9375rem;color:#4b5563;background-color:#f3f4f6;padding:.9375rem;border-radius:.5rem;margin-bottom:1.25rem;}

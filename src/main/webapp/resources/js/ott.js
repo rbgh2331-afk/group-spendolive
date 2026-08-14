@@ -31,16 +31,20 @@
     // 메시지를 textContent로 화면에 출력
     function makeMessageRow(message) {
         const isSystem = message.system_yn === 'Y';
+        const isMine = message.mine_yn === 'Y';
+
         const row = document.createElement('div');
         row.className = isSystem
             ? 'chat-message-row system'
-            : 'chat-message-row ' + (message.mine_yn === 'Y' ? 'mine' : 'other');
+            : 'chat-message-row ' + (isMine ? 'mine' : 'other');
 
         const bubble = document.createElement('div');
         bubble.className = isSystem ? 'chat-system-bubble' : 'chat-message-bubble';
 
         const sender = document.createElement('strong');
-        sender.textContent = message.sender_name || message.sender_id || '알 수 없음';
+        sender.textContent = isSystem
+            ? '시스템 알림'
+            : (message.sender_name || '알 수 없음');
 
         const content = document.createElement('p');
         content.textContent = message.message_content || '';
@@ -48,23 +52,25 @@
         const time = document.createElement('small');
         time.textContent = message.created_at || '';
 
-        if (!isSystem && message.mine_yn !== 'Y') {
-
-                const reportLink = document.createElement('button');
-                reportLink.textContent = ' 신고하기';
-                reportLink.dataset.reported_member_id = message.sender_id;
-                reportLink.dataset.room_id = room_id;
-                reportLink.dataset.chat_text = message.message_content;
-                reportLink.className = 'btn btn-danger-outline mini reportSubmitButton';
-                // 필요한 경우 여기에 신고하기 클릭 이벤트 리스너를 달 수 있습니다.
-                
-
-                time.appendChild(reportLink);
-            }
         bubble.appendChild(sender);
         bubble.appendChild(content);
         bubble.appendChild(time);
         row.appendChild(bubble);
+
+        // 내 메시지와 시스템 메시지를 제외한 상대방 메시지만 신고 가능
+        if (!isSystem && !isMine) {
+            const reportLink = document.createElement('button');
+
+            reportLink.type = 'button';
+            reportLink.textContent = '신고하기';
+            reportLink.dataset.reported_member_id = message.sender_id;
+            reportLink.dataset.room_id = room_id;
+            reportLink.dataset.chat_text = message.message_content || '';
+            reportLink.className = 'btn btn-danger-outline mini reportSubmitButton';
+
+            row.appendChild(reportLink);
+        }
+
         return row;
     }
 
@@ -78,24 +84,33 @@
         fetch(contextPath + '/spendolive/ott/chat/messages.do?room_id=' + encodeURIComponent(room_id), {
             headers: { 'Accept': 'application/json' }
         })
-            .then(function (response) { return response.json(); })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('채팅 목록 조회 실패: ' + response.status);
+                }
+
+                return response.json();
+            })
             .then(function (messages) {
-                list.innerHTML = '';
+                const fragment = document.createDocumentFragment();
 
                 if (!messages || messages.length === 0) {
                     const empty = document.createElement('div');
                     empty.className = 'empty-box chat-empty-box';
                     empty.textContent = '아직 대화가 없습니다. 첫 메시지를 보내보세요.';
-                    list.appendChild(empty);
-                    return;
+                    fragment.appendChild(empty);
+                } else {
+                    messages.forEach(function (message) {
+                        fragment.appendChild(makeMessageRow(message));
+                    });
                 }
 
-                messages.forEach(function (message) {
-                    list.appendChild(makeMessageRow(message));
-                });
+                // 새 채팅 DOM이 정상적으로 모두 만들어진 뒤 기존 화면과 교체
+                list.replaceChildren(fragment);
             })
-            .catch(function () {
-                // 네트워크 문제가 있어도 화면은 유지한다.
+            .catch(function (error) {
+                // 갱신 실패 시 기존 채팅 화면은 그대로 유지
+                console.error('[ott chat] 채팅 목록 갱신 실패', error);
             });
     }
 
@@ -118,7 +133,23 @@
             body: new FormData(form)
         })
             .then(function (response) {
-                if (!response.ok) throw new Error('메시지 전송에 실패했습니다.');
+                return response.json()
+                    .catch(function () { return null; })
+                    .then(function (result) { return { response: response, result: result }; });
+            })
+            .then(function (payload) {
+                const response = payload.response;
+                const result = payload.result;
+
+                if (!response.ok || (result && result.success === false)) {
+                    if (result && result.code === 'SESSION_EXPIRED' && result.redirectUrl) {
+                        window.location.href = contextPath + result.redirectUrl;
+                        return;
+                    }
+                    alert(result && result.message ? result.message : '메시지 전송에 실패했습니다.');
+                    return;
+                }
+
                 input.value = '';
                 loadMessages();
                 input.focus();

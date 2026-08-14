@@ -1,14 +1,17 @@
 // 처리 상태 확인
-async function checkPaymentStatus(controllerurl,room_id, member_login_id = null, host_id = null, payment = null) {
-    const params = new URLSearchParams({ room_id: room_id });
+async function checkPaymentStatus(controllerurl, room_id = null, member_login_id = null, host_id = null, payment_id = null) {
+    const params = new URLSearchParams();
+    if (room_id) {
+        params.append('room_id', room_id);
+    }
     if (member_login_id) {
         params.append('member_login_id', member_login_id);
     }
     if (host_id) {
         params.append('host_id', host_id);
     }
-    if (payment) {
-        params.append('payment', payment);
+    if (payment_id) {
+        params.append('payment_id', payment_id);
     }
     for (let attempt = 0; attempt < 6; attempt += 1) {
       const controller = new AbortController();
@@ -213,7 +216,7 @@ if (paymentActionBtn) {
         confirmMessage: '환불을 진행 하겠습니다?',
         requestUrl: '/admin/settlement/cancelpaymenting.do',
         bodyData: params,
-        checkStatusFunc: () => checkPaymentStatus('admin/settlement',null, null, null, params),
+        checkStatusFunc: () => checkPaymentStatus('admin/settlement', null, null, null, adminrefundButton.dataset.paymentId),
         fallbackErrorMessage: '결제 결과를 확인하지 못했습니다. 카드 승인 내역을 확인한 뒤 다시 시도해주세요.'
     },'payment');
 });

@@ -38,7 +38,7 @@ CREATE TABLE member_tb (
     CONSTRAINT ck_member_verify_type CHECK (verify_type IN ('EMAIL','PHONE')),
     CONSTRAINT ck_member_role CHECK (role IN ('USER','HOST','ADMIN')),
     CONSTRAINT ck_member_status CHECK (status IN ('ACTIVE','LEAVE','BLOCK','PERM_BLOCK')),
-    CONSTRAINT ck_member_warning_count CHECK (warning_count BETWEEN 0 AND 3),
+    CONSTRAINT ck_member_warning_count CHECK (warning_count >= 0),
     CONSTRAINT ck_member_account_link CHECK (account_status IN ('YES','NO')),
     CONSTRAINT ck_member_card_link CHECK (card_status IN ('YES','NO'))
 );
@@ -394,7 +394,6 @@ CREATE TABLE settlement_refund_tb (
     refund_id        NUMBER NOT NULL,
     payment_id       NUMBER NOT NULL,
     settlement_id    NUMBER NOT NULL,
-    room_id          NUMBER,
     member_login_id  VARCHAR2(20) NOT NULL,
     refund_amount    NUMBER NOT NULL,
     refund_reason    VARCHAR2(30) DEFAULT 'ROOM_CLOSE' NOT NULL,
@@ -405,7 +404,6 @@ CREATE TABLE settlement_refund_tb (
     CONSTRAINT pk_settlement_refund PRIMARY KEY (refund_id),
     CONSTRAINT fk_refund_payment FOREIGN KEY (payment_id) REFERENCES settlement_payment_tb(payment_id),
     CONSTRAINT fk_refund_settlement FOREIGN KEY (settlement_id) REFERENCES settlement_tb(settlement_id),
-    CONSTRAINT fk_refund_room FOREIGN KEY (room_id) REFERENCES ott_room_tb(room_id),
     CONSTRAINT fk_refund_member FOREIGN KEY (member_login_id) REFERENCES member_tb(id),
     CONSTRAINT uk_refund_payment UNIQUE (payment_id),
     CONSTRAINT ck_refund_amount CHECK (refund_amount >= 0),
@@ -418,8 +416,6 @@ WHEN (NEW.refund_id IS NULL)
 BEGIN SELECT seq_settlement_refund.NEXTVAL INTO :NEW.refund_id FROM dual; END;
 /
 CREATE INDEX idx_refund_member ON settlement_refund_tb(member_login_id, refund_status);
-CREATE INDEX idx_refund_room ON settlement_refund_tb(room_id, refund_status);
-
 CREATE TABLE escrow_payout_tb (
     escrow_payout_id NUMBER NOT NULL,
     settlement_id    NUMBER NOT NULL,

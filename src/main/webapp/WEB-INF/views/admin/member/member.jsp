@@ -95,3 +95,6 @@
         </c:choose>
     </section>
 </div>
+
+<jsp:include page="/WEB-INF/views/member/popup.jsp" />
+<script src="${contextPath}/resources/js/signup.js"></script>

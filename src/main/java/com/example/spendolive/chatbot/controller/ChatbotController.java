@@ -1,5 +1,7 @@
 package com.example.spendolive.chatbot.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import com.example.spendolive.chatbot.service.ChatbotService;
 @RestController
 @RequestMapping("/spendolive/chatbot")
 public class ChatbotController {
+    private static final Logger log = LoggerFactory.getLogger(ChatbotController.class);
 
     // 생성자 주입(필드에 @Autowired 안 붙이고 생성자로 받는 방식) - 스프링이
     // 빈 등록할 때 이 생성자를 보고 ChatbotService 구현체를 자동으로 넣어줌
@@ -40,7 +43,7 @@ public class ChatbotController {
         try {
             return chatbotService.findAnswer(request.getQuestion());
         } catch (Exception e) {
-            System.err.println("[ChatbotController.ask] 답변 조회 실패: " + e.getMessage());
+            log.error("{}", "[ChatbotController.ask] 답변 조회 실패: " + e.getMessage(), e);
             return new ChatbotAnswerDTO(
                     false,
                     "일시적인 오류로 답변을 가져오지 못했어요. 잠시 후 다시 시도해 주세요.",

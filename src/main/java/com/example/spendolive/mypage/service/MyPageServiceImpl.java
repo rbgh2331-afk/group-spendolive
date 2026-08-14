@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import com.example.spendolive.Expense.service.ExpenseService;
+import com.example.spendolive.expense.service.ExpenseService;
 import com.example.spendolive.inquiry.service.FileStorageService;
 import com.example.spendolive.member.domain.MemberVO;
 import com.example.spendolive.member.domain.MemberAccountVO;

@@ -7,6 +7,8 @@ import java.util.List;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.spendolive.member.domain.MemberVO;
+import com.example.spendolive.common.ajax.AjaxResponse;
 import com.example.spendolive.ott.domain.OttChatMessageDTO;
 import com.example.spendolive.ott.domain.OttRoomDTO;
 import com.example.spendolive.ott.domain.OttSettlementDTO;
@@ -58,12 +61,7 @@ public class OttController {
     @GetMapping("/ott/friends.do")
     public String friends(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         String loginId = getLoginId(session);
-        // 계좌 상태는 null 여부가 아니라 실제 연동 완료 값인 "YES"로 검사한다.
-        // DB 기본값이 "NO"이므로 null만 검사하면 미연동 회원도 통과할 수 있다.
-        if (!hasLinkedAccount(session)) {
-            redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 계좌 연동이 필요합니다.");
-            return "redirect:/spendolive/main.do";
-        }
+        // 조회 화면은 계좌 연동 여부와 관계없이 열고, 실제 생성/참가/결제 시점에만 연동 상태를 검사한다.
         addCommonOttModel(model, loginId);
         model.addAttribute("myRoomList", ottService.getFriendRooms(loginId));
         model.addAttribute("hostedRoomList", ottService.getHostedFriendRooms(loginId));
@@ -103,11 +101,7 @@ public class OttController {
                           RedirectAttributes redirectAttributes,
                           HttpSession session) {
         String loginId = getLoginId(session);
-        // OTT 화면과 생성·참가 요청에서 같은 계좌 연동 기준을 사용한다.
-        if (!hasLinkedAccount(session)) {
-            redirectAttributes.addFlashAttribute("msg", "OTT 관련 기능은 계좌 연동이 필요합니다.");
-            return "redirect:/spendolive/main.do";
-        }
+        // 모집글 조회는 계좌 연동 여부와 관계없이 허용하고, 실제 생성/참가/결제에서만 연동 상태를 검사한다.
         Long selectedOttServiceId = parseOttServiceId(ott_service_id);
         int totalRecruitRoomCount = ottService.getRecruitRoomCount(selectedOttServiceId, roomNameKeyword);
         int totalPages = totalRecruitRoomCount == 0
@@ -239,13 +233,18 @@ public class OttController {
 
     // 채팅 메시지 전송 - 참여 권한 확인 후 메시지 저장
     @PostMapping("/ott/chat/send.do")
-    public String sendChatMessage(@RequestParam("room_id") Long room_id,
-                                  @RequestParam("message_content") String message_content,
-                                  HttpSession session) {
+    @ResponseBody
+    public ResponseEntity<AjaxResponse<Void>> sendChatMessage(@RequestParam("room_id") Long room_id,
+                                                               @RequestParam("message_content") String message_content,
+                                                               HttpSession session) {
         String loginId = getLoginId(session);
 
-        ottService.sendChatMessage(room_id, loginId, message_content);
-        return "redirect:/spendolive/ott/chat/room.do?room_id=" + room_id;
+        String restrictionMessage = ottService.sendChatMessage(room_id, loginId, message_content);
+        if (restrictionMessage != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(AjaxResponse.failure("CHAT_BLOCKED", restrictionMessage));
+        }
+        return ResponseEntity.ok(AjaxResponse.success("메시지를 전송했습니다."));
     }
 
     // 정산 요청 처리 - 방장의 다음 회차 정산 생성
@@ -393,12 +392,13 @@ public class OttController {
 
     // [내 담당 로그인 공통화] 로그인 여부 판단은 공통 JS에서 처리하고 Controller에서는 세션 사용자 ID만 사용한다.
     private String getLoginId(HttpSession session) {
-        MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
-
+        MemberVO memberInfo = session == null ? null : (MemberVO) session.getAttribute("memberInfo");
+        if (memberInfo == null) {
+            return null;
+        }
         if (memberInfo.getId() != null && !memberInfo.getId().isBlank()) {
             return memberInfo.getId();
         }
-
-        return String.valueOf(memberInfo.getMember_id());
+        return memberInfo.getMember_id() > 0 ? String.valueOf(memberInfo.getMember_id()) : null;
     }
 }

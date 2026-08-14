@@ -55,13 +55,17 @@ if (reportActionBtn) {
         const waringButton = event.target.closest('.waringSubmitButton');
         if (!waringButton) return;
     
-        const report_id = $('#formReportId').val().trim();
-        const reported_member_id = $('#formReportMemberId').val().trim();
-        const admin_comment = $('#adminComment').val().trim();
-        const result = $('#reportResult').val().trim();
+        const reportIdInput = document.getElementById('formReportId');
+        const reportedMemberInput = document.getElementById('formReportMemberId');
+        const adminCommentInput = document.getElementById('adminComment');
+        const reportResultInput = document.getElementById('reportResult');
+        const report_id = reportIdInput ? reportIdInput.value.trim() : '';
+        const reported_member_id = reportedMemberInput ? reportedMemberInput.value.trim() : '';
+        const admin_comment = adminCommentInput ? adminCommentInput.value.trim() : '';
+        const result = reportResultInput ? reportResultInput.value.trim() : '';
         if (!admin_comment) {
             alert('처리 결과를 입력해주세요.');
-            $('#adminComment').focus();
+            if (adminCommentInput) adminCommentInput.focus();
             return;
         }
         if (!report_id || !reported_member_id || !admin_comment) {

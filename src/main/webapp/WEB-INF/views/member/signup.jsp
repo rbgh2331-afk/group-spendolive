@@ -14,16 +14,13 @@
         window.contextPath = "${contextPath}";
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-     <script>
-        window.contextPath = "${contextPath}";
-    </script>
     <link rel="stylesheet" href="${contextPath}/resources/css/styles.css">
 </head>
 <body class="auth-body">
     <div class="auth-wrap">
         <aside class="auth-brand-panel">
-        <a href="${contextPath}/spendolive/main.do" class="auth-logo" onclick-"login()">
-            <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+        <a href="${contextPath}/spendolive/main.do" class="auth-logo">
+            <img src="${contextPath}/resources/images/logo.png" alt="SpendOlive" class="brand-logo-img">
             <span>
                 SpendOlive
             </span>
@@ -90,7 +87,7 @@
                     <label for="name">
                         이름
                     </label>
-                    <input id="name" name="member_name" type="readonly" value="${member_name}" required>
+                    <input id="name" name="member_name" type="text" value="${member_name}" readonly required>
                 </div>
                 <div class="auth-form-group">
                     <label for="nickname">
@@ -109,7 +106,7 @@
                 </div>
              
 
-            <div class="auth-form-group" id="emailAuthArea" style="display:none;">
+            <div class="auth-form-group is-hidden" id="emailAuthArea">
                 <label for="emailAuthCode">인증번호 입력</label>
                 <div class="auth-input-row">
                     <input id="emailAuthCode" type="text" placeholder="6자리 인증번호를 입력하세요" >
@@ -127,7 +124,7 @@
                 </div>
                 
 
-            <div class="auth-form-group" id="phoneAuthArea" style="display:none;">
+            <div class="auth-form-group is-hidden" id="phoneAuthArea">
                 <label for="phoneAuthCode">전화번호 인증번호 입력</label>
                 <div class="auth-input-row">
                     <input id="phoneAuthCode" type="text" placeholder="6자리 인증번호를 입력하세요">
@@ -166,7 +163,7 @@
                     <input id="userId" type="text" name="id" placeholder="사용할 아이디를 입력하세요" required>
                     <button id="checkIdButton" class="auth-btn auth-btn-light" type="button">중복확인</button>
                 </div>
-      
+            <br>
             <div class="auth-form-group">
                 <label for="email">
                     이메일
@@ -176,8 +173,8 @@
                     <button id="emailButton" class="auth-btn auth-btn-light" type="button">인증요청</button>
                 </div>
                 
-            
-            <div class="auth-form-group" id="emailAuthArea" style="display:none;">
+            <br>
+            <div class="auth-form-group is-hidden" id="emailAuthArea">
                 <label for="emailAuthCode">인증번호 입력</label>
                 <div class="auth-input-row">
                     <input id="emailAuthCode" type="text" placeholder="6자리 인증번호를 입력하세요" >
@@ -193,7 +190,7 @@
                     <button id="phoneButton" class="auth-btn auth-btn-light" type="button">인증요청</button>
                 </div>
                 
-            <div class="auth-form-group" id="phoneAuthArea" style="display:none;">
+            <div class="auth-form-group is-hidden" id="phoneAuthArea">
                 <label for="phoneAuthCode">전화번호 인증번호 입력</label>
                 <div class="auth-input-row">
                     <input id="phoneAuthCode" type="text" placeholder="6자리 인증번호를 입력하세요">
@@ -201,6 +198,7 @@
                 </div>
                 <p id="phoneAuthResult" class="auth-result-text">휴대폰으로 발송된 인증번호를 입력해 주세요.</p>
             </div>
+            <br>
             <div class="auth-grid-2">
                 <div class="auth-form-group">
                     <label for="password">
@@ -220,7 +218,7 @@
                 <label class="auth-check-row">
                     <input type="checkbox" required>
                     서비스 이용약관 동의
-        <textarea style="margin-top: 12px; width: 100%; height: 400px; resize: none; box-sizing: border-box;"  readonly>제1장  서비스 이용약관
+        <textarea class="auth-policy-textarea"  readonly>제1장  서비스 이용약관
 제1조 (목적)
 본 약관은 SpendOlive(이하 '서비스')가 제공하는 지출 관리 및 OTT 구독 관리 서비스의 이용과 관련하여 서비스와 이용자 간의 권리, 의무 및 책임 사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
 제2조 (용어의 정의)
@@ -327,7 +325,7 @@
 <input type="checkbox" required>
 개인정보 처리방침 동의
 </label>
-<textarea style="margin-top: 12px; width: 100%; height: 400px; resize: none; box-sizing: border-box;"  readonly>제2장  개인정보처리방침
+<textarea class="auth-policy-textarea"  readonly>제2장  개인정보처리방침
 SpendOlive(이하 '서비스')는 개인정보 보호법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 등 관련 법령에 따라 이용자의 개인정보를 처리하며, 이를 아래와 같이 공개합니다.
 제1조 (개인정보의 수집 항목 및 수집 방법)
 ① 서비스는 다음과 같은 개인정보를 수집합니다.

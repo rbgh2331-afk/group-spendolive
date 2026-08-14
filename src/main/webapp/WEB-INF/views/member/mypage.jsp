@@ -67,12 +67,12 @@
         <div class="mypage-top-grid">
             <article class="card mypage-profile-card">
                 <p class="eyebrow">PROFILE</p>
-                <div class="avatar">${profileInitial}</div>
+                <div class="avatar"><c:out value="${profileInitial}" /></div>
                 <div>
-                    <h3>${memberInfo.member_name}</h3>
-                    <p class="mypage-muted">닉네임 : ${memberInfo.nickname}</p>
-                    <p class="mypage-muted">아이디 : ${memberInfo.id}</p>
-                    <p class="mypage-muted">가입일 : ${memberInfo.created_at}</p>
+                    <h3><c:out value="${memberInfo.member_name}" /></h3>
+                    <p class="mypage-muted">닉네임 : <c:out value="${memberInfo.nickname}" /></p>
+                    <p class="mypage-muted">아이디 : <c:out value="${memberInfo.id}" /></p>
+                    <p class="mypage-muted">가입일 : <c:out value="${memberInfo.created_at}" /></p>
                 </div>
                 <%-- [마이페이지 화면 전환 추가] 최초에는 숨기고 버튼을 눌렀을 때 회원정보 수정 영역 표시 --%>
                 <button type="button" class="btn btn-primary full" onclick="showMyPagePanel('profile-edit')">회원정보 수정</button>
@@ -183,8 +183,8 @@
 
             <%-- 기존 일반 POST action은 호환용이며, data-ajax-action이 실제 비동기 처리 주소다. --%>
             <form action="${contextPath}/spendolive/mypage/update.do" method="post" class="mypage-edit-form" id="mypageProfileForm" data-ajax-form data-ajax-action="/spendolive/mypage/ajax/update.do" data-loading-message="회원정보를 저장하고 있습니다.">
-                <input type="hidden" id="originalEmail" value="${memberInfo.email}">
-                <input type="hidden" id="originalPhone" value="${memberInfo.phone}">
+                <input type="hidden" id="originalEmail" value="${fn:escapeXml(memberInfo.email)}">
+                <input type="hidden" id="originalPhone" value="${fn:escapeXml(memberInfo.phone)}">
                 <input type="hidden" id="emailVerified" value="N">
                 <input type="hidden" id="phoneVerified" value="N">
                 <input type="hidden" id="passwordChecked" name="passwordChecked" value="N">
@@ -197,11 +197,11 @@
                     <div class="mypage-form-stack">
                         <label class="mypage-field">
                             이름
-                            <input type="text" name="member_name" value="${memberInfo.member_name}" required>
+                            <input type="text" name="member_name" value="${fn:escapeXml(memberInfo.member_name)}" required>
                         </label>
                         <label class="mypage-field">
                             닉네임
-                            <input type="text" name="nickname" value="${memberInfo.nickname}">
+                            <input type="text" name="nickname" value="${fn:escapeXml(memberInfo.nickname)}">
                         </label>
                     </div>
                 </div>
@@ -216,7 +216,7 @@
                         <div class="mypage-field-with-button">
                             <label class="mypage-field">
                                 이메일
-                                <input type="email" name="email" id="mypageEmail" value="${memberInfo.email}" required>
+                                <input type="email" name="email" id="mypageEmail" value="${fn:escapeXml(memberInfo.email)}" required>
                             </label>
                             <%-- [공통 AJAX 로딩 적용] this를 전달해 요청 중 클릭한 버튼만 잠그고 완료 후 복구한다. --%>
                             <button type="button" class="btn btn-primary full" onclick="sendMyPageEmailCode(this)">이메일 인증</button>
@@ -232,7 +232,7 @@
                         <div class="mypage-field-with-button">
                             <label class="mypage-field">
                                 전화번호
-                                <input type="text" name="phone" id="mypagePhone" value="${memberInfo.phone}">
+                                <input type="text" name="phone" id="mypagePhone" value="${fn:escapeXml(memberInfo.phone)}">
                             </label>
                             <%-- [공통 AJAX 로딩 적용] 휴대전화 인증도 동일한 팝업·버튼 잠금 규격을 사용한다. --%>
                             <button type="button" class="btn btn-primary full" onclick="sendMyPagePhoneCode(this)">전화번호 인증</button>
@@ -482,7 +482,7 @@
                         <%-- 15번 SQL 실행으로 CARD_NAME에 코드가 복사된 기존 데이터는
                              카드 별칭을 직접 수정하기 전까지 카드사명으로 자연스럽게 표시한다. --%>
                         <c:set var="cardDisplayName"
-                               value="${empty card.card_name or card.card_name eq card.card_company ? cardCompanyDisplayName : card.card_name}" />
+                               value="${fn:escapeXml(empty card.card_name or card.card_name eq card.card_company ? cardCompanyDisplayName : card.card_name)}" />
 
                         <div class="mypage-asset-item mypage-card-item" data-asset-item>
                             <div class="mypage-asset-main">
@@ -546,55 +546,70 @@
                 <c:otherwise>
                     <div class="mypage-room-list">
                         <c:forEach var="room" items="${friendRoomList}">
-                            <div class="mypage-room-actions-wrap">
-                                <div class="mypage-room-actions">
-                                    <a href="${contextPath}/spendolive/ott/chat.do?room_id=${room.room_id}"
-                                    class="btn btn-primary btn-mini">
-                                        대화방
-                                    </a>
-
+                            <div class="mypage-room-card">
+                                <div>
+                                    <strong><c:out value="${room.room_name}" /></strong>
+                                    <p><c:out value="${room.service_name}" /> · ${room.current_member_count}/${room.member_limit}명</p>
                                     <c:choose>
-                                        <c:when test="${room.leave_reserved_yn eq 'Y'}">
-                                            <form action="${contextPath}/spendolive/ott/room/leave-cancel.do"
-                                                method="post"
-                                                data-ajax-form
-                                                data-ajax-action="/spendolive/ott/ajax/room/leave-cancel.do"
-                                                data-ajax-confirm="나가기 예약을 취소할까요?"
-                                                data-loading-message="나가기 예약을 취소하고 있습니다.">
-
-                                                <input type="hidden" name="room_id" value="${room.room_id}">
-                                                <input type="hidden" name="returnPage" value="mypage">
-
-                                                <button type="submit" class="btn btn-danger-outline btn-mini">
-                                                    예약 취소
-                                                </button>
-                                            </form>
+                                        <c:when test="${room.host_login_id eq memberInfo.id}">
+                                            <small>내가 만든 가족 · 지인 공유방 · ${room.status}</small>
                                         </c:when>
-
                                         <c:otherwise>
-                                            <form action="${contextPath}/spendolive/ott/room/leave-reserve.do"
-                                                method="post"
-                                                data-ajax-form
-                                                data-ajax-action="/spendolive/ott/ajax/room/leave-reserve.do"
-                                                data-ajax-confirm="이 방에서 나가기를 예약할까요?"
-                                                data-loading-message="나가기 예약을 처리하고 있습니다.">
-
-                                                <input type="hidden" name="room_id" value="${room.room_id}">
-                                                <input type="hidden" name="returnPage" value="mypage">
-
-                                                <button type="submit" class="btn btn-danger-outline btn-mini">
-                                                    나가기 예약
-                                                </button>
-                                            </form>
+                                            <small>방장 <c:out value="${room.host_nickname}" /> · ${room.status}</small>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
 
-                                <c:if test="${room.leave_reserved_yn eq 'Y'}">
-                                    <small class="mypage-leave-reserved-text">
-                                        나가기 예약됨 · ${room.leave_scheduled_date} 자동 퇴장
-                                    </small>
-                                </c:if>
+                                <div class="mypage-room-actions-wrap">
+                                    <div class="mypage-room-actions">
+                                        <a href="${contextPath}/spendolive/ott/chat/room.do?room_id=${room.room_id}"
+                                        class="btn btn-primary btn-mini">
+                                            대화방
+                                        </a>
+
+                                        <c:choose>
+                                            <c:when test="${room.leave_reserved_yn eq 'Y'}">
+                                                <form action="${contextPath}/spendolive/ott/room/leave-cancel.do"
+                                                    method="post"
+                                                    data-ajax-form
+                                                    data-ajax-action="/spendolive/ott/ajax/room/leave-cancel.do"
+                                                    data-ajax-confirm="나가기 예약을 취소할까요?"
+                                                    data-loading-message="나가기 예약을 취소하고 있습니다.">
+
+                                                    <input type="hidden" name="room_id" value="${room.room_id}">
+                                                    <input type="hidden" name="returnPage" value="mypage">
+
+                                                    <button type="submit" class="btn btn-danger-outline btn-mini">
+                                                        예약 취소
+                                                    </button>
+                                                </form>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <form action="${contextPath}/spendolive/ott/room/leave-reserve.do"
+                                                    method="post"
+                                                    data-ajax-form
+                                                    data-ajax-action="/spendolive/ott/ajax/room/leave-reserve.do"
+                                                    data-ajax-confirm="이 방에서 나가기를 예약할까요?"
+                                                    data-loading-message="나가기 예약을 처리하고 있습니다.">
+
+                                                    <input type="hidden" name="room_id" value="${room.room_id}">
+                                                    <input type="hidden" name="returnPage" value="mypage">
+
+                                                    <button type="submit" class="btn btn-danger-outline btn-mini">
+                                                        나가기 예약
+                                                    </button>
+                                                </form>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+
+                                    <c:if test="${room.leave_reserved_yn eq 'Y'}">
+                                        <small class="mypage-leave-reserved-text">
+                                            나가기 예약됨 · ${room.leave_scheduled_date} 자동 퇴장
+                                        </small>
+                                    </c:if>
+                                </div>
                             </div>
                         </c:forEach>
                     </div>
@@ -623,7 +638,7 @@
                                 <c:forEach var="room" items="${hostedRecruitRoomList}">
                                     <div class="mypage-room-card">
                                         <div>
-                                            <strong>${room.room_name}</strong>
+                                            <strong><c:out value="${room.room_name}" /></strong>
                                             <p>${room.service_name} · ${room.current_member_count}/${room.member_limit}명</p>
                                             <small>내가 만든 방 · ${room.status}</small>
                                         </div>
@@ -646,7 +661,7 @@
                                 <c:forEach var="room" items="${joinedRecruitRoomList}">
                                     <div class="mypage-room-card">
                                         <div>
-                                            <strong>${room.room_name}</strong>
+                                            <strong><c:out value="${room.room_name}" /></strong>
                                             <p>${room.service_name} · ${room.current_member_count}/${room.member_limit}명</p>
                                             <small>방장 ${room.host_nickname}</small>
                                             <c:choose>
@@ -667,7 +682,7 @@
                                         <c:if test="${room.my_application_status eq 'ACTIVE' or empty room.my_application_status}">
                                             <div class="mypage-room-actions-wrap">
                                                 <div class="mypage-room-actions">
-                                                    <a href="${contextPath}/spendolive/ott/chat.do?room_id=${room.room_id}"
+                                                    <a href="${contextPath}/spendolive/ott/chat/room.do?room_id=${room.room_id}"
                                                     class="btn btn-primary btn-mini">
                                                         대화방
                                                     </a>

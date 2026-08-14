@@ -1,5 +1,7 @@
 package com.example.spendolive.faq.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +20,7 @@ import com.example.spendolive.faq.domain.FaqVO;
  */
 @Repository
 public class FaqRepository {
+    private static final Logger log = LoggerFactory.getLogger(FaqRepository.class);
 
     // faqList.jsp 화면에 보여줄 카테고리 고정 순서 (계정→지출→OTT→공지→기타)
     private static final String CATEGORY_ORDER_SQL =
@@ -124,7 +127,7 @@ public class FaqRepository {
         try {
             return jdbcTemplate.query(FIND_ALL_VISIBLE_SQL, (rs, rowNum) -> mapRow(rs));
         } catch (DataAccessException e) {
-            System.err.println("[FaqRepository.findAllVisible] DB 오류: " + e.getMessage());
+            log.error("{}", "[FaqRepository.findAllVisible] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -133,7 +136,7 @@ public class FaqRepository {
         try {
             return jdbcTemplate.query(FIND_ALL_SQL, (rs, rowNum) -> mapRow(rs));
         } catch (DataAccessException e) {
-            System.err.println("[FaqRepository.findAll] DB 오류: " + e.getMessage());
+            log.error("{}", "[FaqRepository.findAll] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -145,7 +148,7 @@ public class FaqRepository {
             // 해당 faq_id가 없는 정상적인 경우 - 에러 로그 없이 조용히 null만 반환
             return null;
         } catch (DataAccessException e) {
-            System.err.println("[FaqRepository.findById] DB 오류: " + e.getMessage());
+            log.error("{}", "[FaqRepository.findById] DB 오류: " + e.getMessage(), e);
             return null;
         }
     }
@@ -155,7 +158,7 @@ public class FaqRepository {
         try {
             return jdbcTemplate.query(FIND_BY_CATEGORY_SQL, (rs, rowNum) -> mapRow(rs), category);
         } catch (DataAccessException e) {
-            System.err.println("[FaqRepository.findByCategory] DB 오류: " + e.getMessage());
+            log.error("{}", "[FaqRepository.findByCategory] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -172,7 +175,7 @@ public class FaqRepository {
                     faq.getSort_order(), faq.getUse_yn());
             return faq_id.intValue();
         } catch (DataAccessException e) {
-            System.err.println("[FaqRepository.insertFaq] DB 오류: " + e.getMessage());
+            log.error("{}", "[FaqRepository.insertFaq] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }
@@ -183,7 +186,7 @@ public class FaqRepository {
                     faq.getCategory(), faq.getQuestion(), faq.getAnswer(),
                     faq.getUse_yn(), faq.getFaq_id());
         } catch (DataAccessException e) {
-            System.err.println("[FaqRepository.updateFaq] DB 오류: " + e.getMessage());
+            log.error("{}", "[FaqRepository.updateFaq] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }
@@ -193,7 +196,7 @@ public class FaqRepository {
             Integer next = jdbcTemplate.queryForObject(NEXT_SORT_ORDER_SQL, Integer.class, category);
             return next != null ? next : 0;
         } catch (DataAccessException e) {
-            System.err.println("[FaqRepository.getNextSortOrder] DB 오류: " + e.getMessage());
+            log.error("{}", "[FaqRepository.getNextSortOrder] DB 오류: " + e.getMessage(), e);
             return 0;
         }
     }
@@ -202,7 +205,7 @@ public class FaqRepository {
         try {
             jdbcTemplate.update(UPDATE_SORT_ORDER_SQL, sortOrder, faq_id);
         } catch (DataAccessException e) {
-            System.err.println("[FaqRepository.updateSortOrder] DB 오류: " + e.getMessage());
+            log.error("{}", "[FaqRepository.updateSortOrder] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }
@@ -211,7 +214,7 @@ public class FaqRepository {
         try {
             jdbcTemplate.update(DELETE_SQL, faq_id);
         } catch (DataAccessException e) {
-            System.err.println("[FaqRepository.deleteFaq] DB 오류: " + e.getMessage());
+            log.error("{}", "[FaqRepository.deleteFaq] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }

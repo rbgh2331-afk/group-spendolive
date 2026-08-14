@@ -1,4 +1,4 @@
-package com.example.spendolive.Expense.controller;
+package com.example.spendolive.expense.controller;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.spendolive.Expense.domain.ExpenseDTO;
-import com.example.spendolive.Expense.service.ExpenseService;
+import com.example.spendolive.expense.domain.ExpenseDTO;
+import com.example.spendolive.expense.service.ExpenseService;
 import com.example.spendolive.member.domain.MemberVO;
 
 import jakarta.servlet.http.HttpSession;

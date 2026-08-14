@@ -1,5 +1,7 @@
 package com.example.spendolive.inquiry.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ import com.example.spendolive.member.domain.MemberVO;
 @Controller
 @RequestMapping("/admin/inquiry")
 public class AdminInquiryController {
+    private static final Logger log = LoggerFactory.getLogger(AdminInquiryController.class);
 
     private final InquiryService inquiryService;
 
@@ -90,7 +93,7 @@ public class AdminInquiryController {
             // 목록은 최신순(내림차순)이라, 화면 맨 위 줄이 startNumber, 그 아래로 1씩 감소하며 매김 (오래된 문의=1)
             mav.addObject("startNumber", totalCount - (currentPage - 1) * pageSize);
         } catch (Exception e) {
-            System.err.println("[AdminInquiryController.list] 목록 로드 실패: " + e.getMessage());
+            log.error("{}", "[AdminInquiryController.list] 목록 로드 실패: " + e.getMessage(), e);
             mav.addObject("inquiryList", List.of());
             mav.addObject("currentPage", 1);
             mav.addObject("totalPages", 1);
@@ -117,7 +120,7 @@ public class AdminInquiryController {
         try {
             inquiry = inquiryService.getInquiryDetail(inquiryNo);
         } catch (Exception e) {
-            System.err.println("[AdminInquiryController.detail] 조회 실패: " + e.getMessage());
+            log.error("{}", "[AdminInquiryController.detail] 조회 실패: " + e.getMessage(), e);
         }
 
         if (inquiry == null) {
@@ -164,7 +167,7 @@ public class AdminInquiryController {
             inquiryService.replyToInquiry(inquiry_id, reply_content.strip(), status);
             return ResponseEntity.ok(Map.of("result", "OK", "message", "답변이 등록되었습니다."));
         } catch (DataAccessException e) {
-            System.err.println("[AdminInquiryController.ajaxReply] 답변 등록 실패: " + e.getMessage());
+            log.error("{}", "[AdminInquiryController.ajaxReply] 답변 등록 실패: " + e.getMessage(), e);
             return ResponseEntity.internalServerError()
                     .body(Map.of("result", "ERROR", "message", "답변 등록 중 오류가 발생했습니다."));
         }

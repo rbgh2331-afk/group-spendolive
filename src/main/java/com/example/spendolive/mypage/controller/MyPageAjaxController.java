@@ -59,7 +59,7 @@ public class MyPageAjaxController {
             String newPassword = formMember.getPassword();
             boolean changePassword = newPassword != null && !newPassword.isBlank();
             if (changePassword) {
-                if (currentPassword == null || !currentPassword.equals(savedMember.getPassword())) {
+                if (currentPassword == null || currentPassword.isBlank() || !memberService.matchesPassword(currentPassword, savedMember.getPassword())) {
                     return ResponseEntity.badRequest().body(AjaxResponse.failure("PASSWORD_MISMATCH", "현재 비밀번호가 일치하지 않습니다."));
                 }
                 if (passwordConfirm == null || !newPassword.equals(passwordConfirm)) {

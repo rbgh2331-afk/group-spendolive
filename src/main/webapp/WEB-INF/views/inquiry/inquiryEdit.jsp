@@ -51,7 +51,7 @@
             <div class="field">
                 <label>제목 <span>필수</span></label>
                 <input type="text" name="title" id="titleInput" maxlength="50"
-                       value="${inquiry.title}"
+                       value="${fn:escapeXml(inquiry.title)}"
                        oninput="countChars('titleInput','titleCount',50)" required>
                 <div class="char-count"><span id="titleCount">${fn:length(inquiry.title)}</span>/50자</div>
             </div>
@@ -59,23 +59,23 @@
             <div class="field">
                 <label>상세 내용 <span>필수</span></label>
                 <textarea name="content" id="bodyInput" maxlength="1000"
-                          oninput="countChars('bodyInput','bodyCount',1000)" required>${inquiry.content}</textarea>
+                          oninput="countChars('bodyInput','bodyCount',1000)" required><c:out value="${inquiry.content}" /></textarea>
                 <div class="char-count"><span id="bodyCount">${fn:length(inquiry.content)}</span>/1000자</div>
             </div>
 
             <c:if test="${not empty inquiry.files}">
                 <div class="field">
-                    <label>첨부파일 <span style="color:var(--muted)">수정 시 변경 불가 · 삭제 후 재작성 필요</span></label>
+                    <label>첨부파일 <span class="field-note">수정 시 변경 불가 · 삭제 후 재작성 필요</span></label>
                     <div class="inq-attachments">
                         <c:forEach var="file" items="${inquiry.files}">
                             <c:choose>
                                 <c:when test="${file.image}">
                                     <img src="${contextPath}/spendolive/inquiry/file/${file.file_id}"
-                                        alt="${file.origin_name}" class="inq-thumb">
+                                        alt="${fn:escapeXml(file.origin_name)}" class="inq-thumb">
                                 </c:when>
                                 <c:otherwise>
                                     <a href="${contextPath}/spendolive/inquiry/file/${file.file_id}"
-                                    target="_blank" class="inq-file-link">📎 ${file.origin_name}</a>
+                                    target="_blank" class="inq-file-link">📎 <c:out value="${file.origin_name}" /></a>
                                 </c:otherwise>
                             </c:choose>
                         </c:forEach>
@@ -84,8 +84,8 @@
             </c:if>
 
             <div class="form-actions">
-                <a class="btn btn-danger-outline" style="flex:1;height:50px" href="${contextPath}/spendolive/inquiry/list.do">취소</a>
-                <button type="button" id="inquiryEditSubmitBtn" class="btn btn-primary" style="flex:2;height:50px;font-size:15px;">수정 완료</button>
+                <a class="btn btn-danger-outline form-action-cancel" href="${contextPath}/spendolive/inquiry/list.do">취소</a>
+                <button type="button" id="inquiryEditSubmitBtn" class="btn btn-primary form-action-submit">수정 완료</button>
             </div>
         </form>
     </div>

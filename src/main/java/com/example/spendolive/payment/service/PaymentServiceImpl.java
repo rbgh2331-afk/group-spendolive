@@ -1,5 +1,7 @@
 package com.example.spendolive.payment.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -13,7 +15,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,14 +43,12 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService{
-    @Autowired
-    private PaymentRepository paymentRepository;
-    @Autowired
-    private MemberRepository memberRepository;
-    @Autowired
-    private OttRepository ottRepository;
-    @Autowired
-    private OttService ottService;
+    private static final Logger log = LoggerFactory.getLogger(PaymentServiceImpl.class);
+
+    private final PaymentRepository paymentRepository;
+    private final MemberRepository memberRepository;
+    private final OttRepository ottRepository;
+    private final OttService ottService;
     private final StringRedisTemplate redisTemplate;
     @Value("${openbanking.useorg-code}")
     private String useorgCode;
@@ -142,10 +141,10 @@ public class PaymentServiceImpl implements PaymentService{
                 
                 paymentRepository.insertEscrow(escrow); // 에스크로 인서트
                 
-                System.out.println("출금이체 및 장부 업데이트 완료! 파티원: " + paymentInfo.getId());
+                log.info("출금이체 및 장부 업데이트가 완료되었습니다.");
                 return true;
             } else {
-                System.out.println("금결원 거절 사유: " + resultMap.get("rsp_message"));
+                log.warn("금결원 출금이체 요청이 거절되었습니다.");
                 return false;
             }
         }
@@ -179,7 +178,6 @@ public class PaymentServiceImpl implements PaymentService{
 
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-            System.out.println("[토스 응답 바디] : " + response.getBody());
 
             if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
                 tools.jackson.databind.ObjectMapper mapper = new tools.jackson.databind.ObjectMapper();
@@ -196,7 +194,7 @@ public class PaymentServiceImpl implements PaymentService{
                 memberRepository.updateMember_card_status(userId);
             }
         } catch (Exception e) {
-            System.out.println("[최종 에러 디버깅] : " + e.getMessage());
+            log.error("토스 빌링키 발급 처리 중 오류가 발생했습니다.", e);
             throw new RuntimeException("토스 통신 실패: " + e.getMessage());
         }
     }
@@ -333,7 +331,7 @@ public class PaymentServiceImpl implements PaymentService{
             return paymentAmount;
             }catch(Exception e){
                 redisTemplate.opsForValue().increment(redisKey);
-                e.printStackTrace();
+                log.error("결제 처리 중 오류가 발생했습니다.", e);
                 if (e instanceof PaymentProcessException) {
                     throw e;
                 }
@@ -383,7 +381,7 @@ public class PaymentServiceImpl implements PaymentService{
                 throw new PaymentProcessException("REFUND_FAILED", "결제 취소 후 서버 오류가 발생했습니다 송금 결제 내역을 확인해 주세요 " + a.getMessage());
             }
             }catch(Exception e){
-                e.printStackTrace();
+                log.error("결제 취소 처리 중 오류가 발생했습니다.", e);
                 if (e instanceof PaymentProcessException) {
                     throw e;
                 }
@@ -574,14 +572,14 @@ public class PaymentServiceImpl implements PaymentService{
             throw e;
 
         } catch (HttpClientErrorException e) {
-            System.err.println("Toss 결제 거절 응답: " + e.getResponseBodyAsString());
+            log.error("{}", "Toss 결제 거절 응답: " + e.getResponseBodyAsString(), e);
             throw new PaymentProcessException(
                     "PAYMENT_FAILED",
                     "카드 승인에 실패했습니다. 카드 상태와 한도를 확인해주세요.",
                     e);
 
         } catch (Exception e) {
-            System.err.println("자동결제 승인 실패: " + e.getMessage());
+            log.error("{}", "자동결제 승인 실패: " + e.getMessage(), e);
             throw new PaymentProcessException(
                     "PAYMENT_FAILED",
                     "자동결제 시스템 오류로 승인이 실패했습니다.",
@@ -618,11 +616,11 @@ public class PaymentServiceImpl implements PaymentService{
                 tools.jackson.databind.ObjectMapper mapper = new tools.jackson.databind.ObjectMapper();
                 Map<String, Object> resBody = mapper.readValue(cancelResponse.getBody(), Map.class);
                 String canceledAtStr = (String) resBody.get("approvedAt");
-                System.out.println("결제 취소 성공 확인 paymentKey: " + paymentKey + " | 승인시간: " + canceledAtStr);
+                log.info("토스 결제 취소가 정상적으로 확인되었습니다.");
             }
             return cancelResponse.getStatusCode() == HttpStatus.OK;
         } catch (Exception cancelException) {
-            System.err.println("Toss 결제 취소 실패: " + cancelException.getMessage());
+            log.error("{}", "Toss 결제 취소 실패: " + cancelException.getMessage(), cancelException);
             return false;
         }
     }

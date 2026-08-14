@@ -1,5 +1,4 @@
 .header-weather-wrap {position: relative;display: inline-flex;}
-
 /* 헤더 드롭다운 안에 들어가는 미니 select
    - flex: 1 1 auto 로 남는 공간만 차지하게 해서 "날씨" 라벨이 눌리지 않게 함
    - 헤더 배경/strong/a 색상은 12-bellIcon.css의 .notif-dropdown-header 쪽에서

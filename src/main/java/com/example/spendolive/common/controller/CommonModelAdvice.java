@@ -2,6 +2,7 @@ package com.example.spendolive.common.controller;
 
 import java.util.Collections;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.dao.DataAccessException;
@@ -21,7 +22,7 @@ public class CommonModelAdvice {
     }
 
     @ModelAttribute
-    public void addCommonModel(Model model, HttpSession session) {
+    public void addCommonModel(Model model, HttpSession session, HttpServletRequest request) {
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
 
 
@@ -33,6 +34,14 @@ public class CommonModelAdvice {
 
         
         if (memberInfo == null) {
+            model.addAttribute("chatRoomSummaryList", Collections.emptyList());
+            model.addAttribute("chatTotalUnreadCount", 0);
+            return;
+        }
+
+        // AJAX/관리자 요청은 사용자 공통 채팅 위젯을 렌더링하지 않으므로 OTT 조회를 생략한다.
+        // 페이지 이동과 무관한 요청마다 채팅방/미읽음 DB 조회가 반복되는 것을 방지한다.
+        if (isChatWidgetLookupUnnecessary(request)) {
             model.addAttribute("chatRoomSummaryList", Collections.emptyList());
             model.addAttribute("chatTotalUnreadCount", 0);
             return;
@@ -53,5 +62,17 @@ public class CommonModelAdvice {
             model.addAttribute("chatTotalUnreadCount", 0);
         }
     }
-    
+    private boolean isChatWidgetLookupUnnecessary(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        String requestedWith = request.getHeader("X-Requested-With");
+        String accept = request.getHeader("Accept");
+
+        boolean ajaxRequest = "XMLHttpRequest".equalsIgnoreCase(requestedWith)
+                || (accept != null && accept.contains("application/json"))
+                || uri.contains("/ajax/")
+                || uri.endsWith("/status.do");
+        boolean adminRequest = uri.contains("/admin/") || uri.contains("/spendolive/admin/");
+        return ajaxRequest || adminRequest;
+    }
+
 }

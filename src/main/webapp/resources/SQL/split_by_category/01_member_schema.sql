@@ -1,31 +1,33 @@
 /* =========================================================
-   01. 회원/로그인/회원가입 SQL
-   =========================================================
-   실행 안내: 가장 먼저 실행. 다른 대부분의 테이블이 member_tb를 참조함.
+   01. 회원 / 계좌 / 카드 / 거래 스키마
+   ---------------------------------------------------------
+   선행 파일 : 없음
+   후속 파일 : 02_expense_calendar_schema.sql 이후 기능별 스키마
+   규칙      : 새 DB 생성용 파일이므로 동일 컬럼을 ALTER로 다시 추가하지 않는다.
    ========================================================= */
-
 SET DEFINE OFF;
 
-/* =========================================================
-   1. [팀 원본 사용] 회원 테이블
-   ========================================================= */
+/* 1. 회원 */
 CREATE TABLE member_tb (
-    member_id      NUMBER NOT NULL,
-    id             VARCHAR2(20) NOT NULL,
-    email          VARCHAR2(100) NOT NULL,
-    password       VARCHAR2(255) NOT NULL,
-    member_name    VARCHAR2(50) NOT NULL,
-    nickname       VARCHAR2(50),
-    phone          VARCHAR2(20),
-    login_type     VARCHAR2(20) DEFAULT 'LOCAL' NOT NULL,
-    verify_type    VARCHAR2(20) NOT NULL,
-    role           VARCHAR2(20) DEFAULT 'USER' NOT NULL,
-    status         VARCHAR2(20) DEFAULT 'ACTIVE' NOT NULL,
-    blocked_until  DATE,
-    warning_count  NUMBER DEFAULT 0 NOT NULL,
-    last_login_at  DATE,
-    created_at     DATE DEFAULT SYSDATE NOT NULL,
-    updated_at     DATE,
+    member_id       NUMBER NOT NULL,
+    id              VARCHAR2(20) NOT NULL,
+    email           VARCHAR2(100) NOT NULL,
+    password        VARCHAR2(255) NOT NULL,
+    member_name     VARCHAR2(50) NOT NULL,
+    nickname        VARCHAR2(50),
+    phone           VARCHAR2(20),
+    login_type      VARCHAR2(20) DEFAULT 'LOCAL' NOT NULL,
+    verify_type     VARCHAR2(20) NOT NULL,
+    role            VARCHAR2(20) DEFAULT 'USER' NOT NULL,
+    status          VARCHAR2(20) DEFAULT 'ACTIVE' NOT NULL,
+    blocked_until   DATE,
+    warning_count   NUMBER DEFAULT 0 NOT NULL,
+    warninged_at    DATE,
+    last_login_at   DATE,
+    created_at      DATE DEFAULT SYSDATE NOT NULL,
+    updated_at      DATE,
+    account_status  VARCHAR2(4) DEFAULT 'NO' NOT NULL,
+    card_status     VARCHAR2(4) DEFAULT 'NO' NOT NULL,
 
     CONSTRAINT pk_member PRIMARY KEY (member_id),
     CONSTRAINT uk_member_id UNIQUE (id),
@@ -34,25 +36,12 @@ CREATE TABLE member_tb (
     CONSTRAINT ck_member_verify_type CHECK (verify_type IN ('EMAIL', 'PHONE')),
     CONSTRAINT ck_member_role CHECK (role IN ('USER', 'HOST', 'ADMIN')),
     CONSTRAINT ck_member_status CHECK (status IN ('ACTIVE', 'LEAVE', 'BLOCK', 'PERM_BLOCK')),
-    CONSTRAINT ck_member_warning_count CHECK (warning_count BETWEEN 0 AND 3)
+    CONSTRAINT ck_member_warning_count CHECK (warning_count >= 0),
+    CONSTRAINT ck_member_account_link CHECK (account_status IN ('YES', 'NO')),
+    CONSTRAINT ck_member_card_link CHECK (card_status IN ('YES', 'NO'))
 );
 
 CREATE SEQUENCE seq_member START WITH 1 INCREMENT BY 1 NOCACHE;
-
-/* =========================================================
-   2. 마이페이지/OTT 연동 상태 컬럼
-      - 실제 오픈뱅킹 값은 member_account_tb에 저장
-      - 실제 카드 빌링키는 member_card_tb에 저장
-   ========================================================= */
-ALTER TABLE member_tb ADD (
-    account_status  VARCHAR2(4) DEFAULT 'NO' NOT NULL,
-    card_status     VARCHAR2(4) DEFAULT 'NO' NOT NULL,
-    CONSTRAINT ck_member_account_status CHECK (account_status IN ('YES', 'NO')),
-    CONSTRAINT ck_member_card_link_status CHECK (card_status IN ('YES', 'NO'))
-);
-
-alter table member_tb add(
-warninged_at date);
 
 CREATE OR REPLACE TRIGGER trg_member_bi
 BEFORE INSERT ON member_tb
@@ -63,82 +52,70 @@ BEGIN
 END;
 /
 
-CREATE TABLE MEMBER_ACCOUNT_TB (
-    ACCOUNT_IDX          NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- 고유 번호
-    ID            VARCHAR2(20) NOT NULL,                           -- 회원 ID (MEMBER_TB 외래키)
-    BANK_CODE            VARCHAR2(50) NOT NULL,                           -- 은행명 (ex: 신한은행, 국민은행)
-    ACCOUNT_NUMBER       VARCHAR2(30) NOT NULL,                           -- 마스킹된 계좌번호 (ex: 110-***-1234)
-    FINTECH_USE_NUM      VARCHAR2(50) NOT NULL,                           -- 금결원 핵심 키 (핀테크이용번호 💥)
-    BALANCE              NUMBER DEFAULT 0,                                -- 계좌 잔액 (실시간 동기화용 💰)
-    OPEN_BANK_TOKEN      VARCHAR2(300) NOT NULL,                          -- 금결원 사용자 토큰
-    OPEN_BANK_USER_SEQ   VARCHAR2(50) NOT NULL,                           -- 금결원 사용자 일련번호
-    ACCOUNT_HOLDER_NAM   VARCHAR2(50),
-    REG_DATE             DATE DEFAULT SYSDATE,                            -- 연동 일자
-    account_name VARCHAR2(20) default '계좌',
-     to_date VARCHAR2(8) default '20260721',
-    from_date VARCHAR2(8) default '20260701',
-    to_time VARCHAR2(6) default '235959',
-    from_time VARCHAR2(6) default '000000',
-    status         VARCHAR2(20) DEFAULT 'NO' NOT NULL,
-    CONSTRAINT ck_member_account_status CHECK (status IN ('YES', 'NO')),
-    
-    -- 회원 테이블과의 연관 관계 (회원 탈퇴 시 계좌도 같이 자동 삭제)
+/* 2. 오픈뱅킹 계좌
+   - status=YES는 회원의 현재 주계좌를 의미한다.
+   - OPEN_BANK_TOKEN은 실제 토큰 길이를 고려해 VARCHAR2(1000)으로 생성한다. */
+CREATE TABLE member_account_tb (
+    account_idx        NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id                 VARCHAR2(20) NOT NULL,
+    bank_code          VARCHAR2(50) NOT NULL,
+    account_number     VARCHAR2(30) NOT NULL,
+    fintech_use_num    VARCHAR2(50) NOT NULL,
+    balance            NUMBER DEFAULT 0,
+    open_bank_token    VARCHAR2(1000) NOT NULL,
+    open_bank_user_seq VARCHAR2(50) NOT NULL,
+    account_holder_nam VARCHAR2(50),
+    reg_date           DATE DEFAULT SYSDATE,
+    account_name       VARCHAR2(20) DEFAULT '계좌',
+    to_date            VARCHAR2(8) DEFAULT '20260721',
+    from_date          VARCHAR2(8) DEFAULT '20260701',
+    to_time            VARCHAR2(6) DEFAULT '235959',
+    from_time          VARCHAR2(6) DEFAULT '000000',
+    status             VARCHAR2(20) DEFAULT 'NO' NOT NULL,
 
-    CONSTRAINT FK_ACCOUNT_member_id FOREIGN KEY (ID) 
-
-    REFERENCES MEMBER_TB(ID) ON DELETE CASCADE
-);
-ALTER TABLE member_account_tb ADD (
-    to_date VARCHAR2(8) default '20260721',
-    from_date VARCHAR2(8) default '20260701',
-    to_time VARCHAR2(6) default '235959',
-    from_time VARCHAR2(6) default '000000',
-    account_name VARCHAR2(20) default '계좌',
-     status         VARCHAR2(20) DEFAULT 'NO' NOT NULL,
-    CONSTRAINT ck_member_account_status CHECK (status IN ('YES', 'NO'))
-);
-ALTER TABLE MEMBER_ACCOUNT_TB
-MODIFY OPEN_BANK_TOKEN VARCHAR2(1000);
-
-
-CREATE TABLE MEMBER_CARD_TB (
-    CARD_IDX        NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- 고유 번호
-    ID              VARCHAR2(20) NOT NULL,                           -- 회원 ID (FK)
-    BILLING_KEY     VARCHAR2(100) NOT NULL,                          -- 토스 빌링키 
-    CARD_COMPANY    VARCHAR2(50),                                    -- 카드사 이름 (ex: 신한, 현대)
-    CARD_NUMBER     VARCHAR2(20),                                    -- 마스킹된 카드번호 (ex: 433012******1234)
-    CARD_NAME       VARCHAR2(30),                                    -- 마이페이지 표시용 카드 이름
-    REG_DATE        DATE DEFAULT SYSDATE,                            -- 등록일
-    
-    -- 회원 테이블과의 연관 관계 설정 (회원 탈퇴 시 카드 정보도 삭제되게)
-    CONSTRAINT FK_CARD_MEMBER_ID FOREIGN KEY (ID) 
-    REFERENCES MEMBER_TB(ID) ON DELETE CASCADE
+    CONSTRAINT fk_member_account_member FOREIGN KEY (id) REFERENCES member_tb(id) ON DELETE CASCADE,
+    CONSTRAINT ck_member_account_primary CHECK (status IN ('YES', 'NO'))
 );
 
-ALTER TABLE member_card_tb ADD (
-    status         VARCHAR2(20) DEFAULT 'NO' NOT NULL,
-    CONSTRAINT ck_member_card_status CHECK (status IN ('YES', 'NO'))
+CREATE INDEX idx_member_account_member ON member_account_tb(id, status, account_idx);
+
+/* 3. 결제 카드
+   - status=YES는 회원의 현재 주카드를 의미한다.
+   - card_name은 마이페이지에서 수정하는 사용자 표시명이다. */
+CREATE TABLE member_card_tb (
+    card_idx      NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id            VARCHAR2(20) NOT NULL,
+    billing_key   VARCHAR2(100) NOT NULL,
+    card_company  VARCHAR2(50),
+    card_number   VARCHAR2(20),
+    card_name     VARCHAR2(30),
+    reg_date      DATE DEFAULT SYSDATE,
+    status        VARCHAR2(20) DEFAULT 'NO' NOT NULL,
+
+    CONSTRAINT fk_member_card_member FOREIGN KEY (id) REFERENCES member_tb(id) ON DELETE CASCADE,
+    CONSTRAINT ck_member_card_primary CHECK (status IN ('YES', 'NO'))
 );
 
-CREATE TABLE MEMBER_tran_TB (
-    MEMBER_tran_IDX NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY, 
-    ID            VARCHAR2(20) NOT NULL,                           
-    ACCOUNT_IDX            NUMBER NOT NULL,                          
-    tran_date       VARCHAR2(30) NOT NULL,                           
-    inout_type      VARCHAR2(10) NOT NULL,                       
-    tran_amt              NUMBER,
-    BALANCE_AFTER         NUMBER, -- 해당 거래가 끝난 직후의 계좌 잔액
-    REG_DATE             DATE DEFAULT SYSDATE,              
-    
-    CONSTRAINT FK_MEMBER_tran_member_id FOREIGN KEY (ID) 
-    REFERENCES MEMBER_TB(ID) ON DELETE CASCADE,
-    
-    CONSTRAINT FK_MEMBER_tran_account_idx FOREIGN KEY (account_idx) 
-    REFERENCES MEMBER_ACCOUNT_TB(account_idx) ON DELETE CASCADE
+CREATE INDEX idx_member_card_member ON member_card_tb(id, status, card_idx);
+
+/* 4. 계좌 거래내역
+   - BALANCE_AFTER는 해당 거래 직후 잔액이며 러닝밸런스 표시에 사용한다. */
+CREATE TABLE member_tran_tb (
+    member_tran_idx NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id              VARCHAR2(20) NOT NULL,
+    account_idx     NUMBER NOT NULL,
+    tran_date       VARCHAR2(30) NOT NULL,
+    inout_type      VARCHAR2(10) NOT NULL,
+    tran_amt        NUMBER,
+    balance_after   NUMBER,
+    reg_date        DATE DEFAULT SYSDATE,
+
+    CONSTRAINT fk_member_tran_member FOREIGN KEY (id) REFERENCES member_tb(id) ON DELETE CASCADE,
+    CONSTRAINT fk_member_tran_account FOREIGN KEY (account_idx) REFERENCES member_account_tb(account_idx) ON DELETE CASCADE
 );
 
-ALTER TABLE MEMBER_TRAN_TB
-ADD BALANCE_AFTER NUMBER;
+CREATE INDEX idx_member_tran_account ON member_tran_tb(id, account_idx, member_tran_idx);
 
-COMMENT ON COLUMN MEMBER_TRAN_TB.BALANCE_AFTER
-IS '해당 거래가 끝난 직후의 계좌 잔액';
+COMMENT ON COLUMN member_tran_tb.balance_after IS '해당 거래가 끝난 직후의 계좌 잔액';
+
+PROMPT [01] 회원/계좌/카드/거래 스키마 생성 완료

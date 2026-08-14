@@ -57,7 +57,7 @@
             </div>
         </c:if>
 
-        <div class="empty-box" id="faqSearchEmpty" style="display:none">
+        <div class="empty-box is-hidden" id="faqSearchEmpty">
             <div class="icon-big" id="faqSearchEmptyIcon">🔍</div>
             <p id="faqSearchEmptyText">검색 결과가 없습니다.</p>
         </div>

@@ -28,8 +28,7 @@ CREATE TABLE report_tb (
 );
 
 CREATE INDEX idx_report_reported ON report_tb(reported_member_id, report_status);
-ALTER TABLE report_tb
-ADD CONSTRAINT uk_report_duplicate UNIQUE (reporter_id, room_id, report_reason);
+-- uk_report_duplicate는 CREATE TABLE 안에서 이미 생성하므로 중복 ALTER를 두지 않는다.
 /* =========================================================
    22. [팀 원본 사용] 경고 테이블
    ========================================================= */
