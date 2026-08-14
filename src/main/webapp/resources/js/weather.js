@@ -175,8 +175,15 @@ function renderWeatherPage(items) {
 // (이미 열려있는 걸 또 열면 재조회 안 함 - willShow가 false일 때는 그냥 닫기만 함)
 function toggleWeatherDropdown(event) {
     event.stopPropagation();
+
     const dropdown = document.getElementById("weatherDropdown");
     if (!dropdown) return;
+
+    // 알림 드롭다운 닫기
+    const notifDropdown = document.getElementById("notifDropdown");
+    if (notifDropdown) {
+        notifDropdown.classList.remove("show");
+    }
 
     const willShow = !dropdown.classList.contains("show");
     dropdown.classList.toggle("show", willShow);
