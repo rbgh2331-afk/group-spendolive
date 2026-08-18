@@ -74,17 +74,12 @@
                 <jsp:include page="/WEB-INF/views/common/footer.jsp" />
             </footer>
         </div>
-      
-        <jsp:include page="/WEB-INF/views/payment/popup.jsp" />
-        <jsp:include page="/WEB-INF/views/ott/popup.jsp" />
-        <jsp:include page="/WEB-INF/views/member/popup.jsp" />
+
+        <%-- 페이지 전용 팝업/스크립트는 각 JSP에서만 로드한다. 공통 레이아웃에는 실제 공통 자원만 둔다. --%>
         <jsp:include page="/WEB-INF/views/common/font.jsp" />
         <jsp:include page="/WEB-INF/views/common/chatbotWidget.jsp" />
         <script src="${contextPath}/resources/js/app.js"></script>
-        <script src="${contextPath}/resources/js/report.js"></script>
-         <script src="${contextPath}/resources/js/payment.js"></script>
         <script src="${contextPath}/resources/js/chatbot.js"></script>
-        <script src="${contextPath}/resources/js/notice.js"></script>
         <%-- data-ajax-form/data-ajax-navigation이 있는 내 담당 화면에서만 요청을 가로챈다. --%>
         <script src="${contextPath}/resources/js/pageAjax.js"></script>
         <script src="${contextPath}/resources/js/bellIcon.js"></script>

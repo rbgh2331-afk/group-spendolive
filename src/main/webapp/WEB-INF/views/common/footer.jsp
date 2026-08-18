@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
+<%-- 공통 푸터 --%>
 <footer class="site-footer">
     <div class="container footer-layout">
         <div class="company-info">
@@ -37,7 +38,7 @@
             <a href="${contextPath}/spendolive/text.do" target="_blank">
                 개인정보 처리방침
             </a>
-            <a href="${contextPath}/spendolive/text.do"target="_blank">
+            <a href="${contextPath}/spendolive/text.do" target="_blank">
                 위치기반 서비스 이용약관
             </a>
         </div>

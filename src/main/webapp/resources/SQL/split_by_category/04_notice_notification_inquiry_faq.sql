@@ -25,7 +25,7 @@ EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE seq_inquiry_answer';
 EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE seq_inquiry'; 
+BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE seq_inquiry';
 EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;
 /
 
@@ -73,7 +73,7 @@ EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;
 
 
 -- ============================================================
--- 1. 공지사항 (notice_tb) 
+-- 1. 공지사항 (notice_tb)
 -- ============================================================
 
     CREATE TABLE notice_tb (
@@ -147,7 +147,7 @@ CREATE TABLE inquiry_file_tb (
 
 
 -- ============================================================
--- 3. FAQ (faq_tb) 
+-- 3. FAQ (faq_tb)
 -- ============================================================
 
 CREATE SEQUENCE seq_faq START WITH 1 INCREMENT BY 1 NOCACHE;

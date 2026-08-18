@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 
 import com.example.spendolive.ott.service.OttService;
 
+/**
+ * OTT 정산 및 예약 상태를 주기적으로 처리하는 스케줄 작업
+ */
 @Component
 public class OttScheduleTask {
 

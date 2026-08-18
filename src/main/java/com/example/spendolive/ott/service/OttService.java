@@ -11,7 +11,7 @@ import com.example.spendolive.ott.domain.OttSettlementDTO;
 
 // 사용자 OTT 서비스 인터페이스 - 방, 정산, 채팅 기능 정의
 public interface OttService {
-    
+
     // 공유 가능한 OTT와 고정 요금 규칙 조회
     List<OttServiceDTO> getShareableServices();
 
@@ -94,7 +94,6 @@ public interface OttService {
     // 가족방 초대 코드에 해당하는 방 조회
     OttRoomDTO getRoomByInviteCode(String invite_code);
 
-
     // 방장 권한과 정산 기간을 검증해 새로운 정산 회차 생성
     void requestSettlement(Long room_id, String hostId, String settlement_month);
 
@@ -117,7 +116,7 @@ public interface OttService {
     void processScheduledOttJobs();
 
     // 채팅 메시지 전송 - 참여 권한 확인 후 메시지 저장
-    void sendChatMessage(Long room_id, String sender_id, String message_content);
+    String sendChatMessage(Long room_id, String sender_id, String message_content);
 
     // 사용자의 채팅방 마지막 읽은 시각 갱신
     void markChatRoomAsRead(Long room_id, String loginId);

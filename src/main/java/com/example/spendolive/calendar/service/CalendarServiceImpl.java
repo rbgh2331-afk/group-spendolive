@@ -1,5 +1,7 @@
 package com.example.spendolive.calendar.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,11 +10,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.spendolive.Expense.domain.ExpenseDTO;
-import com.example.spendolive.Expense.repository.ExpenseRepository;
+import com.example.spendolive.expense.domain.ExpenseDTO;
+import com.example.spendolive.expense.repository.ExpenseRepository;
 
 @Service
 public class CalendarServiceImpl implements CalendarService {
+    private static final Logger log = LoggerFactory.getLogger(CalendarServiceImpl.class);
 
     // 반복(고정/OTT) 지출을 대상 월에 맞게 확장해주는 selectExpenseList()를 재사용
     @Autowired
@@ -21,14 +24,14 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     public List<Map<String, Object>> getMonthlyExpenses(long memberId, int year, int month) {
 
-        // selectExpenseList는 "yyyy-MM" 형식을 YearMonth.parse로 받는다.
+        // selectExpenseList는 "yyyy-MM" 형식을 YearMonth.parse로 받는다
         String yearMonth = String.format("%04d-%02d", year, month);
 
         List<ExpenseDTO> expenses;
         try {
             expenses = expenseRepository.selectExpenseList(memberId, yearMonth);
         } catch (Exception e) {
-            System.err.println("[CalendarServiceImpl.getMonthlyExpenses] 조회 실패: " + e.getMessage());
+            log.error("{}", "[CalendarServiceImpl.getMonthlyExpenses] 조회 실패: " + e.getMessage(), e);
             expenses = List.of();
         }
 

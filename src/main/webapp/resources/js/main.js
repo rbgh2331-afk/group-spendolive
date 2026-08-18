@@ -91,8 +91,8 @@
         function getBudgetPercent(total) {
             if (budget <= 0) return 0;
 
-            // 텍스트에는 실제 사용률을 표시한다.
-            // 예산을 초과하면 120%, 150%처럼 100%를 넘겨 보여준다.
+            // 텍스트에는 실제 사용률을 표시
+            // 예산을 초과하면 120%, 150%처럼 100%를 넘겨 보여준다
             return Math.round((total / budget) * 100);
         }
 
@@ -101,7 +101,7 @@
             const variable = randomStepAmount(300000, 650000, 10000);
             const ott = randomStepAmount(15000, 100000, 1000);
 
-            // 총합은 반드시 고정 + 변동 + OTT로 계산한다.
+            // 총합은 반드시 고정 + 변동 + OTT로 계산
             const total = fixed + variable + ott;
             const percent = getBudgetPercent(total);
             const ottSettlementCount = getOttSettlementCount(ott);
@@ -114,11 +114,11 @@
             const variable = toNumber(dashboardData.dataset.variable);
             const ott = toNumber(dashboardData.dataset.ott);
 
-            // 로그인 상태에서도 총지출은 세 항목을 다시 더해서 화면 불일치를 막는다.
+            // 로그인 상태에서도 총지출은 세 항목을 다시 더해서 화면 불일치를 막는다
             const total = fixed + variable + ott;
             const percent = getBudgetPercent(total);
 
-            // 로그인 사용자는 금액 구간 추정이 아니라 Controller가 전달한 실제 정산 수를 사용한다.
+            // 로그인 사용자는 금액 구간 추정이 아니라 Controller가 전달한 실제 정산 수를 사용
             const ottSettlementCount = toNumber(
                 dashboardData.dataset.ottSettlementCount
             );
@@ -129,7 +129,7 @@
         function drawRing(percent) {
             if (!elements.spendRing) return;
 
-            // 원형 그래프만 최대 100%로 제한한다. 텍스트는 실제 초과율을 유지한다.
+            // 원형 그래프만 최대 100%로 제한한다. 텍스트는 실제 초과율을 유지
             const safePercent = Math.max(0, Math.min(percent, 100));
 
             elements.spendRing.style.background =
@@ -192,12 +192,12 @@
             digitBox.className = 'slot-digit-box';
             reel.className = 'slot-digit-reel';
 
-            // 숫자마다 멈추는 타이밍을 살짝 다르게 해서 실제 슬롯처럼 보이게 한다.
+            // 숫자마다 멈추는 타이밍을 살짝 다르게 해서 실제 슬롯처럼 보이게 한다
             reel.style.transitionDuration = (1.05 + index * 0.045) + 's';
             reel.style.transitionDelay = (index * 0.025) + 's';
 
-            // 0~9를 여러 번 반복해서 굴러가는 길이를 만든다.
-            // 마지막에 targetDigit를 붙여 그 숫자에서 정확히 멈추게 한다.
+            // 0~9를 여러 번 반복해서 굴러가는 길이를 만든다
+            // 마지막에 targetDigit를 붙여 그 숫자에서 정확히 멈추게 한다
             const numbers = [];
             for (let round = 0; round < 4; round++) {
                 for (let n = 0; n <= 9; n++) {
@@ -215,7 +215,7 @@
 
             digitBox.appendChild(reel);
 
-            // 화면에 붙은 다음 프레임에서 transform을 줘야 transition이 동작한다.
+            // 화면에 붙은 다음 프레임에서 transform을 줘야 transition이 동작한다
             requestAnimationFrame(function () {
                 requestAnimationFrame(function () {
                     const finalIndex = numbers.length - 1;
@@ -271,15 +271,15 @@
             const summary = makeRandomSummary();
             renderSummaryWithSlot(summary);
 
-            // 릴이 멈춘 뒤 3초 정도 최종 숫자를 보여주고 다시 돌린다.
+            // 릴이 멈춘 뒤 3초 정도 최종 숫자를 보여주고 다시 돌린다
             setTimeout(startGuestRolling, 4600);
         }
 
         if (isLogin) {
-            // 로그인 상태는 DB 실제 값으로 한 번만 슬롯머신처럼 돌리고 멈춘다.
+            // 로그인 상태는 DB 실제 값으로 한 번만 슬롯머신처럼 돌리고 멈춘다
             renderSummaryWithSlot(makeDbSummary());
         } else {
-            // 비로그인 상태는 시연용 랜덤 값으로 계속 반복한다.
+            // 비로그인 상태는 시연용 랜덤 값으로 계속 반복한다
             startGuestRolling();
         }
     })();

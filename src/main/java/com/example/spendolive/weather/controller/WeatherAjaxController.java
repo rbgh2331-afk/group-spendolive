@@ -50,7 +50,7 @@ public class WeatherAjaxController {
             throw new IllegalArgumentException("nx/ny 또는 lat/lon 파라미터가 필요합니다.");
         }
 
-        // JsonObject 리스트를 JsonArray로 옮겨 담아서 문자열로 직렬화.
+        // JsonObject 리스트를 JsonArray로 옮겨 담아서 문자열로 직렬화
         // produces가 APPLICATION_JSON이라 반환 타입은 String이어도 브라우저는 JSON으로 받음
         JsonArray array = new JsonArray();
         items.forEach(array::add);

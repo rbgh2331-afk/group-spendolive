@@ -1,5 +1,7 @@
 package com.example.spendolive.notice.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import com.example.spendolive.notice.domain.NoticeDTO;
 
 @Repository
 public class NoticeRepository {
+    private static final Logger log = LoggerFactory.getLogger(NoticeRepository.class);
 
     // ────────────────────────────────────────────────────────────
     // SQL 정의
@@ -34,7 +37,7 @@ public class NoticeRepository {
             ORDER BY n.pinned_yn DESC, star_yn DESC, n.notice_id DESC
         """;
 
-    // 관리자 공지 목록 전용: 위 FIND_ALL_SQL과 같은 정렬 기준에 OFFSET/LIMIT만 추가.
+    // 관리자 공지 목록 전용: 위 FIND_ALL_SQL과 같은 정렬 기준에 OFFSET/LIMIT만 추가
     // (관리자 화면은 read_yn/star_yn을 안 쓰지만, mapRowWithReadStar를 그대로 재사용하려고
     //  같은 컬럼 구조를 유지함 — 파라미터로 넘기는 id는 항상 빈 문자열이라 항상 read_yn/star_yn='N')
     private static final String FIND_ALL_PAGED_SQL = FIND_ALL_SQL + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -50,7 +53,7 @@ public class NoticeRepository {
         """;
 
     // 사용자 상세 페이지 전용: 위 FIND_BY_ID_SQL과 같은 단건 조회에
-    // 로그인 회원 기준 읽음(read_yn)/찜(star_yn) 여부까지 같이 계산해서 붙여줌.
+    // 로그인 회원 기준 읽음(read_yn)/찜(star_yn) 여부까지 같이 계산해서 붙여줌
     // (관리자 수정 화면은 read_yn/star_yn이 필요 없어서 기존 FIND_BY_ID_SQL/findById를 그대로 씀)
     private static final String FIND_BY_ID_WITH_STAR_SQL = """
             SELECT
@@ -162,7 +165,6 @@ public class NoticeRepository {
         return notice;
     }
 
-
     // ────────────────────────────────────────────────────────────
     // 조회 / 등록 / 수정 / 삭제 메서드
     // ────────────────────────────────────────────────────────────
@@ -173,7 +175,7 @@ public class NoticeRepository {
             String safeId = (id != null) ? id : "";
             return jdbcTemplate.query(FIND_ALL_SQL, (rs, rowNum) -> mapRowWithReadStar(rs), safeId, safeId);
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.findAll] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.findAll] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -183,7 +185,7 @@ public class NoticeRepository {
         try {
             return jdbcTemplate.query(FIND_ALL_PAGED_SQL, (rs, rowNum) -> mapRowWithReadStar(rs), "", "", offset, limit);
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.findAllPaged] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.findAllPaged] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -193,10 +195,10 @@ public class NoticeRepository {
         try {
             return jdbcTemplate.queryForObject(FIND_BY_ID_SQL, (rs, rowNum) -> mapRow(rs), noticeId);
         } catch (EmptyResultDataAccessException e) {
-            System.err.println("[NoticeRepository.findById] notice_id=" + noticeId + " 존재하지 않음");
+            log.warn("{}", "[NoticeRepository.findById] notice_id=" + noticeId + " 존재하지 않음");
             return null;
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.findById] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.findById] DB 오류: " + e.getMessage(), e);
             return null;
         }
     }
@@ -207,10 +209,10 @@ public class NoticeRepository {
             String safeId = (id != null) ? id : "";
             return jdbcTemplate.queryForObject(FIND_BY_ID_WITH_STAR_SQL, (rs, rowNum) -> mapRowWithReadStar(rs), safeId, safeId, noticeId);
         } catch (EmptyResultDataAccessException e) {
-            System.err.println("[NoticeRepository.findByIdWithStar] notice_id=" + noticeId + " 존재하지 않음");
+            log.warn("{}", "[NoticeRepository.findByIdWithStar] notice_id=" + noticeId + " 존재하지 않음");
             return null;
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.findByIdWithStar] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.findByIdWithStar] DB 오류: " + e.getMessage(), e);
             return null;
         }
     }
@@ -221,7 +223,7 @@ public class NoticeRepository {
             Integer count = jdbcTemplate.queryForObject(COUNT_ALL_SQL, Integer.class);
             return (count != null) ? count : 0;
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.countAll] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.countAll] DB 오류: " + e.getMessage(), e);
             return 0;
         }
     }
@@ -231,7 +233,7 @@ public class NoticeRepository {
             Integer count = jdbcTemplate.queryForObject(COUNT_PINNED_SQL, Integer.class);
             return (count != null) ? count : 0;
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.countPinned] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.countPinned] DB 오류: " + e.getMessage(), e);
             return 0;
         }
     }
@@ -242,7 +244,7 @@ public class NoticeRepository {
             String safeId = (id != null) ? id : "";
             return jdbcTemplate.query(FIND_IMPORTANT_LIST_SQL, (rs, rowNum) -> mapRowWithReadStar(rs), safeId, safeId);
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.findImportantList] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.findImportantList] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -253,7 +255,7 @@ public class NoticeRepository {
         try {
             jdbcTemplate.update(INSERT_NOTICE_READ_SQL, notice_id, id, notice_id, id);
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.insertNoticeRead] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.insertNoticeRead] DB 오류: " + e.getMessage(), e);
         }
     }
 
@@ -267,7 +269,7 @@ public class NoticeRepository {
                 return notice;
             }, id);
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.findUnreadBymember_id] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.findUnreadBymember_id] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -283,7 +285,7 @@ public class NoticeRepository {
                 jdbcTemplate.update(INSERT_STAR_SQL, notice_id, id);
             }
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.toggleNoticeStar] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.toggleNoticeStar] DB 오류: " + e.getMessage(), e);
         }
     }
 
@@ -292,7 +294,7 @@ public class NoticeRepository {
         try {
             return jdbcTemplate.queryForList(FIND_ALL_MEMBER_IDS_SQL, String.class);
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.findAllmember_ids] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.findAllmember_ids] DB 오류: " + e.getMessage(), e);
             return Collections.emptyList();
         }
     }
@@ -321,7 +323,7 @@ public class NoticeRepository {
                 }
             });
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.insertNoticeAlertForAll] 배치 발송 실패: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.insertNoticeAlertForAll] 배치 발송 실패: " + e.getMessage(), e);
         }
     }
 
@@ -346,7 +348,7 @@ public class NoticeRepository {
             Number key = keyHolder.getKey();
             return (key != null) ? key.intValue() : -1;
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.insertNotice] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.insertNotice] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }
@@ -364,9 +366,9 @@ public class NoticeRepository {
                 notice.getPinned_yn() != null ? notice.getPinned_yn() : "N",
                 notice.getNotice_id());
             if (rows == 0)
-                System.err.println("[NoticeRepository.updateNotice] 대상 없음: " + notice.getNotice_id());
+                log.warn("{}", "[NoticeRepository.updateNotice] 대상 없음: " + notice.getNotice_id());
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.updateNotice] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.updateNotice] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }
@@ -380,9 +382,9 @@ public class NoticeRepository {
             jdbcTemplate.update(DELETE_READ_SQL, notice_id);
             int rows = jdbcTemplate.update(DELETE_NOTICE_SQL, notice_id);
             if (rows == 0)
-                System.err.println("[NoticeRepository.deleteNotice] 대상 없음: " + notice_id);
+                log.warn("{}", "[NoticeRepository.deleteNotice] 대상 없음: " + notice_id);
         } catch (DataAccessException e) {
-            System.err.println("[NoticeRepository.deleteNotice] DB 오류: " + e.getMessage());
+            log.error("{}", "[NoticeRepository.deleteNotice] DB 오류: " + e.getMessage(), e);
             throw e;
         }
     }

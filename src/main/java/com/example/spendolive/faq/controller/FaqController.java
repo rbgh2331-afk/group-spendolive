@@ -1,5 +1,7 @@
 package com.example.spendolive.faq.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
@@ -20,6 +22,7 @@ import com.example.spendolive.faq.service.FaqService;
 @Controller
 @RequestMapping("/spendolive/faq")
 public class FaqController {
+    private static final Logger log = LoggerFactory.getLogger(FaqController.class);
 
     private final FaqService faqService;
 
@@ -29,7 +32,7 @@ public class FaqController {
     }
 
     // GET /spendolive/faq/list.do
-    // 카테고리별로 묶은 FAQ 목록(faqGroups)을 faqList.jsp에 넘겨줌.
+    // 카테고리별로 묶은 FAQ 목록(faqGroups)을 faqList.jsp에 넘겨줌
     // 조회 실패해도 에러 페이지로 안 보내고 빈 목록 + 안내 메시지로 화면은 정상 렌더링함
     @GetMapping("/list.do")
     public ModelAndView faqList() {
@@ -39,7 +42,7 @@ public class FaqController {
         try {
             mav.addObject("faqGroups", faqService.getVisibleFaqGroupedByCategory());
         } catch (DataAccessException e) {
-            System.err.println("[FaqController.faqList] FAQ 목록 로드 실패: " + e.getMessage());
+            log.error("{}", "[FaqController.faqList] FAQ 목록 로드 실패: " + e.getMessage(), e);
             mav.addObject("faqGroups", Map.of());
             mav.addObject("errorMsg", "FAQ를 불러오는 중 오류가 발생했습니다.");
         }

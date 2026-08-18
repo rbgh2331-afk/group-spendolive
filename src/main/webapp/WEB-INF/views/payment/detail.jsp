@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%-- 결제 상세 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <section class="page-hero payment-detail-page">
@@ -35,8 +37,8 @@
         주 카드
         </c:when>
             <c:otherwise>
-                        <button type="button" 
-                                class="btn btn-primary btn-mini btn-change-card" 
+                        <button type="button"
+                                class="btn btn-primary btn-mini btn-change-card"
                                 data-card-idx="${card.card_idx}">
                                 결제 카드 변경</button>
 
@@ -46,16 +48,16 @@
     <c:set var="cardCompanyDisplayName"
                                value="${not empty cardCompanyNameMap[card.card_company] ? cardCompanyNameMap[card.card_company] : (empty card.card_company ? '카드' : card.card_company)}" />
                                    <c:set var="cardDisplayName"
-                               value="${empty card.card_name or card.card_name eq card.card_company ? cardCompanyDisplayName : card.card_name}" />
+                               value="${fn:escapeXml(empty card.card_name or card.card_name eq card.card_company ? cardCompanyDisplayName : card.card_name)}" />
                              <td>
                                 <strong>
-                                  
+
                                <c:out value="${cardDisplayName}" />
                                 </strong>
                             </td>
-                            <td>                                  
+                            <td>
                                <c:out value="${cardCompanyDisplayName}" />
-                                
+
                             </td>
                             <td><strong>${card.card_number}</strong></td>
                         </tr>
@@ -105,8 +107,13 @@
                 결제 완료 후 매월 <strong>${paymentAmount.automaticPaymentDay}일</strong>에 자동결제됩니다.
             </div>
 
+            <c:set var="paymentCancelUrl" value="/spendolive/ott/friends.do" />
+            <c:if test="${param.room_mode eq 'RECRUIT'}">
+                <c:set var="paymentCancelUrl" value="/spendolive/ott/recruit.do?tab=all" />
+            </c:if>
+
             <div class="payment-action-row">
-                <a href="${contextPath}/spendolive/ott/friends.do"
+                <a href="${contextPath}${paymentCancelUrl}"
                    class="btn btn-danger-outline">
                     취소하기
                 </a>
@@ -129,7 +136,7 @@
                     aria-describedby="cardStatusMessage"
                     hidden>
                     <div class="status-box">
-                    
+
                     <div id="cardStatusSpinner"
                             class="status-spinner"
                             aria-hidden="true"></div>
@@ -161,4 +168,5 @@
             </div>
 
 <jsp:include page="/WEB-INF/views/payment/popup.jsp" />
+<script src="${contextPath}/resources/js/payment.js"></script>
 <script src="${contextPath}/resources/js/signup.js"></script>

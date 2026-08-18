@@ -1,6 +1,7 @@
 package com.example.spendolive.report.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,14 +21,19 @@ import jakarta.servlet.http.HttpSession;
 @Controller("ReportController")
 @RequestMapping(value="/report")
 public class ReportControllerImpl implements ReportController{
-    @Autowired
-    private ReportService reportService;
+    private static final Logger log = LoggerFactory.getLogger(ReportControllerImpl.class);
+
+    private final ReportService reportService;
+
+    public ReportControllerImpl(ReportService reportService) {
+        this.reportService = reportService;
+    }
     @Override
     @PostMapping("/report.do")
-    public ResponseEntity<ReportAjaxResponse> insertReport(@RequestParam("reported_member_id") String reported_member_id,@RequestParam("room_id") String room_id,@RequestParam("chat_text")   String chat_text, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
+    public ResponseEntity<ReportAjaxResponse> insertReport(@RequestParam("reported_member_id") String reported_member_id, @RequestParam("room_id") String room_id, @RequestParam("chat_text")   String chat_text, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception {
         session = request.getSession();
         MemberVO memberInfo = (MemberVO) session.getAttribute("memberInfo");
-        
+
         try {
             reportService.insertReport(reported_member_id, room_id, chat_text, memberInfo);
             return ResponseEntity.ok(new ReportAjaxResponse(
@@ -39,11 +45,9 @@ public class ReportControllerImpl implements ReportController{
                     "/spendolive/main.do"));
 
         } catch (Exception e) {
-            System.out.println(reported_member_id);
-            System.out.println(room_id);
-            System.out.println(chat_text);
-            System.err.println("🚨 [신고 저장 오류]: " + e.getMessage());
-           
+            // 신고 대상/방/채팅 내용은 개인정보 보호를 위해 서버 로그로 출력하지 않는다
+            log.error("{}", "🚨 [신고 저장 오류]: " + e.getMessage(), e);
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .body(new ReportAjaxResponse(
                 false,

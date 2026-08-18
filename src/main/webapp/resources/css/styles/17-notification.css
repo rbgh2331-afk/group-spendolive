@@ -1,22 +1,25 @@
 /* ============================================================
    17. 알림 상세 페이지
    ============================================================ */
-
 /* 알림 상세 내용을 담는 카드 */
-.notif-detail-card {max-width: 47.5rem; margin: 2.5rem auto; padding: 2.25rem 2.5rem;background: var(--card); border-radius: var(--radius);border: 0.0625rem solid var(--line); box-shadow: var(--shadow);}
+.notif-detail-card {max-width:47.5rem;margin:2.5rem auto;padding:2.25rem 2.5rem;background:var(--card);border-radius:var(--radius);border:0.0625rem solid var(--line);box-shadow:var(--shadow);}
 /* 카드 상단 — 알림 종류 배지 + 제목이 나란히 놓이는 줄 */
-.notif-detail-top {display: flex; align-items: center; gap: 0.625rem; margin-bottom: 1.125rem;}.notif-detail-title {font-size: 1.35rem; font-weight: 900; margin: 0 0 0.75rem;color: var(--text);}
+.notif-detail-top {display:flex;align-items:center;gap:0.625rem;margin-bottom:1.125rem;}
+.notif-detail-title {font-size:1.35rem;font-weight:900;margin:0 0 0.75rem;color:var(--text);}
 /* 발신 시각 등 메타 정보 */
-.notif-detail-meta {font-size: .85rem; color: var(--muted); margin-bottom: 1.75rem;display: flex; gap: 1.25rem;}
+.notif-detail-meta {font-size:.85rem;color:var(--muted);margin-bottom:1.75rem;display:flex;gap:1.25rem;}
 /* 알림 본문 메시지 영역 */
-.notif-detail-message {font-size: .97rem; line-height: 1.8;color: var(--text);border-top: 0.0625rem solid var(--line);padding-top: 1.5rem; min-height: 5rem;white-space: pre-wrap;   /* 알림 메시지에 들어간 줄바꿈을 그대로 살림 */}
+.notif-detail-message {font-size:.97rem;line-height:1.8;color:var(--text);border-top:0.0625rem solid var(--line);padding-top:1.5rem;min-height:5rem;white-space:pre-wrap;/* 알림 메시지에 들어간 줄바꿈을 그대로 살림 */}
 /* 하단 버튼 영역 (예: "관련 페이지로 이동") */
-.notif-detail-actions {margin-top: 2rem; display: flex; gap: 0.625rem;}
+.notif-detail-actions {margin-top:2rem;display:flex;gap:0.625rem;}
 /* 알림 종류 배지 — faq.css의 .badge와 같은 알약(pill) 형태로 통일 */
-.notif-badge {padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.6875rem; font-weight: 900;}
+.notif-badge {padding:0.25rem 0.75rem;border-radius:999px;font-size:0.6875rem;font-weight:900;}
 /* NotificationType.NOTICE("HOME") — 공지사항 알림 */
-.badge-home     { background: var(--olive-soft); color: var(--olive-dark); }
+.badge-home {background:var(--olive-soft);color:var(--olive-dark);}
 /* 개인 알림(문의 답변, 결제 등) — 앰버 톤 */
-.badge-personal { background: #fff1d6; color: #9a5f13; }
+.badge-personal {background:#fff1d6;color:#9a5f13;}
 /* OTT 관련 알림(공유방 모집 완료, 강퇴 등) */
-.badge-ott { background: #eef3dc; color: var(--olive-dark); }
+.badge-ott {background:#eef3dc;color:var(--olive-dark);}
+/* 알림 상세 오류 inline style 정리 */
+.notif-error-box {max-width:47.5rem;margin:2.5rem auto;background:#fee2e2;border:.0625rem solid #fca5a5;color:#991b1b;padding:1rem 1.25rem;border-radius:.625rem;font-weight:500;}
+.notif-error-actions {margin-top:.75rem;}

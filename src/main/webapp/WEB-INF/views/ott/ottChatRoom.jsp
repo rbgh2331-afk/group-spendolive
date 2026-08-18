@@ -15,7 +15,7 @@
          data-message="${fn:escapeXml(msg)}">
     <div class="container ott-wide-container">
         <p class="eyebrow">SHARE CHAT</p>
-        <h1>${chatRoom.room_name}</h1>
+        <h1><c:out value="${chatRoom.room_name}" /></h1>
         <p class="hero-text">
             ${chatRoom.service_name} 공유방 대화입니다. 결제 완료 후 참여 중인 멤버와 방장만 대화방에 들어올 수 있습니다.
         </p>
@@ -48,29 +48,42 @@
                     <c:when test="${not empty chatMessageList}">
                         <c:forEach var="message" items="${chatMessageList}">
                             <c:choose>
+
+                                <%-- 시스템 알림 --%>
                                 <c:when test="${message.system_yn eq 'Y'}">
                                     <div class="chat-message-row system">
                                         <div class="chat-system-bubble">
-
-                                            <strong>${message.sender_id}</strong>
-                                            <p>${message.message_content}</p>
-
+                                            <strong>시스템 알림</strong>
+                                            <p><c:out value="${message.message_content}" /></p>
                                             <small>${message.created_at}</small>
                                         </div>
                                     </div>
                                 </c:when>
+
+                                <%-- 일반 채팅 --%>
                                 <c:otherwise>
                                     <div class="chat-message-row ${message.mine_yn eq 'Y' ? 'mine' : 'other'}">
+
                                         <div class="chat-message-bubble">
-
-                                            <strong>${message.sender_name}</strong>
-                                            <p>${message.message_content}</p>
-
+                                            <strong><c:out value="${message.sender_name}" /></strong>
+                                            <p><c:out value="${message.message_content}" /></p>
                                             <small>${message.created_at}</small>
-                                            
                                         </div>
+
+                                        <%-- 상대방 메시지만 신고 가능 --%>
+                                        <c:if test="${message.mine_yn ne 'Y'}">
+                                            <button type="button"
+                                                    class="btn btn-danger-outline mini reportSubmitButton"
+                                                    data-reported_member_id="${fn:escapeXml(message.sender_id)}"
+                                                    data-room_id="${chatRoom.room_id}"
+                                                    data-chat_text="${fn:escapeXml(message.message_content)}">
+                                                신고하기
+                                            </button>
+                                        </c:if>
+
                                     </div>
                                 </c:otherwise>
+
                             </c:choose>
                         </c:forEach>
                     </c:when>
@@ -91,3 +104,4 @@
 </section>
 <jsp:include page="/WEB-INF/views/ott/popup.jsp" />
 <script src="${contextPath}/resources/js/ott.js"></script>
+<script src="${contextPath}/resources/js/report.js"></script>

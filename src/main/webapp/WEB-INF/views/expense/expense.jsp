@@ -1,7 +1,8 @@
-<%-- [AJAX 변경 주석] 지출 등록·수정·삭제·예산·월 이동 폼에 기존 action을 유지하면서 AJAX 전용 주소와 로딩 문구를 추가했다. --%>
+<%-- 지출 등록·수정·삭제·예산·월 이동 AJAX 영역 --%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 
@@ -17,7 +18,7 @@
                 <div class="hero-buttons">
                     <a href="#expense-form" class="btn btn-primary btn-large">지출 등록</a>
                     <a href="#expense-list" class="btn btn-primary btn-large">월별 내역 보기</a>
-                    <a href="${contextPath}/spendolive/calendar.do" class="btn btn-primary btn-large">캘린더</a>
+                    <a href="${contextPath}/spendolive/calendar/main.do" class="btn btn-primary btn-large">캘린더</a>
                 </div>
             </div>
 
@@ -118,7 +119,7 @@
                                 <option value="">먼저 분류를 선택하세요</option>
                                 <c:forEach var="category" items="${categoryList}">
                                     <option value="${category.category_id}" data-type="${category.expense_type}">
-                                        ${category.category_name}
+                                        <c:out value="${category.category_name}" />
                                     </option>
                                 </c:forEach>
                             </select>
@@ -207,7 +208,7 @@
 
                             <c:forEach var="category" items="${categoryList}">
                                 <option value="${category.category_id}" data-type="${category.expense_type}">
-                                    ${category.category_name}
+                                    <c:out value="${category.category_name}" />
                                 </option>
                             </c:forEach>
                         </select>
@@ -264,12 +265,12 @@
 
                                         <td>
                                             <span class="view-mode">
-                                                ${expense.expense_title}
+                                                <c:out value="${expense.expense_title}" />
                                                 <c:if test="${expense.auto_generated_yn == 'Y'}">
                                                     <span class="tag">자동</span>
                                                 </c:if>
                                             </span>
-                                            <input class="edit-mode expense-hidden" form="editForm${expense.expense_id}" type="text" name="expense_title" value="${expense.expense_title}" required>
+                                            <input class="edit-mode expense-hidden" form="editForm${expense.expense_id}" type="text" name="expense_title" value="${fn:escapeXml(expense.expense_title)}" required>
                                         </td>
 
                                         <td>
@@ -289,11 +290,11 @@
                                         </td>
 
                                         <td>
-                                            <span class="view-mode">${expense.category_name}</span>
+                                            <span class="view-mode"><c:out value="${expense.category_name}" /></span>
                                             <select class="edit-mode edit-category expense-hidden" form="editForm${expense.expense_id}" name="category_id" data-row-id="${expense.expense_id}" required>
                                                 <c:forEach var="category" items="${categoryList}">
                                                     <option value="${category.category_id}" data-type="${category.expense_type}" ${category.category_id == expense.category_id ? 'selected' : ''}>
-                                                        ${category.category_name}
+                                                        <c:out value="${category.category_name}" />
                                                     </option>
                                                 </c:forEach>
                                             </select>
@@ -364,7 +365,7 @@
                                                         <input type="hidden" name="yearMonth" value="${selectedYearMonth}">
                                                         <input type="hidden" id="editRepeatYn${expense.expense_id}" name="repeat_yn" value="${expense.repeat_yn}">
                                                         <input type="hidden" id="editFixedYn${expense.expense_id}" name="fixed_yn" value="${expense.fixed_yn}">
-                                                        <input type="hidden" form="editForm${expense.expense_id}" name="memo" value="${expense.memo}">
+                                                        <input type="hidden" form="editForm${expense.expense_id}" name="memo" value="${fn:escapeXml(expense.memo)}">
                                                     </form>
 
                                                     <div class="expense-action-buttons">
@@ -505,8 +506,8 @@
                                 <c:forEach var="ranking" items="${rankingList}">
                                     <li>
                                         <div>
-                                            <strong>${ranking.expense_title}</strong>
-                                            <span>${ranking.category_name}</span>
+                                            <strong><c:out value="${ranking.expense_title}" /></strong>
+                                            <span><c:out value="${ranking.category_name}" /></span>
                                         </div>
                                         <em>
                                             <fmt:formatNumber value="${ranking.amount}" pattern="#,###" />원
@@ -545,6 +546,19 @@
 
                 <%-- [생필품 가격 비교] 같은 검색어에 여러 상품이 있을 수 있어 선택 목록을 먼저 표시한다. --%>
                 <div id="consumerProductResults" class="consumer-product-results expense-hidden" aria-live="polite"></div>
+                <div id="consumerProductPagination"
+                     class="pagination expense-pagination expense-hidden"
+                     aria-label="생필품 상품 검색 결과 페이지">
+                    <button type="button"
+                            class="pg-btn"
+                            data-consumer-product-page-direction="prev"
+                            aria-label="이전 페이지">‹</button>
+                    <div id="consumerProductPageNumbers" class="expense-page-numbers"></div>
+                    <button type="button"
+                            class="pg-btn"
+                            data-consumer-product-page-direction="next"
+                            aria-label="다음 페이지">›</button>
+                </div>
 
                 <%-- [생필품 가격 비교] 선택 상품의 최저·평균·최고가와 판매점별 가격을 표시한다. --%>
                 <div id="consumerPriceResults" class="consumer-price-results expense-hidden" aria-live="polite">
@@ -553,8 +567,32 @@
                             <span id="consumerSelectedProduct" class="consumer-selected-product"></span>
                             <strong id="consumerInspectDay"></strong>
                         </div>
-                        <small>자료 제공: 한국소비자원 참가격</small>
+                        <div class="consumer-price-location-panel">
+                            <small>자료 제공: 한국소비자원 참가격</small>
+                            <select id="consumerRegionSelect" aria-label="판매점 지역 선택">
+                                <option value="">전체 지역</option>
+                                <option value="seoul">서울</option>
+                                <option value="busan">부산</option>
+                                <option value="daegu">대구</option>
+                                <option value="incheon">인천</option>
+                                <option value="gwangju">광주</option>
+                                <option value="daejeon">대전</option>
+                                <option value="ulsan">울산</option>
+                                <option value="sejong">세종</option>
+                                <option value="gyeonggi">경기</option>
+                                <option value="gangwon">강원</option>
+                                <option value="chungbuk">충북</option>
+                                <option value="chungnam">충남</option>
+                                <option value="jeonbuk">전북</option>
+                                <option value="jeonnam">전남</option>
+                                <option value="gyeongbuk">경북</option>
+                                <option value="gyeongnam">경남</option>
+                                <option value="jeju">제주</option>
+                            </select>
+                            <button type="button" id="consumerNearbyStoreButton" class="btn btn-outline btn-mini">내 주변 매장</button>
+                        </div>
                     </div>
+                    <p id="consumerLocationStatus" class="consumer-location-status">전체 지역 · 거리 정렬은 위치 권한 사용 시 제공</p>
 
                     <div class="consumer-price-summary">
                         <div><span>최저가</span><strong id="consumerLowestPrice">-</strong></div>
@@ -568,12 +606,26 @@
                                 <tr>
                                     <th>판매점</th>
                                     <th>주소</th>
+                                    <th>거리</th>
                                     <th>행사</th>
                                     <th>가격</th>
                                 </tr>
                             </thead>
                             <tbody id="consumerStorePriceRows"></tbody>
                         </table>
+                    </div>
+                    <div id="consumerStorePagination"
+                         class="pagination expense-pagination expense-hidden"
+                         aria-label="생필품 판매점 결과 페이지">
+                        <button type="button"
+                                class="pg-btn"
+                                data-consumer-store-page-direction="prev"
+                                aria-label="이전 페이지">‹</button>
+                        <div id="consumerStorePageNumbers" class="expense-page-numbers"></div>
+                        <button type="button"
+                                class="pg-btn"
+                                data-consumer-store-page-direction="next"
+                                aria-label="다음 페이지">›</button>
                     </div>
                 </div>
             </div>

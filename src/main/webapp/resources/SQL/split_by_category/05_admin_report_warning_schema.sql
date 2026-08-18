@@ -28,8 +28,7 @@ CREATE TABLE report_tb (
 );
 
 CREATE INDEX idx_report_reported ON report_tb(reported_member_id, report_status);
-ALTER TABLE report_tb
-ADD CONSTRAINT uk_report_duplicate UNIQUE (reporter_id, room_id, report_reason);
+-- uk_report_duplicate는 CREATE TABLE 안에서 이미 생성하므로 중복 ALTER를 두지 않는다.
 /* =========================================================
    22. [팀 원본 사용] 경고 테이블
    ========================================================= */
@@ -42,7 +41,7 @@ CREATE TABLE warning_tb (
     status         CHAR(1) DEFAULT 'N' NOT NULL,
     created_at     DATE DEFAULT SYSDATE NOT NULL,
 
-   
+
     CONSTRAINT fk_warning_member FOREIGN KEY (member_id) REFERENCES member_tb(id),
     CONSTRAINT fk_warning_report FOREIGN KEY (report_id) REFERENCES report_tb(report_id),
     CONSTRAINT ck_warning_status CHECK (status IN ('Y', 'N'))

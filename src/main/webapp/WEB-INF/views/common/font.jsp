@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 
+<%-- 공통 폰트 설정 --%>
 <!-- 토글 버튼 -->
 <button id="fontToggle" class="font-toggle2" title="화면 및 글자 설정">간편</button>
 
@@ -42,7 +43,7 @@
       <div class="preview-box font-preview-sys">가<span>Aa</span></div>
       <span class="card-label">기본</span>
     </button>
-    
+
     <button type="button" class="font-card" data-font="jua">
       <span class="check-badge">✓</span>
       <div class="preview-box font-preview-jua">가<span>Aa</span></div>

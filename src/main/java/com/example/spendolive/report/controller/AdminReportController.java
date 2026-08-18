@@ -11,7 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+/**
+ * 관리자 신고 관리 요청 처리 컨트롤러
+ */
 public interface AdminReportController {
-    public ModelAndView listUpReport(@RequestParam(value = "status", required = false) String status,HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception;
-    public ResponseEntity<ReportAjaxResponse> comment(@RequestParam("admin_comment") String admin_comment,@RequestParam("reported_member_id") String reported_member_id,@RequestParam("report_id") int report_id,@RequestParam("result") String result,  HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception;
+    public ModelAndView listUpReport(@RequestParam(value = "status", required = false) String status, HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception;
+    public ResponseEntity<ReportAjaxResponse> comment(@RequestParam("admin_comment") String admin_comment, @RequestParam("reported_member_id") String reported_member_id, @RequestParam("report_id") int report_id, @RequestParam("result") String result,  HttpServletRequest request, HttpServletResponse response, HttpSession session, RedirectAttributes redirectAttributes) throws Exception;
 }

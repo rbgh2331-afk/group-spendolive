@@ -1,9 +1,9 @@
-package com.example.spendolive.Expense.service;
+package com.example.spendolive.expense.service;
 
 import java.util.List;
 
-import com.example.spendolive.Expense.domain.ExpenseCategoryDTO;
-import com.example.spendolive.Expense.domain.ExpenseDTO;
+import com.example.spendolive.expense.domain.ExpenseCategoryDTO;
+import com.example.spendolive.expense.domain.ExpenseDTO;
 
 public interface ExpenseService {
 
@@ -15,9 +15,7 @@ public interface ExpenseService {
 
     void modifyExpense(ExpenseDTO expenseDTO);
 
-
     void removeExpense(Long expense_id, Long member_id);
-
 
     List<ExpenseCategoryDTO> getCategoryList();
 

@@ -1,4 +1,4 @@
-<%-- [AJAX 변경 주석] 메인 월 선택은 전체 페이지 이동 대신 공통 부분 갱신 대상으로 표시했다. --%>
+<%-- 메인 월 선택 부분 갱신 영역 --%>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
@@ -37,7 +37,7 @@
                         <a href="${contextPath}/spendolive/expense/list.do" onclick="return loginYn('expense', ${isLogOn})" class="btn btn-primary btn-large">
                             지출관리 바로가기
                         </a>
-                        <a href="${contextPath}/spendolive/calendar.do" class="btn btn-primary btn-large">
+                        <a href="${contextPath}/spendolive/calendar/main.do" class="btn btn-primary btn-large">
                             캘린더 보기
                         </a>
                         </div>
@@ -179,7 +179,7 @@
                 <p>
                     월별 달력에서 날짜별 지출 금액과 카테고리, 지출관리를 편하게 확인합니다.
                 </p>
-                <a href="${contextPath}/spendolive/calendar.do" class="btn btn-primary full">
+                <a href="${contextPath}/spendolive/calendar/main.do" class="btn btn-primary full">
                     자세히 보기
                 </a>
             </article>

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- 관리자 신고 관리 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="admin-main" data-admin-page="report" data-admin-title="신고관리">
@@ -50,7 +51,7 @@
                                 <td>${status.count}</td>
                                 <td><c:out value="${report.reporter_id}" /></td>
                                 <td><c:out value="${report.reported_member_id}" /></td>
-                                <td><div style="max-width:420px;white-space:pre-wrap;"><c:out value="${report.report_reason}" /></div></td>
+                                <td><div class="admin-report-reason"><c:out value="${report.report_reason}" /></div></td>
                                 <td><c:out value="${report.created_at}" /></td>
                                 <td>
                                     <c:choose>
@@ -79,7 +80,7 @@
         </c:choose>
     </section>
 
-  
+
         <section id="commentArea" class="panel" hidden>
             <div class="panel-header">
                 <div class="panel-title">
@@ -93,7 +94,7 @@
             <input type="hidden" id="formReportMemberId" name="reported_member_id" value="">
             <input type="hidden" id="formReportId" name="report_id" value="">
 
-            <div class="form-grid" style="grid-template-columns:minmax(180px, .35fr) minmax(0, 1fr);">
+            <div class="form-grid admin-report-form-grid">
                 <div class="form-field">
                     <label for="reportResult">처리 상태</label>
                     <select class="form-input" name="result" id="reportResult">
@@ -108,10 +109,13 @@
                               placeholder="처리 결과를 입력하세요." required></textarea>
                 </div>
             </div>
-            <div class="toolbar" style="justify-content:flex-end;margin-bottom:0;">
+            <div class="toolbar admin-toolbar-bottom">
                  <button type="button" class="mini-btn warning waringSubmitButton"
                         >처리</button>
             </div>
         </section>
-    </form>
 </div>
+
+<jsp:include page="/WEB-INF/views/ott/popup.jsp" />
+<script src="${contextPath}/resources/js/app.js"></script>
+<script src="${contextPath}/resources/js/report.js"></script>

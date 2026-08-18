@@ -3,6 +3,9 @@ package com.example.spendolive.notification.service;
 import org.springframework.stereotype.Service;
 import com.example.spendolive.notification.domain.NotificationType;
 
+/**
+ * 회원 알림 생성 및 상태 처리 서비스
+ */
 @Service
 public class MemberAlarmService {
 

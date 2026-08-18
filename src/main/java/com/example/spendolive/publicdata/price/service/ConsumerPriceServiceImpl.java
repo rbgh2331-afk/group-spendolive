@@ -21,11 +21,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,10 +43,10 @@ import com.example.spendolive.publicdata.price.domain.ConsumerStoreDTO;
 @Service
 public class ConsumerPriceServiceImpl implements ConsumerPriceService {
 
-    // [생필품 가격 비교] 가이드의 네 가지 오퍼레이션 중 상품·판매점·가격 조회를 사용한다.
+    // 가이드의 네 가지 오퍼레이션 중 상품·판매점·가격 조회를 사용
     private static final String PRODUCT_OPERATION = "getProductInfoSvc.do";
     private static final String STORE_OPERATION = "getStoreInfoSvc.do";
-    private static final String PRICE_OPERATION = "getProductPriceInfoSvc.do";
+    private static final String PRICE_OPERATION = "getProductPriceInfoSvc";
     private static final DateTimeFormatter API_DATE_FORMAT = DateTimeFormatter.BASIC_ISO_DATE;
     private static final DateTimeFormatter VIEW_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
@@ -55,6 +59,8 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
     private final String baseUrl;
     private final Object productCacheLock = new Object();
     private final Object storeCacheLock = new Object();
+    private final AtomicBoolean productRefreshRunning = new AtomicBoolean(false);
+    private final AtomicBoolean storeRefreshRunning = new AtomicBoolean(false);
 
     private volatile Instant productCacheTime = Instant.EPOCH;
     private volatile Instant storeCacheTime = Instant.EPOCH;
@@ -63,12 +69,19 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
 
     public ConsumerPriceServiceImpl(
             @Value("${consumer-price.api.service-key:${CONSUMER_PRICE_API_KEY:}}") String serviceKey,
-            @Value("${consumer-price.api.base-url:http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService}") String baseUrl) {
+            @Value("${consumer-price.api.base-url:https://apis.data.go.kr/B551919/ProductPriceInfoService}") String baseUrl) {
         this.serviceKey = serviceKey == null ? "" : serviceKey.trim();
         this.baseUrl = isBlank(baseUrl)
-                ? "http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService"
+                ? "https://apis.data.go.kr/B551919/ProductPriceInfoService"
                 : removeTrailingSlash(baseUrl);
         this.httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(7)).build();
+    }
+
+    // 서버 기동 후 상품·판매점 기준정보를 미리 받아 첫 검색 대기 시간을 줄인다
+    @EventListener(ApplicationReadyEvent.class)
+    public void warmMasterCaches() {
+        refreshProductsAsync();
+        refreshStoresAsync();
     }
 
     @Override
@@ -79,7 +92,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
             throw new IllegalArgumentException("검색할 상품명을 입력해주세요.");
         }
 
-        // [생필품 가격 비교] 전체 상품은 6시간 캐시하고 화면에는 일치 상품 최대 20개만 반환한다.
+        // 전체 상품은 6시간 캐시하고 화면에는 일치 상품 최대 20개만 반환
         return loadProducts().stream()
                 .filter(product -> normalizeSearchText(product.getGoodName()).contains(normalizedKeyword))
                 .sorted(Comparator.comparing(ConsumerProductDTO::getGoodName, Comparator.nullsLast(String::compareTo)))
@@ -95,7 +108,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
             throw new IllegalArgumentException("가격을 조회할 상품을 선택해주세요.");
         }
 
-        // [생필품 가격 비교] 가이드상 조사일은 금요일이므로 최근 금요일부터 최대 8주 전까지 데이터가 있는 날을 찾는다.
+        // 가이드상 조사일은 금요일이므로 최근 금요일부터 최대 8주 전까지 데이터가 있는 날을 찾는다
         LocalDate latestFriday = LocalDate.now(KOREA_ZONE).with(TemporalAdjusters.previousOrSame(DayOfWeek.FRIDAY));
         PriceLookupResult lookupResult = null;
 
@@ -124,10 +137,12 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
             ConsumerStoreDTO store = stores.get(row.entpId());
             String storeName = store == null || isBlank(store.getEntpName()) ? "판매점 " + row.entpId() : store.getEntpName();
             String roadAddress = store == null ? "" : defaultString(store.getRoadAddrBasic());
+            String xMapCoord = store == null ? "" : defaultString(store.getXMapCoord());
+            String yMapCoord = store == null ? "" : defaultString(store.getYMapCoord());
             ConsumerPriceComparisonDTO.StorePrice storePrice = new ConsumerPriceComparisonDTO.StorePrice(
-                    row.entpId(), storeName, roadAddress, row.price(), row.plusOneYn(), row.discountYn());
+                    row.entpId(), storeName, roadAddress, xMapCoord, yMapCoord, row.price(), row.plusOneYn(), row.discountYn());
 
-            // [생필품 가격 비교] 같은 판매점 가격이 중복 응답되면 가장 낮은 가격 한 건만 사용한다.
+            // 같은 판매점 가격이 중복 응답되면 가장 낮은 가격 한 건만 사용
             lowestStorePrices.merge(row.entpId(), storePrice,
                     (before, after) -> before.getPrice() <= after.getPrice() ? before : after);
         }
@@ -161,10 +176,18 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
     }
 
     private List<ConsumerProductDTO> loadProducts() throws Exception {
-        if (isCacheValid(productCacheTime) && !productCache.isEmpty()) {
+        if (!productCache.isEmpty()) {
+            // 만료된 캐시는 즉시 사용하고 새 기준정보는 백그라운드에서 갱신
+            if (!isCacheValid(productCacheTime)) {
+                refreshProductsAsync();
+            }
             return productCache;
         }
 
+        return refreshProducts();
+    }
+
+    private List<ConsumerProductDTO> refreshProducts() throws Exception {
         synchronized (productCacheLock) {
             if (isCacheValid(productCacheTime) && !productCache.isEmpty()) {
                 return productCache;
@@ -195,11 +218,35 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
         }
     }
 
+    private void refreshProductsAsync() {
+        if (!productRefreshRunning.compareAndSet(false, true)) {
+            return;
+        }
+
+        CompletableFuture.runAsync(() -> {
+            try {
+                refreshProducts();
+            } catch (Exception ignored) {
+                // 사전 캐시 실패 시 실제 검색 요청에서 다시 조회
+            } finally {
+                productRefreshRunning.set(false);
+            }
+        });
+    }
+
     private Map<String, ConsumerStoreDTO> loadStores() throws Exception {
-        if (isCacheValid(storeCacheTime) && !storeCache.isEmpty()) {
+        if (!storeCache.isEmpty()) {
+            // 만료된 캐시는 가격 비교에 그대로 사용하고 최신 판매점 정보만 비동기 갱신
+            if (!isCacheValid(storeCacheTime)) {
+                refreshStoresAsync();
+            }
             return storeCache;
         }
 
+        return refreshStores();
+    }
+
+    private Map<String, ConsumerStoreDTO> refreshStores() throws Exception {
         synchronized (storeCacheLock) {
             if (isCacheValid(storeCacheTime) && !storeCache.isEmpty()) {
                 return storeCache;
@@ -216,10 +263,17 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
                     continue;
                 }
 
+                String roadAddress = directChildText(element, "roadaddrbasic");
+                if (isBlank(roadAddress)) {
+                    roadAddress = directChildText(element, "plmkaddrbasic");
+                }
+
                 stores.putIfAbsent(entpId, new ConsumerStoreDTO(
                         entpId,
                         entpName,
-                        directChildText(element, "roadaddrbasic")
+                        roadAddress,
+                        directChildText(element, "xmapcoord"),
+                        directChildText(element, "ymapcoord")
                 ));
             }
 
@@ -227,6 +281,22 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
             storeCacheTime = Instant.now();
             return storeCache;
         }
+    }
+
+    private void refreshStoresAsync() {
+        if (!storeRefreshRunning.compareAndSet(false, true)) {
+            return;
+        }
+
+        CompletableFuture.runAsync(() -> {
+            try {
+                refreshStores();
+            } catch (Exception ignored) {
+                // 사전 캐시 실패 시 실제 가격 조회 요청에서 다시 조회
+            } finally {
+                storeRefreshRunning.set(false);
+            }
+        });
     }
 
     private List<PriceRow> loadPriceRows(String goodId, LocalDate inspectDate) throws Exception {
@@ -253,7 +323,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
                         defaultYn(directChildText(element, "gooddcyn"))
                 ));
             } catch (NumberFormatException ignored) {
-                // [생필품 가격 비교] 숫자가 아닌 가격 한 건은 전체 조회 실패 대신 제외한다.
+                // 숫자가 아닌 가격 한 건은 전체 조회 실패 대신 제외
             }
         }
 
@@ -263,7 +333,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
     private Document requestXml(String operation, Map<String, String> parameters) throws Exception {
         validateServiceKey();
         StringBuilder url = new StringBuilder(baseUrl).append('/').append(operation)
-                .append("?ServiceKey=").append(encode(serviceKey));
+                .append("?serviceKey=").append(encode(serviceKey));
 
         for (Map.Entry<String, String> parameter : parameters.entrySet()) {
             url.append('&').append(encode(parameter.getKey())).append('=').append(encode(parameter.getValue()));
@@ -295,7 +365,7 @@ public class ConsumerPriceServiceImpl implements ConsumerPriceService {
     private Document parseXml(byte[] xmlBytes) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-        // [생필품 가격 비교] 외부 XML의 DTD·외부 엔티티를 차단해 XXE 취약점을 방지한다.
+        // 외부 XML의 DTD·외부 엔티티를 차단해 XXE 취약점을 방지
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
         factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);

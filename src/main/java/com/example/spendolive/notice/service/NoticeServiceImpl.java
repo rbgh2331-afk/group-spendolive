@@ -1,5 +1,7 @@
 package com.example.spendolive.notice.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import com.example.spendolive.notice.repository.NoticeRepository;
  */
 @Service
 public class NoticeServiceImpl implements NoticeService {
+    private static final Logger log = LoggerFactory.getLogger(NoticeServiceImpl.class);
 
     // 관리자 공지 목록 전용: 20개 이하면 페이지네이션 없이 전부 표시, 넘으면 20개씩 페이지 분리
     private static final int ADMIN_PAGE_SIZE = 20;
@@ -32,7 +35,7 @@ public class NoticeServiceImpl implements NoticeService {
         return noticeRepository.findAll(id);
     }
 
-    // 전체 개수가 기준(ADMIN_PAGINATION_THRESHOLD) 이하면 페이지 계산 없이 그냥 전부 반환.
+    // 전체 개수가 기준(ADMIN_PAGINATION_THRESHOLD) 이하면 페이지 계산 없이 그냥 전부 반환
     // 기준을 넘으면 요청받은 page를 1 미만이 안 되게 보정한 뒤, 그 페이지에 해당하는
     // offset만큼 건너뛰고 ADMIN_PAGE_SIZE(20)개만 잘라서 반환
     @Override
@@ -86,7 +89,6 @@ public class NoticeServiceImpl implements NoticeService {
         noticeRepository.insertNoticeRead(notice_id, id);
     }
 
-
     @Override
     public List<NoticeDTO> getUnreadNoticeList(String id) {
     return noticeRepository.findUnreadBymember_id(id);
@@ -107,7 +109,7 @@ public class NoticeServiceImpl implements NoticeService {
             try {
                 noticeRepository.insertNoticeAlertForAll(notice.getTitle(), String.valueOf(newId));
             } catch (Exception e) {
-                System.err.println("[NoticeServiceImpl] 알림 발송 실패 (공지는 등록됨): " + e.getMessage());
+                log.error("{}", "[NoticeServiceImpl] 알림 발송 실패 (공지는 등록됨): " + e.getMessage(), e);
             }
         }
         return newId;

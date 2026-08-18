@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 
+<%-- 공통 챗봇 위젯 --%>
 <button id="chatbotToggle" class="chatbot-toggle">🙋🏻‍♀️</button>
 
 <div id="chatbotPanel" class="chatbot-panel">

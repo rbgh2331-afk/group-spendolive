@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%-- 관리자 OTT 관리 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="isEdit" value="${not empty editService}" />
 
@@ -131,7 +132,7 @@
                     <textarea class="form-textarea" name="block_reason" placeholder="공유 불가 또는 주의 사유가 있다면 입력하세요."></textarea>
                 </div>
 
-                <div class="toolbar" style="justify-content:flex-end;margin-top:18px;margin-bottom:0;">
+                <div class="toolbar admin-toolbar-end">
                     <button type="button" class="btn ghost" data-admin-section-target="manage">취소</button>
                     <button type="submit" class="btn primary">등록하기</button>
                 </div>
@@ -179,7 +180,7 @@
                             <textarea class="form-textarea" name="block_reason" placeholder="공유 불가 또는 주의 사유가 있다면 입력하세요."><c:out value="${editService.block_reason}" /></textarea>
                         </div>
 
-                        <div class="toolbar" style="justify-content:flex-end;margin-top:18px;margin-bottom:0;">
+                        <div class="toolbar admin-toolbar-end">
                             <button type="button" class="btn ghost" data-admin-section-target="manage">취소</button>
                             <button type="submit" class="btn primary">수정 저장</button>
                         </div>

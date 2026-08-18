@@ -1,4 +1,4 @@
-package com.example.spendolive.Expense.domain;
+package com.example.spendolive.expense.domain;
 
 import java.util.Date;
 
@@ -18,7 +18,6 @@ public class ExpenseDTO {
     private String category_name;   // 카테고리 이름
     private String expense_type;    // 지출 유형(FIXED: 고정, VARIABLE: 변동, OTT: OTT)
 
-
     private String expense_title;   // 지출 내역 제목
     private Integer amount;         // 지출 금액
 
@@ -31,11 +30,11 @@ public class ExpenseDTO {
     private String repeat_yn;       // 반복 지출 여부(Y/N)
     private String repeat_cycle;    // 반복 주기(MONTHLY/WEEKLY/YEARLY)
 
-    // [고정지출 종료월] DB에는 선택한 종료월의 마지막 날짜를 저장한다.
+    // DB에는 선택한 종료월의 마지막 날짜를 저장
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date repeat_end_date;
 
-    // [고정지출 종료월] input type="month"의 yyyy-MM 값을 받는 화면 전용 필드다.
+    // input type="month"의 yyyy-MM 값을 받는 화면 전용 필드다
     private String repeat_end_month;
 
     private String fixed_yn;        // 고정 지출 여부(Y/N)

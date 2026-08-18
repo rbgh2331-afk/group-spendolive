@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%-- 관리자 대시보드 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <div class="admin-main" data-admin-page="dashboard" data-admin-title="대시보드">

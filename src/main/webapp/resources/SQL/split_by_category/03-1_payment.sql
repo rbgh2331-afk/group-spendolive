@@ -13,22 +13,7 @@
 
 SET DEFINE OFF;
 
-/* =========================================================
-   0. 결제 관련 객체만 정리
-   이미 없으면 무시
-   ========================================================= */
-BEGIN
-    BEGIN EXECUTE IMMEDIATE 'DROP TABLE settlement_refund_tb CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
-    BEGIN EXECUTE IMMEDIATE 'DROP TABLE platform_revenue_tb CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
-    BEGIN EXECUTE IMMEDIATE 'DROP TABLE escrow_payout_tb CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
-    BEGIN EXECUTE IMMEDIATE 'DROP TABLE seller_account_tb CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
-    BEGIN EXECUTE IMMEDIATE 'DROP TABLE settlement_payment_tb CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;
-
-    BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE seq_settlement_refund'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;
-    BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE seq_escrow_payout'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;
-    BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE seq_settlement_payment'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;
-END;
-/
+/* 기존 결제 객체 전체 초기화는 00_reset_all_objects.sql에서 수행합니다. */
 
 /* =========================================================
    1. 팀원별 결제 상태 테이블
@@ -45,7 +30,7 @@ CREATE TABLE settlement_payment_tb (
     card_number     VARCHAR2(50),
     card_company    VARCHAR2(20),
     paid_at         DATE,
-    confirmed_at    DATE, 
+    confirmed_at    DATE,
     expired_at      DATE, --??
     cancelled_at    DATE,
     paymentKey      VARCHAR2(100),
@@ -117,13 +102,11 @@ BEGIN
 END;
 /
 
+/* 환불 조회 인덱스
+   - settlement_refund_tb에는 room_id 컬럼이 없으므로 room_id 인덱스를 만들지 않는다.
+   - 동일 인덱스명 중복 생성문을 제거한다. */
 CREATE INDEX idx_refund_payment ON settlement_refund_tb(payment_id);
 CREATE INDEX idx_refund_member_login ON settlement_refund_tb(member_login_id, refund_status);
-
-
-CREATE INDEX idx_refund_payment ON settlement_refund_tb(payment_id);
-CREATE INDEX idx_refund_member_login ON settlement_refund_tb(member_login_id, refund_status);
-CREATE INDEX idx_refund_room ON settlement_refund_tb(room_id, refund_status);
 
 /* =========================================================
    3. 통합 정산 금고 테이블

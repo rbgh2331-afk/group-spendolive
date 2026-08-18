@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- 관리자 사이드바 --%>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <aside id="adminSidebar" class="admin-sidebar" aria-label="관리자 메뉴">
@@ -104,11 +105,3 @@
         </a>
     </div>
 </aside>
-<jsp:include page="/WEB-INF/views/payment/popup.jsp" />
-<jsp:include page="/WEB-INF/views/ott/popup.jsp" />
-<jsp:include page="/WEB-INF/views/member/popup.jsp" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="${contextPath}/resources/js/app.js"></script>
-<script src="${contextPath}/resources/js/signup.js"></script>
-<script src="${contextPath}/resources/js/payment.js"></script>
-<script src="${contextPath}/resources/js/report.js"></script>                           

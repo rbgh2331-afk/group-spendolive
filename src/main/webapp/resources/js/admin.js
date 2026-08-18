@@ -30,7 +30,7 @@
         try {
             localStorage.setItem(SIDEBAR_STORAGE_KEY, String(collapsed));
         } catch (ignore) {
-            // 저장소를 사용할 수 없는 환경에서는 현재 화면에서만 상태를 유지한다.
+            // 저장소를 사용할 수 없는 환경에서는 현재 화면에서만 상태를 유지
         }
     }
 
@@ -193,7 +193,7 @@
         if (!element || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
         // 숨겨져 있던 탭에 최초 진입 애니메이션 클래스가 남아 있으면
-        // 탭 전환 애니메이션과 겹쳐 두 번 깜빡이는 것처럼 보일 수 있다.
+        // 탭 전환 애니메이션과 겹쳐 두 번 깜빡이는 것처럼 보일 수 있다
         element.classList.remove('admin-motion-block', 'admin-motion-section', 'admin-motion-table', 'admin-motion-panel');
         element.style.removeProperty('--admin-motion-delay');
         void element.offsetWidth;
@@ -208,8 +208,8 @@
         const root = pageRoot();
         if (!root || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         const blocks = Array.from(root.children).filter(function (element) {
-            // hidden 상태의 탭에는 최초 애니메이션을 걸지 않는다.
-            // 숨겨진 탭이 나중에 열릴 때 section 애니메이션과 중복되는 문제를 막는다.
+            // hidden 상태의 탭에는 최초 애니메이션을 걸지 않는다
+            // 숨겨진 탭이 열릴 때 section 애니메이션 중복 방지
             return !element.hidden && element.matches('.hero,.stat-grid,.content-grid,.panel,.admin-local-tabs,.admin-page-section,#adminBoardArea,.flash-ok,.flash-err');
         }).slice(0, 8);
         blocks.forEach(function (element, index) {
@@ -243,7 +243,22 @@
         }
         currentArea.innerHTML = nextArea.innerHTML;
         replayMotion(currentArea, 'admin-motion-section');
+
+        // #adminBoardArea 안쪽만 교체되고 바깥의 .admin-main[data-admin-page]는 그대로 남아있어서,
+        // 문의관리 ↔ FAQ관리 탭 전환 후에도 사이드바 활성 표시가 안 바뀌는 문제가 있었음.
+        // 새로 받아온 응답에서 data-admin-page 값을 읽어와 현재 .admin-main에도 반영한다.
+        const nextRoot = documentFromResponse.querySelector('.admin-main[data-admin-page]');
+        const currentRoot = document.querySelector('.admin-main[data-admin-page]');
+        if (nextRoot && currentRoot) {
+            currentRoot.dataset.adminPage = nextRoot.dataset.adminPage;
+        }
+
+        // pushState로 주소를 먼저 갱신한 뒤 initSidebar()를 호출해야 함.
+        // updateSidebarSubmenuActive()가 window.location.pathname을 읽어서 "같은 주소인지"도
+        // 같이 판단하는데, 순서가 바뀌면 아직 안 바뀐 옛 주소 때문에 이전 메뉴도 활성으로
+        // 착각해서 두 메뉴가 동시에 활성 표시되는 문제가 있었음.
         if (pushUrl) history.pushState({ boardUrl: pushUrl }, '', pushUrl);
+        initSidebar();
     }
 
     function loadBoard(url, push) {
@@ -335,7 +350,7 @@
             return;
         }
 
-        // 기존 프로젝트에 이미 있던 문의관리 ↔ FAQ관리 목록 AJAX만 유지한다.
+        // 기존 프로젝트에 이미 있던 문의관리 ↔ FAQ관리 목록 AJAX만 유지
         const boardArea = document.getElementById(BOARD_AREA_ID);
         const link = event.target.closest('a');
         if (boardArea && link && boardArea.contains(link) && isBoardLink(link.getAttribute('href'))) {

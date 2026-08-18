@@ -2,13 +2,13 @@ package com.example.spendolive.publicdata.price.domain;
 
 public class ConsumerProductDTO {
 
-    // [생필품 가격 비교] 한국소비자원 상품아이디다.
+    // 한국소비자원 상품아이디다
     private String goodId;
 
-    // [생필품 가격 비교] 사용자가 선택할 상품명이다.
+    // 사용자가 선택할 상품명이다
     private String goodName;
 
-    // [생필품 가격 비교] 상품 용량과 단위를 검색 결과에 함께 표시한다.
+    // 상품 용량과 단위를 검색 결과에 함께 표시
     private String goodTotalCnt;
     private String goodTotalDivCode;
 

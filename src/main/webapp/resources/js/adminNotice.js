@@ -99,7 +99,7 @@
     function soAlert(message, opts) { return soOpenModal(message, opts, false); }
     function soConfirm(message, opts) { return soOpenModal(message, opts, true); }
     // 이 프로젝트의 다른 js(notice.js 등)와 동일하게, contextPath 변수를 따로
-    // 두지 않고 루트 기준 절대경로("/admin/notice/...")를 그대로 사용한다.
+    // 두지 않고 루트 기준 절대경로("/admin/notice/...")를 그대로 사용
 
     // 현재 페이지 번호를 기억해두고, 삭제 후 같은 페이지를 다시 불러올 때 사용
     let currentPage = 1;
