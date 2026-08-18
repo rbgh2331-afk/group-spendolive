@@ -48,7 +48,8 @@
             <button class="btn btn-light" onclick="changeMonth(-1)">
                 ‹ 이전달
             </button>
-            <button class="btn btn-primary" onclick="return loginYn('expense', ${isLogOn})">
+            <button class="btn btn-primary" 
+                    onclick="return loginYn('expense', ${isLogOn}) && (location.href='${contextPath}/spendolive/expense/list.do')">
                 + 지출등록
             </button>
             <button class="btn btn-light" onclick="changeMonth(1)">
@@ -69,7 +70,8 @@
                 <!-- calendar.js의 renderSidePanel()이 이 안에 지출 목록을 채워줌 -->
             </div>
             <!-- 3개 넘으면 calendar.js가 이 아래에 1 2 3 숫자 페이지네이션 자동 생성 -->
-            <button class="btn btn-primary full" onclick="return loginYn('expense', ${isLogOn})">
+            <button class="btn btn-primary full" 
+        onclick="return loginYn('expense', ${isLogOn}) && (location.href='${contextPath}/spendolive/expense/list.do')">
                 지출관리에서 보기
             </button>
         </aside>

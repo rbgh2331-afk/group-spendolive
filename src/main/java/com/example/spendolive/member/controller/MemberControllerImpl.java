@@ -393,7 +393,7 @@ public class MemberControllerImpl implements MemberController{
                         return ResponseEntity.ok(new MemberAjaxResponse(
                             true,
                             "CHECK_COMPLETED",
-                            "중복화인이 완료되었습니다.",
+                            "중복확인이 완료되었습니다.",
                             "SUCCESS",
                             id,
                             null));
