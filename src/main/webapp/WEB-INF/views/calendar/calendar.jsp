@@ -88,3 +88,4 @@
 
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.21/index.global.min.js"></script>
 <script src="${contextPath}/resources/js/calendar.js"></script>
+<script src="${contextPath}/resources/js/notice.js"></script>

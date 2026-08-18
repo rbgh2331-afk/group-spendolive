@@ -229,13 +229,13 @@ function updateFixedPlanForm(form) {
 
   const service_name = option.dataset.service_name || option.textContent.trim();
   const plan = option.dataset.plan || '프리미엄';
-  const base_price = toNumber(option.dataset.base_price);
+  const base_price = toNumber(option.dataset.basePrice);
   const extraFee = toNumber(option.dataset.extraFee);
   const extraCount = toNumber(option.dataset.extraCount);
-  const total_price = toNumber(option.dataset.total_price);
-  const member_limit = toNumber(option.dataset.member_limit);
-  const share_amount = toNumber(option.dataset.share_amount);
-  const fee_amount = toNumber(option.dataset.fee_amount);
+  const total_price = toNumber(option.dataset.totalPrice);
+  const member_limit = toNumber(option.dataset.memberLimit);
+  const share_amount = toNumber(option.dataset.shareAmount);
+  const fee_amount = toNumber(option.dataset.feeAmount);
   const personAmount = toNumber(option.dataset.personAmount);
 
   const planInput = form.querySelector('.ott-plan-input');

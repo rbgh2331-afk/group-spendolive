@@ -75,15 +75,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const calendarGridEl = document.getElementById('calendar');
         const detailListEl = document.getElementById('calendarDetailList');
         if (!isDetailListOpen) {
-        calendarGridEl.style.display = 'none';
-        detailListEl.style.display = '';
+            calendarGridEl.classList.add('is-hidden');
+            detailListEl.classList.remove('is-hidden');
         isDetailListOpen = true;
         detailListPage = 1;
         renderDetailList();
         this.textContent = '달력으로 보기';
         } else {
-        detailListEl.style.display = 'none';
-        calendarGridEl.style.display = '';
+            detailListEl.classList.add('is-hidden');
+            calendarGridEl.classList.remove('is-hidden');
         isDetailListOpen = false;
         this.textContent = '자세히보기';
         // display:none으로 숨겨져 있는 동안 FullCalendar가 크기 계산을 못 해서

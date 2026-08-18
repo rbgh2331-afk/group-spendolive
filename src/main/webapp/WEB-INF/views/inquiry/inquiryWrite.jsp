@@ -116,4 +116,5 @@
 </div>
 
 <script src="${contextPath}/resources/js/faq.js"></script>
+<script src="${contextPath}/resources/js/notice.js"></script>
 <script src="${contextPath}/resources/js/inquiry.js"></script>

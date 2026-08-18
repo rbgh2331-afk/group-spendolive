@@ -21,10 +21,11 @@ function loadNotificationBadge() {
         .then(data => {
             const count = (data && data.unread_count) ? data.unread_count : 0;
             if (count <= 0) {
-                badge.style.display = "none";
+                badge.classList.add("is-hidden");
                 badge.textContent   = "";
             } else {
                 badge.textContent   = count > 99 ? "99+" : String(count);
+                badge.classList.remove("is-hidden");
                 badge.style.display = "inline-flex";
             }
         })

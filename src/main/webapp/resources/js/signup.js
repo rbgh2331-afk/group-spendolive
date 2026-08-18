@@ -107,7 +107,7 @@ function showMemberModal(prefix, type, titleText, messageText) {
             // 백엔드가 보내주는 code 값으로 확인 (CHECK_COMPLETED = 사용 가능)
             if (result.code === 'SEND_COMPLETED') {
                 showMemberModal('member','success', '인증번호 전송!', result.message || '인증번호 전송 완료되었습니다.');
-                document.getElementById('emailAuthArea').style.display = 'block';
+                document.getElementById('emailAuthArea').classList.remove('is-hidden');
             } else {
                 showMemberModal('member','error', '인증번호 전송 실패', result.message || '인증번호 발생 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.');
             }
@@ -151,7 +151,7 @@ function showMemberModal(prefix, type, titleText, messageText) {
             // 백엔드가 보내주는 code 값으로 확인 (CHECK_COMPLETED = 사용 가능)
             if (result.code === 'SEND_COMPLETED') {
                 showMemberModal('member','success', '인증번호 전송!', result.message || '인증번호 전송 완료되었습니다.');
-                document.getElementById('phoneAuthArea').style.display = 'block';
+                document.getElementById('phoneAuthArea').classList.remove('is-hidden');
             } else {
                 showMemberModal('member','error', '인증번호 전송 실패', result.message || '인증번호 발생 중 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.');
             }
