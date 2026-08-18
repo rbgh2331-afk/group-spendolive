@@ -64,8 +64,10 @@ function showMemberModal(prefix, type, titleText, messageText) {
 
             // 백엔드가 보내주는 code 값으로 확인 (CHECK_COMPLETED = 사용 가능)
             if (result.code === 'CHECK_COMPLETED') {
+                isIdVerified = true; 
                 showMemberModal('member','success', '중복확인 성공', result.message || '사용 가능한 아이디입니다.');
             } else {
+                isIdVerified = false;
                 showMemberModal('member','error', '중복확인 실패', result.message || '이미 사용 중인 아이디입니다.');
             }
 
